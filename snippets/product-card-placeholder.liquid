@@ -1,0 +1,48 @@
+{% comment %}
+  Renders a product card placeholder.
+
+  Accepts (block usage):
+  - corner_radius: {Boolean}
+  - image_ratio:   {String}  'adapt', 'portrait', 'square', 'landscape'
+  - index:         {Number}  1–6, used to build 'product-apparel-N'. Defaults to 1.
+
+  Accepts (section usage):
+  - corner_radius: {Boolean}
+  - product_item:  {String}  Full SVG name e.g. 'product-apparel-2'. Overrides index.
+  - productItem:   {String}  Wrapper CSS class e.g. 'col mb-20', 'swiper-slide'.
+
+  Usage (block):
+  {% render 'product-card-placeholder', corner_radius: true, image_ratio: 'portrait', index: 1 %}
+
+  Usage (section):
+  {% render 'product-card-placeholder', product_item: product_item, productItem: productItem, corner_radius: true %}
+{% endcomment %}
+{%- liquid
+  assign wrapper_class = productItem | default: 'product-card-placeholder'
+
+  if product_item != blank
+    assign svg_name = product_item
+  else
+    assign svg_index = index | default: 1
+    assign svg_name = 'product-apparel-' | append: svg_index
+  endif
+
+  case image_ratio
+    when 'portrait'
+      assign ratio_padding = '125%'
+    when 'landscape'
+      assign ratio_padding = '66.6%'
+    else
+      assign ratio_padding = '100%'
+  endcase
+-%}
+<div class="{{ wrapper_class }}">
+  <div
+    class="mb-15 placeholder placeholder_svg_parent card--client-height {% if corner_radius %}product--corner-radius-true{% endif %}"
+    style="padding-bottom: {{ ratio_padding }}"
+  >
+    {{ svg_name | placeholder_svg_tag: 'placeholder-svg-new' }}
+  </div>
+  <div class="h4">Product Title</div>
+  <span class="h6">$99.99</span>
+</div>

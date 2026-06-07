@@ -1,0 +1,315 @@
+.hover-highlight-deals {
+  overflow: hidden;
+}
+
+.hover-highlight-deals__container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
+.hover-highlight-deals__wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Images in horizontal layout */
+.hover-highlight-deals__images {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 0;
+}
+
+/* Side containers for left and right images */
+.hover-highlight-deals__side {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.hover-highlight-deals__left {
+  justify-content: flex-end;
+}
+
+.hover-highlight-deals__right {
+  justify-content: flex-start;
+}
+
+/* Dynamic sizing based on distance from center */
+.hover-highlight-deals__image-item {
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border: 2px solid rgb(var(--color-background));
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  /* Dynamic sizing based on distance from center */
+  --base-width: 4rem;
+  --base-height: 5rem;
+  --size-increment: 1.5rem;
+  --height-increment: 2rem;
+  /* Calculate size: items closer to center are larger */
+  width: calc(var(--base-width) + (3 - min(var(--distance), 3)) * var(--size-increment));
+  height: calc(var(--base-height) + (3 - min(var(--distance), 3)) * var(--height-increment));
+  /* Allow shrinking when many images are added */
+  flex-shrink: 1;
+  min-width: 3rem;
+  min-height: 4rem;
+  margin-left: -8px;
+  @media only screen and (min-width: 750px){
+    border: 4px solid rgb(var(--color-background));
+    --base-width: 7rem;
+    --base-height: 8rem;
+    --size-increment: 2rem;
+    --height-increment: 3rem;
+    margin-left: -4px;
+    min-width: 5rem;
+    min-height: 6rem;
+  }
+  @media only screen and (min-width: 992px){
+    --base-width: 8rem;
+    --base-height: 9rem;
+    --size-increment: 2.5rem;
+    --height-increment: 3.5rem;
+    min-width: 6rem;
+    min-height: 7rem;
+  }
+  @media only screen and (min-width: 1200px){
+    --base-width: 10rem;
+    --base-height: 11rem;
+    --size-increment: 3rem;
+    --height-increment: 4rem;
+    min-width: 7rem;
+    min-height: 8rem;
+  }
+}
+
+/* First child in each side container */
+.hover-highlight-deals__left .hover-highlight-deals__image-item:first-child {
+  margin-left: 0;
+}
+
+.hover-highlight-deals__right .hover-highlight-deals__image-item:first-child {
+  margin-left: -8px;
+  @media only screen and (min-width: 750px){
+    margin-left: -4px;
+  }
+}
+
+.hover-highlight-deals__image-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Center item - special circular styling with FIXED size */
+.hover-highlight-deals__image-item.is-center {
+  /* Fixed size - never shrinks */
+  width: 11rem;
+  min-width: 11rem;
+  height: 11rem;
+  min-height: 11rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  margin-left: -15px;
+  margin-right: -15px;
+  z-index: 12;
+  @media only screen and (min-width: 750px){
+    margin-left: -12px;
+    margin-right: -12px;
+    width: 16rem;
+    min-width: 16rem;
+    height: 16rem;
+    min-height: 16rem;
+  }
+  @media only screen and (min-width: 992px){
+    width: 18rem;
+    min-width: 18rem;
+    height: 18rem;
+    min-height: 18rem;
+  }
+  @media only screen and (min-width: 1200px){
+    width: 22rem;
+    min-width: 22rem;
+    height: 22rem;
+    min-height: 22rem;
+  }
+}
+
+.hover-highlight-deals__image-item.is-center .hover-highlight-deals__center {
+  opacity: 1;
+  visibility: visible;
+  border-radius: 50%;
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+}
+
+/* Hide image wrapper for center item - center only shows circular text */
+.hover-highlight-deals__image-item.is-center .hover-highlight-deals__image-wrapper {
+  display: none;
+}
+.hover-highlight-deals__image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+.hover-highlight-deals__image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.hover-highlight-deals__placeholder {
+  width: 100%;
+  height: 100%;
+  background: rgba(var(--color-foreground), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+}
+
+.hover-highlight-deals__placeholder svg {
+  width: 100%;
+  height: 100%;
+  fill: rgba(var(--color-foreground), 0.3);
+}
+
+/* Center promotional circle */
+.hover-highlight-deals__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: rgb(var(--color-background));
+  border: 2px solid rgba(var(--color-button), var(--alpha-button-background));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  @media only screen and (min-width: 750px){
+    border: 10px solid rgba(var(--color-button), var(--alpha-button-background));
+    padding: 1rem;
+  }
+  &::before{
+    position: absolute;
+    content: "";
+    width: 50%;
+    height: 50%;
+    background-color: rgba(var(--color-button), var(--alpha-button-background));
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: -1;
+  }
+}
+
+
+.hover-highlight-deals__center-subtext {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--center-text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+
+
+/* Smooth entrance animation - dynamic delay based on item index */
+.hover-highlight-deals__image-item {
+  animation: fadeInScale 0.8s ease-out;
+  animation-fill-mode: both;
+  /* Dynamic animation delay based on item index */
+  animation-delay: calc(0.1s + var(--item-index, 0) * 0.1s);
+}
+
+/* Center circle starts hidden, no entrance animation */
+.hover-highlight-deals__center {
+  /* No entrance animation, appears only on hover */
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+ @keyframes rotate {
+      from {
+          transform: rotate(0deg);
+      }
+      to {
+          transform: rotate(360deg);
+      }
+  }
+.hover-highlight-deals__center.circular-text-container{
+  position: relative;
+}
+
+
+.circular-text {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    animation: rotate 10s linear infinite;
+    font-size: 2.4rem;
+    letter-spacing: 0.1rem;
+    word-spacing: 0.5rem;
+    @media screen and (min-width: 750px) {
+        font-size: 2.2rem;
+        word-spacing: 1rem;
+    }
+
+}
+
+.circular-text svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    fill: currentColor;
+    color: rgb(var(--color-foreground));
+}
+
+/* Responsive Design */
+

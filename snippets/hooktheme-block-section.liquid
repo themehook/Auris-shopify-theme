@@ -1,0 +1,113 @@
+{%- assign contained = section.settings.contain_styling -%}
+
+<div
+  class="block-section{% unless contained %} has-border color-{{ section.settings.color_scheme }}{% endunless %}"
+  {% unless contained %}
+    style="{% render 'hooktheme-style-vars', settings: section.settings %}"
+  {% endunless %}
+>
+  <div class="block-section__bg">
+    {% unless contained %}
+      {% render 'hooktheme-style-elements', settings: section.settings %}
+    {% endunless %}
+  </div>
+
+  <div
+    class="block-section__body{% if section.settings.section_width == 'full-width' %} block-section--full{% else %} block-section--boxed{% endif %}"
+    {% if request.visual_preview_mode %}data-shopify-visual-preview{% endif %}
+    style="
+      {% if section.settings.section_height == 'custom' %}
+        --section-min-height: {{ section.settings.section_height_custom }}svh;
+      {% elsif section.settings.section_height == 'full-screen' %}
+        --section-min-height: 100svh;
+      {% elsif section.settings.section_height != '' %}
+        --section-min-height: var(--section-height-{{ section.settings.section_height }});
+      {% endif %}
+      {% if section.settings.section_height != '' %}
+        --section-preview-height: 600px;
+      {% endif %}
+      {% render 'hooktheme-layout-vars', settings: section.settings %}
+    "
+  >
+    {% if contained %}
+      <div
+        class="block-section--contained has-border color-{{ section.settings.color_scheme }}"
+        style="{% render 'hooktheme-style-vars', settings: section.settings %}"
+      >
+        {% render 'hooktheme-style-elements', settings: section.settings %}
+        <div class="block-section__content layout-panel">
+          {{ children }}
+        </div>
+      </div>
+    {% else %}
+      <div class="block-section__content layout-panel">
+        {{ children }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .block-section {
+    position: relative;
+  }
+
+  .block-section__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .block-section__body {
+    position: relative;
+    z-index: 1;
+    --section-height-small: 30svh;
+    --section-height-medium: 50svh;
+    --section-height-large: 70svh;
+    min-height: var(--section-min-height);
+    padding-block-start: var(--pad-block-start, 0);
+    padding-block-end: var(--pad-block-end, 0);
+    padding-inline-start: var(--pad-inline-start, 15px);
+    padding-inline-end: var(--pad-inline-end, 15px);
+  }
+
+  .block-section--boxed {
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
+
+  .block-section--full {
+    max-width: 100%;
+  }
+
+  .block-section--contained {
+    position: relative;
+    min-height: inherit;
+    padding-block-start: var(--pad-block-start, 0);
+    padding-block-end: var(--pad-block-end, 0);
+    padding-inline-start: var(--pad-inline-start, 15px);
+    padding-inline-end: var(--pad-inline-end, 15px);
+  }
+
+  .block-section__content {
+    position: relative;
+    z-index: 2;
+    min-height: inherit;
+  }
+
+  @media screen and (max-width: 749px) {
+    .block-section__body {
+      padding-block-start: calc(var(--pad-block-start, 0) * var(--pad-mobile-scale, 1));
+      padding-block-end: calc(var(--pad-block-end, 0) * var(--pad-mobile-scale, 1));
+      padding-inline-start: calc(var(--pad-inline-start, 15px) * var(--pad-mobile-scale, 1));
+      padding-inline-end: calc(var(--pad-inline-end, 15px) * var(--pad-mobile-scale, 1));
+    }
+
+    .block-section--contained {
+      padding-block-start: calc(var(--pad-block-start, 0) * var(--pad-mobile-scale, 1));
+      padding-block-end: calc(var(--pad-block-end, 0) * var(--pad-mobile-scale, 1));
+      padding-inline-start: calc(var(--pad-inline-start, 15px) * var(--pad-mobile-scale, 1));
+      padding-inline-end: calc(var(--pad-inline-end, 15px) * var(--pad-mobile-scale, 1));
+    }
+  }
+{% endstylesheet %}

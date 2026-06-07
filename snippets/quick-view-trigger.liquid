@@ -1,0 +1,70 @@
+{%- comment -%}
+  Quick View Trigger Button
+  Uses the EXISTING <modal-opener> component from theme.js
+  No new trigger component needed!
+
+  Required parameters:
+  - product_card_product: The product object
+  - section_id: The section ID for unique identification
+
+  Optional parameters:
+  - type: 'quick_view' or 'quick_add' (default: 'quick_view')
+  - tooltip: Show tooltip (default: false)
+  - tooltip_position: Tooltip position class
+  - className: Additional CSS classes
+  - wrapper_class: Wrapper element classes
+  - button_class: Button element classes
+  - button_label: Show label on button
+  - tooltip_desktop: Enable desktop tooltip
+
+  Usage:
+  {% render 'quick-view-trigger',
+    product_card_product: product,
+    section_id: section.id,
+    type: 'quick_view',
+    tooltip: true
+  %}
+{%- endcomment -%}
+
+{%- comment -%}
+  IMPORTANT: We use the EXISTING <modal-opener> from theme.js
+  This component already handles:
+  - Finding the modal by data-modal attribute
+  - Calling modal.show(button) on click
+
+  We just need to add data-product-url for AJAX loading
+{%- endcomment -%}
+
+<modal-opener
+  data-modal="#QuickView-{{ product_card_product.id }}-{{ section_id }}"
+  class="{{ wrapper_class }}"
+>
+  <button
+    aria-haspopup="dialog"
+    type="button"
+    class="product__quick_view hooktheme-quick-view-trigger {{ className }} {{ button_class }} {% if tooltip %}product--tooltip{% endif %}"
+    data-product-url="{{ product_card_product.handle }}"
+    aria-label="{{ 'products.product.choose_product_options' | t: product_name: product_card_product.title | escape }}"
+  >
+    {%- if type == 'quick_view' -%}
+      <span class="action__btn--svg">{% render 'hooktheme-icon-eye' %}</span>
+    {%- elsif type == 'quick_add' -%}
+      {% if settings.p_card_cart_icon_type != 'none' %}
+        <span class="action__btn--svg">{% render 'hooktheme-icon-cart', icon: settings.p_card_cart_icon_type %}</span>
+      {% endif %}
+      {% if button_label %}
+        <span class="cart__buton--label">{{ 'products.product.select_options' | t }}</span>
+      {% endif %}
+    {%- endif -%}
+
+    {% if tooltip %}
+      <div class="product--tooltip-label {{ tooltip_position }} {% unless type == 'quick_view' %}{% if tooltip_desktop != true %}desktop--tooltip-disable{% endif %}{% endunless %}">
+        {%- if type == 'quick_view' -%}
+          {{ 'products.product.quick_view' | t }}
+        {%- elsif type == 'quick_add' -%}
+          {{ 'products.product.select_options' | t }}
+        {%- endif -%}
+      </div>
+    {% endif %}
+  </button>
+</modal-opener>

@@ -1,0 +1,286 @@
+.slideshow__text--banner-grid {
+  flex-wrap: wrap;
+  @media only screen and (max-width: 749px) {
+    flex-direction: column-reverse;
+    gap: 3rem;
+  }
+}
+@media screen and (min-width: 992px) {
+  .slideshow--media-with-banner.slideshow__banner--adapt_image.placeholder {
+    min-height: 50rem;
+    height: 100%;
+  }
+  .hero__slider--inner {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 1367px) {
+  .slideshow--media-with-banner.slideshow__banner--adapt_image.placeholder {
+    min-height: 68rem;
+  }
+}
+@media screen and (min-width: 750px) and (max-width: 991px) {
+  .slideshow--media-with-banner.slideshow__banner--adapt_image.placeholder {
+    height: 40rem;
+  }
+  .slideshow__media.slideshow--media-with-banner.slideshow__banner--adapt_image.media {
+    height: 40rem;
+  }
+}
+
+@media only screen and (min-width: 750px) {
+  .slideshow--with-banner-container-inner {
+    max-width: var(--container-lg-width);
+    margin: 0 auto;
+  }
+  .slider--content-inner-padding-small {
+    padding: 0 3rem;
+  }
+  .slider--content-inner-padding-medium {
+    padding: 0 4.5rem;
+  }
+  .slider--content-inner-padding-large {
+    padding: 0 5.5rem;
+  }
+}
+.split-slideshow--text-inner {
+  & .slider-content-position-bottom {
+    @media only screen and (max-width: 749px) {
+      padding-bottom: 0;
+    }
+  }
+  & .hero__slider--items__inner {
+    @media only screen and (max-width: 749px) {
+      padding: 3rem 0 5.5rem;
+    }
+  }
+}
+.split__slider-content {
+  max-width: calc(100% - 3rem);
+  padding: 3rem 0 5rem;
+  margin: 0 auto;
+  @media only screen and (min-width: 750px) {
+    padding: 0;
+    max-width: calc(100% - 12rem);
+  }
+  @media only screen and (min-width: 1366px) {
+    padding: 0 2rem;
+    max-width: calc(100% - 18rem);
+  }
+  & .slider__content--desc {
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+  & > * + * {
+    margin-top: 2rem;
+  }
+}
+.text-left .split__slider-content {
+  @media only screen and (max-width: 749px){
+    text-align: center;
+  }
+}
+.text-right .split__slider-content {
+  @media only screen and (max-width: 749px){
+    text-align: center;
+  }
+}
+/* Video card css */
+
+.video--card--media > video {
+  object-fit: cover;
+  object-position: center center;
+}
+.video__card--overlay {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+@media only screen and (min-width: 750px){
+  .video--card--media.slideshow__banner--adapt_image{
+    height: 100%;
+  }
+}
+
+.video--card--media.media:before,
+.video--card--media.placeholder:before {
+  position: absolute;
+  content: "";
+  background: var(--gradient-overlay-color, #000);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  opacity: var(--banner-list-media-overlay-opacity, 0.3);
+}
+.video--card--media.media--adapt.placeholder {
+  padding-bottom: 100%;
+}
+.video--card--media.media--adapt {
+  padding-bottom: var(--desktop-image-ratio, var(--main-image-ratio));
+}
+
+.spilt__video--card {
+  width: 100%;
+  position: relative;
+}
+.slideshow-text--banner-wrapper {
+  width: 100%;
+}
+.video__card--content {
+  position: absolute;
+  z-index: 11;
+  padding: 4rem 1.5rem 3rem;
+  width: 100%;
+  left: 0;
+  &.center {
+
+  }
+  &.left {
+      @media only screen and (max-width: 749px) {
+        text-align: center;
+      }
+  }
+  &.right {
+      @media only screen and (max-width: 749px) {
+        text-align: center;
+      }
+  }
+  @media only screen and (min-width: 750px) {
+    padding: 4rem 2rem 5rem;
+  }
+  @media only screen and (min-width: 1200px) {
+    padding: 4rem 3rem 5rem;
+  }
+  @media only screen and (min-width: 1366px) {
+    padding: 4rem 3rem 7.5rem;
+  }
+}
+@media only screen and (min-width: 750px) {
+  .spilt__video--card {
+    width: 50%;
+  }
+  .slideshow-text--banner-wrapper {
+    width: 50%;
+  }
+}
+
+.video__card--content.bottom {
+  bottom: 0;
+}
+.video__card--content.top {
+  top: 0;
+}
+.video__card--content.middle {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.video__card--content > * + * {
+  margin-top: 2rem;
+}
+.slider-content-position-top {
+  align-items: flex-start;
+  padding-top: 5rem;
+}
+.slider-content-position-middle {
+  align-items: center;
+}
+.slider-content-position-bottom {
+  align-items: flex-end;
+  padding-bottom: 5rem;
+  @media only screen and (min-width: 1366px) {
+    padding-bottom: 7.5rem;
+  }
+}
+.video__card--content-text {
+  color: rgba(var(--color-foreground), 1);
+  @media only screen and (min-width: 750px) {
+    font-size: 1.7rem;
+    line-height: 2.8rem;
+  }
+  @media only screen and (min-width: 1200px) {
+    font-size: 1.8rem;
+    line-height: 3rem;
+  }
+  @media only screen and (min-width: 1600px) {
+    font-size: 2rem;
+    line-height: 3.3rem;
+  }
+  & span{
+    display: block;
+  }
+}
+@media only screen and (min-width: 750px) {
+  .slideshow_text_pagination.slider__pagination {
+    width: auto;
+    right: 3rem;
+    left: auto;
+    bottom: 3rem !important;
+  }
+  .slideshow_text_pagination.slider__pagination .swiper-pagination-bullet {
+    display: block;
+    margin: 0.6rem 0;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .slideshow_text_pagination.slider__pagination {
+    bottom: 5rem !important;
+  }
+}
+@media only screen and (min-width: 1366px) {
+  .slideshow_text_pagination.slider__pagination {
+    right: 4rem;
+    bottom: 7rem !important;
+  }
+}
+.slideshow-text--banner-wrapper .slideshow__media.media {
+  border-radius: 0;
+}
+.video--card--media {
+  &.mobile-video-card-adapt {
+    @media only screen and (max-width: 749px) {
+      padding-bottom: 100% !important;
+    }
+  }
+  &.mobile-video-card-small {
+    @media only screen and (max-width: 749px) {
+      height: 30rem !important;
+      padding-bottom: 83% !important;
+    }
+  }
+  &.mobile-video-card-medium {
+    @media only screen and (max-width: 749px) {
+      height: 36rem !important;
+    }
+  }
+  &.mobile-video-card-large {
+    @media only screen and (max-width: 749px) {
+      height: 45rem !important;
+    }
+  }
+}
+.video--card--media.slideshow__banner--adapt_image.placeholder {
+  @media only screen and (min-width: 750px) {
+    height: 100%;
+  }
+}
+.video--hero-inner video,
+.video--hero-inner iframe {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.video--hero-inner video {
+  position: relative;
+  object-fit: cover;
+}
+.video--hero-inner {
+  display: block;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}

@@ -1,0 +1,113 @@
+.multiple--images-column {
+  position: relative;
+  width: 55%;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.multiple--images-column .multiple--images-column-list:not(:nth-child(1)) {
+  position: absolute;
+  box-shadow: 0 0.2rem 0.6rem rgba(var(--color-foreground), 0.1);
+  width: 100%;
+}
+
+.multiple--images-column .multiple--images-column-list:nth-child(1) {
+  position: relative;
+  z-index: 1;
+}
+.multiple--images-column .multiple--images-column-list:nth-child(2) {
+  right: -40%;
+  top: -35%;
+  width: 70%;
+  z-index: 9;
+}
+.multiple--images-column .multiple--images-column-list:nth-child(3) {
+  width: 62%;
+  bottom: -26%;
+  left: -46%;
+}
+.multiple--images-column .multiple--images-column-list:nth-child(4) {
+  bottom: -30%;
+  width: 70%;
+  right: -40%;
+}
+.multiple--image-media.rounded--image {
+  overflow: hidden;
+  border-radius: 1rem;
+}
+.multiple--images-media-wrapper {
+  padding: 10rem 0px;
+}
+@media only screen and (max-width: 749px) {
+}
+@media only screen and (max-width: 575px) {
+  .multiple--images-media-wrapper {
+    padding: 8rem 0px 6.5rem;
+  }
+}
+
+@media only screen and (min-width: 750px) and (max-width: 991px) {
+  .multiple--images-column {
+    width: 50%;
+    max-width: 32rem;
+  }
+  .multiple--images-column .multiple--images-column-list:nth-child(2) {
+    right: -35%;
+    top: -45%;
+    width: 75%;
+  }
+  .multiple--images-column .multiple--images-column-list:nth-child(3) {
+    width: 70%;
+    left: -42%;
+  }
+  .multiple--images-column .multiple--images-column-list:nth-child(4) {
+    width: 80%;
+    right: -36%;
+  }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1580px) {
+  .multiple--images-column {
+    width: 45%;
+    max-width: 28rem;
+  }
+}
+@media only screen and (max-width: 749px) {
+  .multiple--images-column {
+    width: 50%;
+  }
+}
+.image-with--text-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-self: center;
+  padding: 3rem;
+  position: relative;
+}
+@media only screen and (max-width: 749px) {
+  .image-with--text-content {
+    padding: 3rem 1.5rem 0;
+  }
+  .image-with--text-content.text-left {
+    text-align: center;
+    align-items: center;
+  }
+}
+.image-with--text-content > * + * {
+  margin-top: 2rem;
+}
+
+.aspect-media--square {
+  padding-bottom: 100%;
+}
+.aspect-media--portrait {
+  padding-bottom: 65%;
+}
+.aspect-media--landscape {
+  padding-bottom: 125%;
+}
+.image-with--text-heading span {
+  display: block;
+}
+

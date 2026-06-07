@@ -1,0 +1,259 @@
+{% liquid
+  assign theme_rtl = false
+  if settings.enable_rtl and settings.langauges_rtl == blank
+    assign theme_rtl = true
+  endif
+
+  if settings.enable_rtl and settings.langauges_rtl != blank
+    assign rtl_languages = settings.langauges_rtl | split: ','
+    for language in rtl_languages
+      if language == request.locale.iso_code
+        assign theme_rtl = true
+      endif
+    endfor
+  endif
+%}
+{{ 'mobile-navigation-bar.css' | asset_url | stylesheet_tag }}
+{% if theme_rtl %}
+  {{ 'mobile-navigation-bar-rtl.css' | asset_url | stylesheet_tag }}
+{% endif %}
+{% style %}
+  html {
+      --mobile-navigation-bar-height: 70px;
+  }
+  @media only screen and (max-width: 749px){
+   body{
+      padding-bottom: var(--mobile-navigation-bar-height);
+    }
+  }
+{% endstyle %}
+
+<div class="mobile__navigation--bar color-{{ section.settings.color_scheme }}">
+  <div class="mobile__navigation--bar-inner d-flex justify-content">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'home' -%}
+          <a class="mobile__navigate--item" href="{{ routes.root_url }}">
+            <span class="mobile__navigate--item-label">{{ block.settings.title }}</span>
+            <span class="mobile__navigate--item-icon">{% render 'hooktheme-icon-home' %}</span>
+          </a>
+        {%- when 'link' -%}
+          <a class="mobile__navigate--item" href="{{ block.settings.link }}">
+            <span class="mobile__navigate--item-label">{{ block.settings.title }}</span>
+            <span class="mobile__navigate--item-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-grid"
+              >
+                <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </span>
+          </a>
+        {%- when 'search' -%}
+          <button
+            class="mobile__navigate--item  header__actions_btn--search"
+            aria-label="{{ 'general.search.search' | t }}"
+          >
+            <span class="mobile__navigate--item-label">{{ block.settings.title }}</span>
+            <span class="mobile__navigate--item-icon">
+              {% render 'hooktheme-icon-search' %}
+            </span>
+          </button>
+        {%- when 'cart' -%}
+          {%- unless template contains 'cart' -%}
+            {%- if settings.cart_type == 'drawer' -%}
+              <open-minicart class="mobile__navigate--item mobile__navigate--cart">
+                <a href="{{ routes.cart_url }}" class="mobile__navigate--item">
+                  <span class="mobile__navigate--item-label">{{ block.settings.title }}</span>
+                  <span class="mobile__navigate--item-icon">
+                    {% render 'hooktheme-icon-cart', icon: block.settings.cart_icon_type %}
+                    <div class="cart-count-bubble header__actions_btn_cart_num">
+                      {%- if cart.item_count < 100 -%}
+                        <span id="cart-notification-count-mobile" aria-hidden="true">{{ cart.item_count }}</span>
+                      {%- endif -%}
+                      <span class="visually-hidden">
+                        {{- 'sections.header.cart_count' | t: count: cart.item_count -}}
+                      </span>
+                    </div>
+                  </span>
+                </a>
+              </open-minicart>
+            {%- else -%}
+              <a href="{{ routes.cart_url }}" class="mobile__navigate--item">
+                <span class="mobile__navigate--item-label">{{ block.settings.title }}</span>
+                <span class="mobile__navigate--item-icon">
+                  {% render 'hooktheme-icon-cart', icon: block.settings.cart_icon_type %}
+                  <div class="cart-count-bubble header__actions_btn_cart_num">
+                    {%- if cart.item_count < 100 -%}
+                      <span id="cart-notification-count-mobile" aria-hidden="true">{{ cart.item_count }}</span>
+                    {%- endif -%}
+                    <span class="visually-hidden">
+                      {{- 'sections.header.cart_count' | t: count: cart.item_count -}}
+                    </span>
+                  </div>
+                </span>
+              </a>
+            {%- endif -%}
+          {%- endunless -%}
+
+        {%- when 'account' -%}
+          <a
+            class="mobile__navigate--item"
+            href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+          >
+            <span class="mobile__navigate--item-label">{{ block.settings.title }}</span>
+            <span class="mobile__navigate--item-icon">
+              {%- if customer -%}
+                {% render 'hooktheme-icon-account' %}
+              {%- else -%}
+                {% render 'user-icon' %}
+              {%- endif -%}
+            </span>
+          </a>
+
+        {%- when 'wishlist' -%}
+          <a
+            class="mobile__navigate--item"
+            href="/pages/wishlis"
+          >
+            <span class="mobile__navigate--item-label">{{ block.settings.title }}</span>
+            <span class="mobile__navigate--item-icon">
+              {% render 'heart-icon' %}
+              {% if settings.show_all_wishlist %}
+                <span class="header__actions_btn_cart_num wishlist__count"></span>
+              {% endif %}
+            </span>
+          </a>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Mobile navgitaion bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "home",
+      "name": "Home",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Home",
+          "label": "Title"
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "name": "link",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Link",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "search",
+      "name": "Search",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Search",
+          "label": "Title"
+        }
+      ]
+    },
+    {
+      "type": "cart",
+      "name": "Cart",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "cart",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "cart_icon_type",
+          "label": "Cart icon type",
+          "default": "bag",
+          "options": [
+            {
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "value": "basket",
+              "label": "Basket"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "account",
+      "name": "Account",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "account",
+          "label": "Title"
+        }
+      ]
+    },
+    {
+      "type": "wishlist",
+      "name": "Wishlist",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Wishlist",
+          "label": "Title"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

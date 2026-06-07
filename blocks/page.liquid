@@ -1,0 +1,155 @@
+{% stylesheet %}
+  .page-block {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    align-items: flex-start;
+    padding-top: var(--page-pad-top, 0);
+    padding-bottom: var(--page-pad-bottom, 0);
+    padding-left: var(--page-pad-left, 0);
+    padding-right: var(--page-pad-right, 0);
+  }
+
+  .page-block__title {
+    margin-bottom: 1.6rem;
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+  }
+
+  .page-block .rte {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .page-block {
+      padding-top: calc(var(--page-pad-top, 0) * var(--page-mobile-scale, 1));
+      padding-bottom: calc(var(--page-pad-bottom, 0) * var(--page-mobile-scale, 1));
+      padding-left: calc(var(--page-pad-left, 0) * var(--page-mobile-scale, 1));
+      padding-right: calc(var(--page-pad-right, 0) * var(--page-mobile-scale, 1));
+    }
+  }
+{% endstylesheet %}
+
+{%- liquid
+  assign s = block.settings
+  assign page = s.page
+-%}
+
+<div
+  class="page-block{% unless s.inherit_color_scheme %} color-{{ s.color_scheme }}{% endunless %}"
+  style="
+    --page-pad-top: {{ s.padding_top }}px;
+    --page-pad-bottom: {{ s.padding_bottom }}px;
+    --page-pad-left: {{ s.padding_left }}px;
+    --page-pad-right: {{ s.padding_right }}px;
+    --page-mobile-scale: {{ s.mobile_scale | divided_by: 100.0 }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- if page != blank -%}
+    {%- if page.title != blank -%}
+      <h2 class="page-block__title">{{ page.title }}</h2>
+    {%- endif -%}
+    {%- if page.content != blank -%}
+      <div class="rte">{{ page.content }}</div>
+    {%- endif -%}
+  {%- else -%}
+    <h2 class="page-block__title">Page title</h2>
+    <div class="rte">
+      <p>Select a page to display its content.</p>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": null,
+  "settings": [
+    {
+      "type": "page",
+      "id": "page",
+      "label": "Page"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "Inherit color scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_scale",
+      "label": "Mobile scale",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page",
+      "category": "Basic"
+    }
+  ]
+}
+{% endschema %}

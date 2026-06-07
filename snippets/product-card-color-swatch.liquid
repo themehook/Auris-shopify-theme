@@ -1,0 +1,154 @@
+{% comment %}
+  Product Card Color Swatches
+
+  Supports two swatch modes:
+  1. Native swatches (value.swatch) - Shopify-managed
+  2. Custom swatches (value.variant.featured_image) - Theme-managed
+
+  Accepts:
+  - product: {Object} product object
+  - current_variant: {Object} currently selected variant
+
+  Usage:
+  {% render 'product-card-color-swatch', product: product, current_variant: variant %}
+{% endcomment %}
+
+{%- liquid
+  assign color_variant_max_size = settings.max_swatches_show
+  assign swatch_type = settings.color_swatch_type
+  assign swatch_shape = settings.product_card_swatch_shape | default: 'circle'
+
+  # Determine product content alignment
+  assign product_content_align = 'justify-content-start'
+  case settings.product_content_alignment
+    when 'center'
+      assign product_content_align = 'justify-content-center'
+    when 'right'
+      assign product_content_align = 'justify-content-end'
+  endcase
+
+  # Get the configured color option names (supports comma-separated for multi-language)
+  assign choose_option = settings.color_swatch_activation | downcase
+  assign choose_option_list = choose_option | split: ','
+
+  # Detect native swatches and find color option
+  assign has_native_swatches = false
+  assign color_option = null
+  assign color_swatch_option_position = null
+
+  for option in product.options_with_values
+    assign option_name = option.name | downcase | strip
+
+    # Check if this option matches ANY of the configured color names
+    assign is_color_option = false
+    for opt in choose_option_list
+      assign opt_trimmed = opt | strip | downcase
+      if opt_trimmed == option_name
+        assign is_color_option = true
+        break
+      endif
+    endfor
+
+    if is_color_option
+      assign color_option = option
+      assign color_swatch_option_position = 'option' | append: option.position
+
+      # Check for native swatches in this option
+      assign native_count = option.values | map: 'swatch' | compact | size
+      if native_count > 0
+        assign has_native_swatches = true
+      endif
+      break
+    endif
+  endfor
+
+  # Determine swatches type (native or custom)
+  assign swatches_type = settings.product_card_swatches_type | default: 'custom'
+  assign use_native_swatches = false
+  if has_native_swatches and swatches_type == 'native'
+    assign use_native_swatches = true
+  endif
+-%}
+
+{%- if color_option -%}
+  <product-card-swatches
+    class="no-js-hidden product--color-swatch-wrapper {{ product_content_align }}"
+    data-product-handle="{{ product.handle }}"
+    data-color-option="{{ color_swatch_option_position }}"
+    data-swatches-type="{{ swatches_type }}"
+  >
+    {%- assign swatch_count = 0 -%}
+    {%- for value in color_option.values -%}
+      {%- assign swatch_count = swatch_count | plus: 1 -%}
+
+      {%- if swatch_count <= color_variant_max_size -%}
+        {%- liquid
+          # Get swatch data
+          assign swatch = value.swatch
+          assign has_native_swatch = false
+          assign swatch_style = ''
+          assign swatch_focal_point = ''
+
+          if swatch.color != blank or swatch.image != blank
+            assign has_native_swatch = true
+          endif
+
+          # Determine swatch background based on mode
+          if use_native_swatches and has_native_swatch
+            # Native swatch - use Shopify's swatch data
+            if swatch.image
+              assign image_url = swatch.image | image_url: width: 50
+              assign swatch_style = '--swatch--background: url(' | append: image_url | append: ')'
+            elsif swatch.color
+              assign swatch_style = '--swatch--background: rgb(' | append: swatch.color.rgb | append: ')'
+            endif
+          elsif swatch_type == 'image'
+            # Custom image swatch - use variant featured image
+            if value.variant.featured_image
+              assign image_url = value.variant.featured_image | image_url: width: 100
+              assign swatch_style = '--swatch-background-image: url(' | append: image_url | append: '); --swatch-background-color: ' | append: value
+              assign swatch_focal_point = value.variant.featured_image.presentation.focal_point
+            else
+              # Fallback to color name if no variant image
+              assign swatch_style = '--swatch-background-color: ' | append: value
+            endif
+          else
+            # Custom color swatch - use color name as CSS color
+            assign swatch_style = '--swatch-background-color: ' | append: value
+          endif
+
+          # Get variant ID for click handling
+          assign variant_id = value.variant.id | default: ''
+
+          # Compute color slug for matching color-swatches section CSS rules
+          assign color_slug = value | escape | downcase | split: ' ' | join: '-'
+        -%}
+
+        <product-card-swatch
+          class="product--color-swatch{% if swatch_type == 'image' and use_native_swatches == false %} product--color-swatch-image{% endif %}"
+          data-product-handle="{{ product.handle }}"
+          data-variant-id="{{ variant_id }}"
+          data-value="{{ value | escape }}"
+          data-color="{{ color_slug }}"
+          title="{{ value | escape }}"
+          style="{{ swatch_style }}{% if swatch_focal_point != blank %} --swatch-focal-point: {{ swatch_focal_point }};{% endif %}"
+        >
+          {%- if use_native_swatches and has_native_swatch -%}
+            {%- comment -%} Native swatch using swatch.liquid component {%- endcomment -%}
+            {% render 'swatch', swatch: swatch, shape: swatch_shape %}
+          {%- else -%}
+            {%- comment -%} Custom swatch with CSS background {%- endcomment -%}
+            <span class="swatch{% if swatch_shape == 'square' %} swatch--square{% endif %} swatch--custom"></span>
+          {%- endif -%}
+          <span class="swatch--variant-tooltip">{{ value }}</span>
+        </product-card-swatch>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if swatch_count > color_variant_max_size -%}
+      <a class="rest__of--color-variants" href="{{ product.url }}">
+        +{{ swatch_count | minus: color_variant_max_size }}
+      </a>
+    {%- endif -%}
+  </product-card-swatches>
+{%- endif -%}

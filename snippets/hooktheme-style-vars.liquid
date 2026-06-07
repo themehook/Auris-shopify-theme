@@ -1,0 +1,28 @@
+{% if settings.border != 'none' %}
+--border-style: {{ settings.border }};
+--border-width: {{ settings.border_width }}px;
+--border-opacity: {{ settings.border_opacity | divided_by: 100.0 }};
+{% else %}
+--border-style: none;
+--border-width: 0;
+{% endif %}
+--border-radius: {{ settings.border_radius }}px;
+--pad-block-start: {{ settings['padding-block-start'] }}px;
+--pad-block-end: {{ settings['padding-block-end'] }}px;
+{% if settings['padding-inline-start'] != blank %}
+--pad-inline-start: {{ settings['padding-inline-start'] }}px;
+--pad-inline-end: {{ settings['padding-inline-end'] }}px;
+{% endif %}
+{% if settings.mobile_scale != blank %}
+--pad-mobile-scale: {{ settings.mobile_scale | divided_by: 100.0 }};
+{% endif %}
+
+{% stylesheet %}
+  .has-border {
+    border-style: var(--border-style, none);
+    border-width: var(--border-width, 0);
+    border-color: rgba(var(--color-foreground), var(--border-opacity, 1));
+    border-radius: var(--border-radius, 0);
+    overflow: hidden;
+  }
+{% endstylesheet %}

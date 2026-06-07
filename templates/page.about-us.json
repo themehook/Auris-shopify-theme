@@ -1,0 +1,617 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+ {
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "container": "container-fluid",
+        "image_overlay_opacity": 0,
+        "show_page_title": true,
+        "heading_size": "h1",
+        "show_breadcrumb_navigation": true,
+        "text_center": "center",
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "mobile_padding_top": 50,
+        "mobile_padding_bottom": 50,
+        "color_scheme": "background-2",
+        "custom_colors": false,
+        "foreground": "#121212",
+        "background": "#f7f8fc"
+      }
+    },
+    "image_with_text_eJpHd7": {
+      "type": "image-with-text",
+      "blocks": {
+        "caption_4HynJ9": {
+          "type": "caption",
+          "settings": {
+            "caption": "Our values",
+            "text_style": "subtitle",
+            "text_size": "medium"
+          }
+        },
+        "heading_nKKhkp": {
+          "type": "heading",
+          "settings": {
+            "heading": "<p>Our love for mother earth drives us to operate in harmony with nature.</p>",
+            "heading_size": "h2"
+          }
+        },
+        "text_XX3aFW": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "text_style": "body"
+          }
+        },
+        "button_CgtwJA": {
+          "type": "button",
+          "settings": {
+            "button_label": "SHOP NOW",
+            "button_icon": true,
+            "button_link": "shopify://collections",
+            "button_style": "primary",
+            "button_size": "small"
+          }
+        },
+        "rotating_text_wqR9WV": {
+          "type": "rotating_text",
+          "settings": {
+            "heading": "Hello Rotating Text",
+            "icon": "heart"
+          }
+        }
+      },
+      "block_order": [
+        "caption_4HynJ9",
+        "heading_nKKhkp",
+        "text_XX3aFW",
+        "button_CgtwJA",
+        "rotating_text_wqR9WV"
+      ],
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "container": "container",
+        "show_offset": true,
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "left",
+        "content_padding": "none",
+        "round_corner": true,
+        "full_width": false,
+        "bg_transparent": false,
+        "color_scheme": "",
+        "play_button": false,
+        "enable_video_looping": false,
+        "description": "",
+        "mobile_content_alignment": "left",
+        "padding_top": 100,
+        "padding_bottom": 0,
+        "mobile_padding_top": 60,
+        "mobile_padding_bottom": 0,
+        "section_color_scheme": ""
+      }
+    },
+    "multicolumn_tmMt4X": {
+      "type": "multicolumn",
+      "blocks": {
+        "image_block_fqn3KB": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/imageonline-co-placeholder-image_1.png",
+            "title": "Fashion Featured",
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "link_label": "",
+            "link": "",
+            "button_type": "icon",
+            "button_size": "small"
+          }
+        },
+        "image_block_PPHFGA": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/imageonline-co-placeholder-image_1.png",
+            "title": "Fashion Trending",
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "link_label": "",
+            "link": "",
+            "button_type": "icon",
+            "button_size": "small"
+          }
+        },
+        "image_block_XXrcKj": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/imageonline-co-placeholder-image_1.png",
+            "title": "Fashion new",
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "link_label": "",
+            "link": "",
+            "button_type": "icon",
+            "button_size": "small"
+          }
+        }
+      },
+      "block_order": [
+        "image_block_fqn3KB",
+        "image_block_PPHFGA",
+        "image_block_XXrcKj"
+      ],
+      "name": "t:sections.multicolumn.presets.name",
+      "settings": {
+        "container": "container",
+        "title": "Multicolumn",
+        "heading_size": "h1",
+        "heading_align": "center",
+        "image_width": "full",
+        "image_ratio": "adapt",
+        "columns_desktop": 3,
+        "column_alignment": "center",
+        "background_style": "primary",
+        "button_label": "",
+        "button_link": "",
+        "color_scheme": "",
+        "columns_mobile": "1",
+        "padding_top": 95,
+        "padding_bottom": 70,
+        "mobile_padding_top": 40,
+        "mobile_padding_bottom": 30
+      }
+    },
+    "video_banner_r6L6zC": {
+      "type": "video-banner",
+      "blocks": {
+        "heading_HWeFbz": {
+          "type": "heading",
+          "settings": {
+            "heading": "<p>Video banner</p>",
+            "heading_size": "h1"
+          }
+        },
+        "text_hLTDGc": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "text_style": "body"
+          }
+        },
+        "list_GX3RWW": {
+          "type": "list",
+          "settings": {
+            "heading": "Heading",
+            "subheading": "Pair text with an icon to focus on your store's features.",
+            "icon": "check_mark",
+            "full_width": true
+          }
+        },
+        "list_cNy8mq": {
+          "type": "list",
+          "settings": {
+            "heading": "Heading",
+            "subheading": "Pair text with an icon to focus on your store's features.",
+            "icon": "check_mark",
+            "full_width": true
+          }
+        },
+        "list_8qChm8": {
+          "type": "list",
+          "settings": {
+            "heading": "Heading",
+            "subheading": "Pair text with an icon to focus on your store's features.",
+            "icon": "check_mark",
+            "full_width": true
+          }
+        }
+      },
+      "block_order": [
+        "heading_HWeFbz",
+        "text_hLTDGc",
+        "list_GX3RWW",
+        "list_cNy8mq",
+        "list_8qChm8"
+      ],
+      "name": "Video banner",
+      "settings": {
+        "container": "container",
+        "subtitle": "",
+        "heading": "Video banner",
+        "heading_size": "h1",
+        "header_description": "Share information about your brand with your customers.",
+        "video_display": "container",
+        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "enable_video_looping": false,
+        "description": "",
+        "height": "adapt",
+        "layout": "text_first",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "left",
+        "color_scheme": "background-2",
+        "padding_top": 100,
+        "padding_bottom": 100,
+        "mobile_padding_top": 60,
+        "mobile_padding_bottom": 15
+      }
+    },
+    "testimonial_pxeTmx": {
+      "type": "testimonial",
+      "blocks": {
+        "testimonial_AcHTpb": {
+          "type": "testimonial",
+          "settings": {
+            "heading": "<p>Hikmet Atcen</p>",
+            "subheading": "@hickmerat",
+            "text": "<p>Thanks for the feedback. We are always looking to improve our product and we would love to look into this issue with you further.</p>",
+            "heading_title": "<p>Testimonial title</p>",
+            "rating": "5",
+            "author_image": true
+          }
+        },
+        "testimonial_VGhKKz": {
+          "type": "testimonial",
+          "settings": {
+            "heading": "<p>Sanju Rexus</p>",
+            "subheading": "@sanjuress",
+            "text": "<p>Thanks for the feedback. We are always looking to improve our product and we would love to look into this issue with you further.</p>",
+            "heading_title": "<p>Testimonial title</p>",
+            "rating": "5",
+            "author_image": true
+          }
+        },
+        "testimonial_MzihfY": {
+          "type": "testimonial",
+          "settings": {
+            "heading": "<p>Natasha Iqbal</p>",
+            "subheading": "@natashaiq",
+            "text": "<p>Thanks for the feedback. We are always looking to improve our product and we would love to look into this issue with you further.</p>",
+            "heading_title": "<p>Testimonial title</p>",
+            "rating": "5",
+            "author_image": true
+          }
+        },
+        "testimonial_MB7EkB": {
+          "type": "testimonial",
+          "settings": {
+            "heading": "<p>Testimonial</p>",
+            "subheading": "Sub title",
+            "text": "<p>Thanks for the feedback. We are always looking to improve our product and we would love to look into this issue with you further.</p>",
+            "heading_title": "<p>Testimonial title</p>",
+            "rating": "5",
+            "author_image": true
+          }
+        },
+        "testimonial_t63Yim": {
+          "type": "testimonial",
+          "settings": {
+            "heading": "<p>Testimonial</p>",
+            "subheading": "Sub title",
+            "text": "<p>Thanks for the feedback. We are always looking to improve our product and we would love to look into this issue with you further.</p>",
+            "heading_title": "<p>Testimonial title</p>",
+            "rating": "5",
+            "author_image": true
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_AcHTpb",
+        "testimonial_VGhKKz",
+        "testimonial_MzihfY",
+        "testimonial_MB7EkB",
+        "testimonial_t63Yim"
+      ],
+      "settings": {
+        "container": "container",
+        "show_offset": true,
+        "subtitle": "",
+        "heading": "",
+        "heading_position": "bottom",
+        "text_center": "center",
+        "border_line": false,
+        "image_overlay_opacity": 0,
+        "card_layout_style": "card_one",
+        "card_image_style": "top",
+        "image_ratio": "circle",
+        "image_width": "small",
+        "heading_size": "h5",
+        "card_text_alignment": "center",
+        "heading_title_size": "h2",
+        "color_scheme": "",
+        "background_transparent": false,
+        "rating_color": "#ffce31",
+        "slider_enable": true,
+        "show_navigation": false,
+        "show_pagination": true,
+        "color_scheme_navigation": "",
+        "enable_loop": true,
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "products_show_on_desktop": 3,
+        "products_show_on_small_desktop": 2,
+        "products_show_on_tablet": 2,
+        "products_show_on_mobile": 1,
+        "padding_top": 90,
+        "padding_bottom": 60,
+        "mobile_padding_top": 60,
+        "mobile_padding_bottom": 30,
+        "bg_color_scheme": ""
+      }
+    },
+    "scrolling_text_t3bRAf": {
+      "type": "scrolling-text",
+      "blocks": {
+        "announcement_JN9bFT": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": false,
+            "image_ratio": "adapt"
+          }
+        },
+        "announcement_kkLkrN": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": true,
+            "image_ratio": "adapt"
+          }
+        },
+        "announcement_KjhkYh": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": false,
+            "image_ratio": "adapt"
+          }
+        },
+        "announcement_7kURRe": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": true,
+            "image_ratio": "adapt"
+          }
+        },
+        "announcement_mcz3LM": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": false,
+            "image_ratio": "adapt"
+          }
+        },
+        "announcement_fj3eHt": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": true,
+            "image_ratio": "adapt"
+          }
+        },
+        "announcement_UFVQak": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": false,
+            "image_ratio": "adapt"
+          }
+        },
+        "announcement_kctdkn": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED-TIME PET FOOD DISCOUNTS!",
+            "icon": "none",
+            "text_stroke": true,
+            "image_ratio": "adapt"
+          }
+        }
+      },
+      "block_order": [
+        "announcement_JN9bFT",
+        "announcement_kkLkrN",
+        "announcement_KjhkYh",
+        "announcement_7kURRe",
+        "announcement_mcz3LM",
+        "announcement_fj3eHt",
+        "announcement_UFVQak",
+        "announcement_kctdkn"
+      ],
+      "settings": {
+        "subtitle": "",
+        "heading": "",
+        "heading_position": "bottom",
+        "text_center": "center",
+        "mobile_text_center": "center",
+        "speed": 30,
+        "direction": "left",
+        "text_size": "h4",
+        "colun_gap": "medium",
+        "bullet_style": true,
+        "hover_image": false,
+        "show_rotation": false,
+        "rotation_direction": "rotate_right",
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "mobile_padding_top": 30,
+        "mobile_padding_bottom": 30,
+        "color_scheme": "background-2"
+      }
+    },
+    "gallery_Chwm47": {
+      "type": "gallery",
+      "blocks": {
+        "item_pYdBLG": {
+          "type": "item",
+          "settings": {
+            "icon": "instagram",
+            "link": ""
+          }
+        },
+        "item_fm9aVx": {
+          "type": "item",
+          "settings": {
+            "icon": "instagram",
+            "link": ""
+          }
+        },
+        "item_9eJ9Ty": {
+          "type": "item",
+          "settings": {
+            "icon": "instagram",
+            "link": ""
+          }
+        },
+        "item_kLYjxr": {
+          "type": "item",
+          "settings": {
+            "icon": "instagram",
+            "link": ""
+          }
+        },
+        "item_FPy8Mg": {
+          "type": "item",
+          "settings": {
+            "icon": "instagram",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "item_pYdBLG",
+        "item_fm9aVx",
+        "item_9eJ9Ty",
+        "item_kLYjxr",
+        "item_FPy8Mg"
+      ],
+      "settings": {
+        "snow_fall": false,
+        "container": "container",
+        "show_offset": true,
+        "subtitle": "",
+        "heading": "",
+        "heading_position": "bottom",
+        "text_center": "center",
+        "image_ratio": "square",
+        "round_corner": true,
+        "space": true,
+        "image_overlay_opacity": 20,
+        "layout": "slider",
+        "products_show_on_xl": "5",
+        "products_show_on_sm": "2",
+        "mobile_stack": false,
+        "auto_rotate": false,
+        "change_slides_speed": 3,
+        "enable_loop": true,
+        "show_navigation": true,
+        "color_scheme_navigation": "",
+        "padding_top": 100,
+        "padding_bottom": 0,
+        "mobile_padding_top": 60,
+        "mobile_padding_bottom": 0
+      }
+    },
+    "featured_promotion_BX9GnW": {
+      "type": "featured-promotion",
+      "blocks": {
+        "featured_promotion_fepkmz": {
+          "type": "featured_promotion",
+          "settings": {
+            "heading": "Customer service",
+            "subheading": "Whatsapp on 965 84 13 07",
+            "icon": "truck",
+            "feature_image_icon": "shopify://shop_images/icon-image1_401bba4f-4563-48b8-9e7b-8be9997f80c8.png"
+          }
+        },
+        "featured_promotion_ACx9Fa": {
+          "type": "featured_promotion",
+          "settings": {
+            "heading": "Free shipping",
+            "subheading": "Express delivery worldwide",
+            "icon": "return",
+            "feature_image_icon": "shopify://shop_images/icon-image2_1f3f37c0-b293-4658-9687-796fb36a0120.png"
+          }
+        },
+        "featured_promotion_3gfMT4": {
+          "type": "featured_promotion",
+          "settings": {
+            "heading": "Free returns",
+            "subheading": "Free return for 30 days",
+            "icon": "payment",
+            "feature_image_icon": "shopify://shop_images/icon-image3_d94cb5aa-d527-44bb-b9ca-bd6514b4d873.png"
+          }
+        },
+        "featured_promotion_UJeJTf": {
+          "type": "featured_promotion",
+          "settings": {
+            "heading": "Secure payment",
+            "subheading": "Visa, Mastercard, Amex, PayPal",
+            "icon": "truck",
+            "feature_image_icon": "shopify://shop_images/icon-image4_0bc48efb-c562-4ef1-b017-246cb424e46f.png"
+          }
+        }
+      },
+      "block_order": [
+        "featured_promotion_fepkmz",
+        "featured_promotion_ACx9Fa",
+        "featured_promotion_3gfMT4",
+        "featured_promotion_UJeJTf"
+      ],
+      "settings": {
+        "container": "container",
+        "subtitle": "",
+        "heading": "",
+        "heading_position": "bottom",
+        "text_center": "center",
+        "desktop_column": "4",
+        "mobile_column": "1",
+        "mobile_stack": false,
+        "show_separator": false,
+        "inner_show_border": false,
+        "inner_padded": false,
+        "inner_rounded": false,
+        "card_heading_size": "h5",
+        "card_solid_button_icon": false,
+        "icon_position": "top",
+        "icon_width": "50",
+        "icon_image_width": "medium",
+        "alignment": "center",
+        "card_padding": "small",
+        "feature_card_border": true,
+        "feature_card_radius": true,
+        "card_color_scheme": "",
+        "padding_top": 100,
+        "padding_bottom": 100,
+        "mobile_padding_top": 60,
+        "mobile_padding_bottom": 60,
+        "color_scheme": "",
+        "color_inner_scheme": ""
+      }
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "image_with_text_eJpHd7",
+    "multicolumn_tmMt4X",
+    "video_banner_r6L6zC",
+    "testimonial_pxeTmx",
+    "scrolling_text_t3bRAf",
+    "gallery_Chwm47",
+    "featured_promotion_BX9GnW"
+  ]
+}

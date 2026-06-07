@@ -1,0 +1,53 @@
+<compare-item>
+  <button
+    class="wishlist__button wishlist__button--text link"
+    type="button"
+    aria-label="{{ 'products.product.add_to_compare' | t }}"
+    class=""
+    data-product-handle="{{ product.handle }}"
+    data-product-title="{{ product.title }}"
+  >
+    <span title="{{ 'products.product.add_to_compare' | t }}" class="add__wishlist  d-flex align-items-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="icon icon-tabler icon-tabler-arrows-down-up"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <line x1="17" y1="3" x2="17" y2="21" />
+        <path d="M10 18l-3 3l-3 -3" />
+        <line x1="7" y1="21" x2="7" y2="3" />
+        <path d="M20 6l-3 -3l-3 3" />
+      </svg>
+      <span>{{ 'products.product.add_to_compare' | t }}</span>
+    </span>
+    <span class="loading__wishlist"></span>
+    <span
+      title="{{ 'products.product.remove_from_compare' | t }}"
+      class="remove__wishlist  wishlist__button--text link align-items-center"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="icon icon-tabler icon-tabler-arrows-down-up"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <line x1="17" y1="3" x2="17" y2="21" />
+        <path d="M10 18l-3 3l-3 -3" />
+        <line x1="7" y1="21" x2="7" y2="3" />
+        <path d="M20 6l-3 -3l-3 3" />
+      </svg>
+      <span>{{ 'products.product.remove_from_compare' | t }}</span>
+    </span>
+  </button>
+</compare-item>

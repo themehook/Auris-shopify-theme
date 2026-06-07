@@ -1,0 +1,175 @@
+{% stylesheet %}
+  .icon-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--icon-width, 2.4rem);
+    height: auto;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .icon-block svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .icon-block img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+{% endstylesheet %}
+
+{%- liquid
+  assign s = block.settings
+  assign icon = s.icon
+  assign image_icon = s.image_icon
+  assign width_px = s.width
+  assign width_rem = width_px | times: 0.1
+  assign size_style = '--icon-width: ' | append: width_rem | append: 'rem;'
+  if s.color != blank
+    assign size_style = size_style | append: ' color: ' | append: s.color | append: ';'
+  endif
+-%}
+
+{%- capture icon_content -%}
+  {%- if image_icon != blank -%}
+    {{- image_icon | image_url: width: 200 | image_tag:
+      loading: 'lazy',
+      widths: '24, 48, 64, 96, 128, 200'
+    -}}
+  {%- elsif icon != 'none' -%}
+    {%- case icon -%}
+      {%- when 'search' -%}{%- render 'hooktheme-icon-search' -%}
+      {%- when 'cart' -%}{%- render 'hooktheme-icon-cart' -%}
+      {%- when 'account' -%}{%- render 'hooktheme-icon-account' -%}
+      {%- when 'home' -%}{%- render 'hooktheme-icon-home' -%}
+      {%- when 'email' -%}{%- render 'hooktheme-icon-email' -%}
+      {%- when 'play' -%}{%- render 'hooktheme-icon-play' -%}
+      {%- when 'share' -%}{%- render 'hooktheme-icon-share' -%}
+      {%- when 'plus' -%}{%- render 'hooktheme-icon-plus' -%}
+      {%- when 'minus' -%}{%- render 'hooktheme-icon-minus' -%}
+      {%- when 'checkmark' -%}{%- render 'hooktheme-icon-checkmark' -%}
+      {%- when 'clock' -%}{%- render 'hooktheme-icon-clock' -%}
+      {%- when 'lock' -%}{%- render 'hooktheme-icon-padlock' -%}
+      {%- when 'discount' -%}{%- render 'hooktheme-icon-discount' -%}
+      {%- when 'arrow-right' -%}{%- render 'hooktheme-icon-arrow-right' -%}
+      {%- when 'arrow-left' -%}{%- render 'hooktheme-icon-arrow-left' -%}
+      {%- when 'facebook' -%}{%- render 'hooktheme-icon-facebook' -%}
+      {%- when 'instagram' -%}{%- render 'hooktheme-icon-instagram' -%}
+      {%- when 'twitter' -%}{%- render 'hooktheme-icon-twitter' -%}
+      {%- when 'pinterest' -%}{%- render 'hooktheme-icon-pinterest' -%}
+      {%- when 'tiktok' -%}{%- render 'hooktheme-icon-tiktok' -%}
+      {%- when 'youtube' -%}{%- render 'hooktheme-icon-youtube' -%}
+      {%- when 'vimeo' -%}{%- render 'hooktheme-icon-vimeo' -%}
+      {%- when 'snapchat' -%}{%- render 'hooktheme-icon-snapchat' -%}
+      {%- when 'tumblr' -%}{%- render 'hooktheme-icon-tumblr' -%}
+    {%- endcase -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if s.link != blank -%}
+  <a
+    href="{{ s.link }}"
+    class="icon-block"
+    style="{{ size_style }}"
+    {% if s.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+    {{ block.shopify_attributes }}
+  >
+    {{- icon_content -}}
+  </a>
+{%- else -%}
+  <span
+    class="icon-block"
+    style="{{ size_style }}"
+    {{ block.shopify_attributes }}
+  >
+    {{- icon_content -}}
+  </span>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Icon",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icon",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "search", "label": "Search" },
+        { "value": "cart", "label": "Cart" },
+        { "value": "account", "label": "Account" },
+        { "value": "home", "label": "Home" },
+        { "value": "email", "label": "Email" },
+        { "value": "play", "label": "Play" },
+        { "value": "share", "label": "Share" },
+        { "value": "plus", "label": "Plus" },
+        { "value": "minus", "label": "Minus" },
+        { "value": "checkmark", "label": "Checkmark" },
+        { "value": "clock", "label": "Clock" },
+        { "value": "lock", "label": "Lock" },
+        { "value": "discount", "label": "Discount" },
+        { "value": "arrow-right", "label": "Arrow right" },
+        { "value": "arrow-left", "label": "Arrow left" },
+        { "value": "facebook", "label": "Facebook" },
+        { "value": "instagram", "label": "Instagram" },
+        { "value": "twitter", "label": "Twitter" },
+        { "value": "pinterest", "label": "Pinterest" },
+        { "value": "tiktok", "label": "TikTok" },
+        { "value": "youtube", "label": "YouTube" },
+        { "value": "vimeo", "label": "Vimeo" },
+        { "value": "snapchat", "label": "Snapchat" },
+        { "value": "tumblr", "label": "Tumblr" }
+      ],
+      "default": "plus"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_icon",
+      "label": "Image icon",
+      "info": "Upload an image to override the icon selection above."
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "label": "Size",
+      "min": 12,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Color",
+      "alpha": true
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icon",
+      "category": "Basic",
+      "settings": {
+        "icon": "plus"
+      }
+    }
+  ]
+}
+{% endschema %}

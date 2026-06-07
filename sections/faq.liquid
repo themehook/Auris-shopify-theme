@@ -1,0 +1,808 @@
+{% liquid
+  assign theme_rtl = false
+  if settings.enable_rtl and settings.langauges_rtl == blank
+    assign theme_rtl = true
+  endif
+
+  if settings.enable_rtl and settings.langauges_rtl != blank
+    assign rtl_languages = settings.langauges_rtl | split: ','
+    for language in rtl_languages
+      if language == request.locale.iso_code
+        assign theme_rtl = true
+      endif
+    endfor
+  endif
+%}
+
+{{ 'faq-section.css' | asset_url | stylesheet_tag }}
+{{ 'hooktheme-rte.css' | asset_url | stylesheet_tag }}
+{{ 'section-title.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  if section.settings.image_position == 'left'
+    assign image_direction = 'flex-row-reverse-min-desktop'
+  else
+    assign image_direction = ''
+  endif
+
+  if section.settings.mobile_image_position == 'top'
+    assign image_mobile_direction = 'flex-column-reverse-max-tablet'
+  else
+    assign image_mobile_direction = ''
+  endif
+
+  if section.settings.full_width and section.settings.enable_image == false
+    assign content_class = ''
+  else
+    assign content_class = 'col-lg-6'
+  endif
+-%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+     --padding-top: {{ section.settings.mobile_padding_top }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      --padding-top: {{ section.settings.padding_top }}px;
+    }
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign container = ''
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+  else
+    assign container = 'container-fluid px-0'
+  endif
+%}
+
+{% if theme_rtl %}
+  {{ 'faq-section-rtl.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+<div
+  class="faq__wrapper color-{{ section.settings.color_scheme }} gradient section--top-space-{{ section.id }} section-{{ section.id }}-padding"
+  data-section-id="{{ section.id }}"
+  data-section-type="faq-collapse"
+>
+  <div
+    class="{{ container }}"
+    {% if section.settings.page_width_override %}
+      style="
+        --container-lg-width: {{ section.settings.container_lg_width | divided_by: 10 }}rem;
+        --page-width: {{  section.settings.container_lg_width | divided_by: 10 }}rem;
+      "
+    {% endif %}
+  >
+    <div class="section-heading text-{{ section.settings.text_center }} {% if section.settings.heading != blank or section.settings.subtitle != blank %}mb-50{% endif %}">
+      {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
+        <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+      {% endif %}
+      <h2 class="section-heading__title {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {{- section.settings.heading -}}
+      </h2>
+      {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+        <span class="section-heading__sub_title  {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {{- section.settings.subtitle -}}
+        </span>
+      {% endif %}
+    </div>
+
+    <div class="row {{ image_direction }} {{ image_mobile_direction }}  faq__div--parent {{ section.settings.image_alignment }}">
+      <div class="{{ content_class }} col-12 faq-position-sticky-card">
+        <div
+          class="faq__list--wrapper {% unless section.settings.enable_image %} faq__no--space{% endunless %}"
+        >
+          <div class="faq__list--wrapper__heading">
+            {% if section.settings.subtitle_2 != blank %}
+              <span class="faq__list--heading__subtitle">{{ section.settings.subtitle_2 }}</span>
+            {% endif %}
+            {% if section.settings.collapsible_heading != blank %}
+              <h2 class="faq__list--heading__title {{ section.settings.collapsible_heading_size }}">{{ section.settings.collapsible_heading }}</h2>
+            {% endif %}
+          </div>
+          <div class="faq__list--item--wrapper">
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when 'accordion' -%}
+                  <div
+                    class="faq__list--item {% if forloop.first == true %}active{% endif %} {% if section.settings.faq_item_border %}faq-item-border-box{% endif %} {% if section.settings.faq_item_border and section.settings.faq_item_round %}faq-item-rounded {% endif %} {% if section.settings.faq_item_border %}color-{{ section.settings.color_scheme_2 }}{% endif %}"
+                    {{ block.shopify_attributes }}
+                  >
+                    <button class="faq__list--item--heading faq__list--item__button  {{ section.settings.faq_button_size }} mb-0">
+                      {{ block.settings.heading }}
+                      <span class="faq__button--icon">
+                        {%- render 'hooktheme-icon-plus', className: 'plus__icon' -%}
+                        {%- render 'hooktheme-icon-minus', className: 'minus__icon' -%}
+                      </span>
+                    </button>
+                    <div class="faq__body {% if forloop.first == true %} d-block{% endif %}">
+                      <div class="faq__list--item--content">{{ block.settings.content }}</div>
+                    </div>
+                  </div>
+              {%- endcase -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+
+  
+
+      {%- if section.settings.enable_image -%}
+        <div class="col-lg-6 col-12 faq-position-sticky-card">
+          <div class="faq__thumbnail--card {% if section.settings.round_corner %} rounded--image {% endif %} color-{{ section.settings.faq_card_color_scheme }} {% if section.settings.bg_transparent and section.settings.image == blank %} faq-media-transparent {% endif %}">
+            <div class="faq__card--overlay"
+              style="
+                  --faq-media-overlay-opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};
+                {% if section.settings.overlay_gradient_color != blank %}
+                    --gradient-overlay-color: {{ section.settings.overlay_gradient_color }};
+                {% endif %}
+              "
+            >
+              <div
+                class="faq__media faq__media--{{ section.settings.height }} {% if section.settings.round_corner %} rounded--image {% endif %} {% if section.settings.image == blank %}placeholder{% endif %} media"
+                {% if section.settings.height == 'adapt' and section.settings.image != blank %}
+                  style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
+                {% endif %}
+              >
+                {%- if section.settings.image != blank -%}
+                  {% assign height = section.settings.image.height %}
+                  {%- capture sizes -%}(min-width: {{ settings.container_lg_width }}px) {% if section.settings.full_width %}{{ settings.container_lg_width | minus: 30 }}px{% else %}{{ settings.container_lg_width | minus: 60 | divided_by: 2 }}px{% endif %}, (min-width: 750px) {% if section.settings.full_width %} calc(100vw - 30px){% else %} calc((100vw - 130px) / 2) {% endif %},{% if section.settings.full_width %} calc(100vw - 30px) {% else %} calc((100vw - 50px) / 2) {% endif %}{%- endcapture -%}
+                  {{
+                    section.settings.image
+                    | image_url: width: 1920
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: sizes,
+                      widths: '165, 360, 535, 750, 1070, 1500, 1780, 2000, 3000, 3840',
+                      height: height
+                  }}
+                {%- else -%}
+                  {{ 'collection-2' | placeholder_svg_tag: 'placeholder' }}
+                {%- endif -%}
+              </div>
+              {% if section.settings.enable_content %}
+                <div class="faq__card--content d-flex {{ section.settings.above_content_position }} {{ section.settings.faw_content_alignment }}">
+                  <div class="faq__card--content__inner">
+                    <h2 class="faq__card--title gradient--text {{ section.settings.card_title_size }} mb-0">
+                      {{ section.settings.heading_2 }}
+                    </h2>
+                    <div class="faq__card--desc">{{ section.settings.text_2 }}</div>
+                    {% liquid
+                      assign button_class = ''
+                      case section.settings.button_style
+                        when 'primary'
+                          assign button_class = 'button button--primary'
+                        when 'secondary'
+                          assign button_class = 'button button--secondary'
+                        when 'icon'
+                          assign button_class = 'link with--icon'
+                        else
+                          assign button_class = 'link'
+                      endcase
+                    %}
+
+                    {% if section.settings.button_label != blank %}
+                      <div
+                        class="button__wrapper"
+                      >
+                        <a
+                          {% if section.settings.button_link == blank %}
+                            role="link" aria-disabled="true"
+                          {% else %}
+                            href="{{ section.settings.button_link }}"
+                          {% endif %}
+                          class="{{ button_class }} {% unless section.settings.button_type == 'icon' %}button--{{ section.settings.button_size }}{% endunless %} {% if section.settings.button_icon %} button--with-icon{% endif %}"
+                        >
+                          {{- section.settings.button_label | escape }}
+                          {% if section.settings.button_icon %}
+                            <span class="button--icon button--icon-right">{% render 'hooktheme-icon-chevron-right' %}</span>
+                          {% endif %}
+                        </a>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collapsible content",
+  "disabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "page_width_override",
+      "label": "Override the global page width",
+      "info": "It works when you select the Page Width \"Boxed\"",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "container_lg_width",
+      "label": "Page boxed width",
+      "info": "This width of the page will affect larger devices> 1200px",
+      "default": 1200,
+      "min": 600,
+      "max": 1800,
+      "step": 15,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Collapsible content",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Heading position"
+    },
+    {
+      "type": "select",
+      "id": "text_center",
+      "options": [
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center",
+      "label": "Alignment"
+    },
+    {
+      "type": "header",
+      "content": "Collapsible card"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_image",
+      "label": "Show collapsible card",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.image-with-text.settings.height.options__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.image-with-text.settings.height.options__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.image-with-text.settings.height.options__3.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.image-with-text.settings.height.label",
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_transparent",
+      "label": "Transparent image",
+      "default": false,
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "checkbox",
+      "id": "round_corner",
+      "label": "Round corner",
+      "default": true,
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Desktop image placement",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Image first"
+        },
+        {
+          "value": "right",
+          "label": "Image second"
+        }
+      ],
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "select",
+      "id": "image_alignment",
+      "label": "Image position",
+      "default": "align-items-start",
+      "options": [
+        {
+          "value": "align-items-start",
+          "label": "Top"
+        },
+        {
+          "value": "align-items-center",
+          "label": "Middle"
+        },
+        {
+          "value": "align-items-end",
+          "label": "Bottom"
+        }
+      ],
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "range",
+      "id": "image_overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "label": "Image overlay opacity",
+      "default": 20,
+      "info": "When an image gradient overlay is added, the opacity should be set to 100%, though this is not mandatory.",
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "color_background",
+      "id": "overlay_gradient_color",
+      "label": "Image gradient overlay",
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_content",
+      "label": "Show content",
+      "default": true,
+      "visible_if": "{{ section.settings.enable_image}}"
+    },
+    {
+      "type": "richtext",
+      "id": "heading_2",
+      "default": "<p>Faq title</p>",
+      "label": "Title",
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "select",
+      "id": "card_title_size",
+      "options": [
+        {
+          "value": "h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h1",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h0",
+          "label": "Extra large"
+        }
+      ],
+      "default": "h2",
+      "label": "Heading size",
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "richtext",
+      "id": "text_2",
+      "default": "<p>Our team will answer all your question.</p>",
+      "label": "Text",
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Button label",
+      "label": "t:sections.image-with-text.blocks.button.settings.button_label.label",
+      "info": "t:sections.image-with-text.blocks.button.settings.button_label.info",
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_icon",
+      "label": "Use arrow icon",
+      "default": true,
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.image-with-text.blocks.button.settings.button_link.label",
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "primary",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.buttons.settings.solid_button.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.buttons.settings.outline_button.label"
+        },
+        {
+          "value": "icon",
+          "label": "t:sections.all.buttons.settings.link_button.label"
+        }
+      ],
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Button size",
+      "default": "small",
+      "info": "Works on the solid/outline button",
+      "options": [
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        }
+      ],
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "select",
+      "id": "above_content_position",
+      "label": "Content position",
+      "default": "align-items-end",
+      "options": [
+        {
+          "value": "align-items-start",
+          "label": "Top"
+        },
+        {
+          "value": "align-items-center",
+          "label": "Middle"
+        },
+        {
+          "value": "align-items-end",
+          "label": "Bottom"
+        }
+      ],
+      "visible_if": "{{ section.settings.enable_content }}"
+    },
+    {
+      "type": "select",
+      "id": "faw_content_alignment",
+      "label": "Content alignment",
+      "default": "justify-content-center",
+      "options": [
+        {
+          "value": "justify-content-start",
+          "label": "Left"
+        },
+        {
+          "value": "justify-content-center",
+          "label": "Center"
+        },
+        {
+          "value": "justify-content-end",
+          "label": "Right"
+        }
+      ],
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "color_scheme",
+      "id": "faq_card_color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-2",
+      "visible_if": "{{ section.settings.enable_content}}"
+    },
+    {
+      "type": "header",
+      "content": "Content settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "info": "It works when the image is disabled",
+      "default": false
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle_2",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "collapsible_heading",
+      "default": "Collapsible title",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "collapsible_heading_size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Heading 1"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h4",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h6",
+          "label": "Heading 6"
+        }
+      ],
+      "default": "h3",
+      "label": "Heading size"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "faq_item_border",
+      "label": "Faq item show border",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "faq_button_size",
+      "options": [
+        {
+          "value": "h6",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h5",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h4",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h1",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 1"
+        }
+      ],
+      "default": "h4",
+      "label": "Item heading size"
+    },
+    {
+      "type": "checkbox",
+      "id": "faq_item_round",
+      "label": "Round corner",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme_2",
+      "label": "Faq item in color",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Mobile settings"
+    },
+    {
+      "type": "select",
+      "id": "mobile_image_position",
+      "label": "Mobile image placement",
+      "default": "top",
+      "options": [
+        {
+          "value": "top",
+          "label": "Image top"
+        },
+        {
+          "value": "bottom",
+          "label": "Image bottom"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Collapsible row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Collapsible row",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "default": "<p>Inform your customers about your brand. Make announcements, describe a product, or welcome customers to your store.</p>",
+          "label": "Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collapsible content",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "accordion"
+        },
+        {
+          "type": "accordion"
+        },
+        {
+          "type": "accordion"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

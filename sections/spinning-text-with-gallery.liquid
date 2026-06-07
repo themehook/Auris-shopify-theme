@@ -1,0 +1,490 @@
+{% liquid
+  assign theme_rtl = false
+  if settings.enable_rtl and settings.langauges_rtl == blank
+    assign theme_rtl = true
+  endif
+
+  if settings.enable_rtl and settings.langauges_rtl != blank
+    assign rtl_languages = settings.langauges_rtl | split: ','
+    for language in rtl_languages
+      if language == request.locale.iso_code
+        assign theme_rtl = true
+      endif
+    endfor
+  endif
+
+  assign container = ''
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+  else
+    assign container = 'container-fluid px-0'
+  endif
+-%}
+
+{{ 'spinning-text-with-gallery.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+     --padding-top: {{ section.settings.mobile_padding_top }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      --padding-top: {{ section.settings.padding_top }}px;
+    }
+  }
+
+  .section-{{ section.id }} .circular-text-wrapper {
+      width: {{ section.settings.circle_size | default: 200 }}px;
+      height: {{ section.settings.circle_size | default: 200 }}px;
+    }
+    
+    .section-{{ section.id }} .circular-text {
+      animation: rotate {{ section.settings.animation_speed | default: 10 }}s linear infinite;
+    }
+</style>
+
+
+<div class="hover-highlight-deals hover-highlight-deals-{{ section.id }} color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding">
+  <div class="{{ container }}">
+    {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+      <div class="section-heading text-{{ section.settings.text_center }} mobile--text-{{ section.settings.mobile_text_center }} {% unless top_navigation %}mb-50{% endunless %}">
+        {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
+          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+        {% endif %}
+        <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank %}heading__space--bottom{% endif %} ">
+          {{- section.settings.heading -}}
+        </h2>
+        {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    <div class="hover-highlight-deals__container">
+      <div class="hover-highlight-deals__wrapper">
+
+        {% comment %}
+          Separate images into left and right groups:
+          - First 6 images: 3 left (indices 0,1,2), 3 right (indices 3,4,5)
+          - After 6: alternate between left and right, adding to end of each side
+        {% endcomment %}
+        {% assign left_images = "" %}
+        {% assign right_images = "" %}
+        {% assign image_index = 0 %}
+        {% assign default_per_side = 3 %}
+
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'image' %}
+              {% if image_index < default_per_side %}
+                {% comment %} First 3 images go to left side {% endcomment %}
+                {% assign left_images = left_images | append: block.id | append: "," %}
+              {% elsif image_index < 6 %}
+                {% comment %} Images 4-6 go to right side {% endcomment %}
+                {% assign right_images = right_images | append: block.id | append: "," %}
+              {% else %}
+                {% comment %} After 6 images: alternate, starting with left {% endcomment %}
+                {% assign extra_index = image_index | minus: 6 %}
+                {% assign position = extra_index | modulo: 2 %}
+                {% if position == 0 %}
+                  {% assign left_images = left_images | append: block.id | append: "," %}
+                {% else %}
+                  {% assign right_images = right_images | append: block.id | append: "," %}
+                {% endif %}
+              {% endif %}
+              {% assign image_index = image_index | plus: 1 %}
+          {% endcase %}
+        {% endfor %}
+
+        {% assign left_images_array = left_images | split: "," %}
+        {% assign right_images_array = right_images | split: "," %}
+
+        <!-- Images in horizontal layout with center circle -->
+        <div class="hover-highlight-deals__images" style="--total-items: {{ section.blocks.size }};">
+
+          <!-- Left side images (rendered in reverse order: newest at left edge, oldest near center) -->
+          <div class="hover-highlight-deals__side hover-highlight-deals__left">
+            {% assign left_count = left_images_array.size %}
+            {% comment %} Loop through left_images_array in reverse order {% endcomment %}
+            {% for i in (1..left_count) %}
+              {% assign reverse_index = left_count | minus: i %}
+              {% assign target_block_id = left_images_array[reverse_index] %}
+              {% if target_block_id != blank %}
+                {% for block in section.blocks %}
+                  {% assign block_id_str = block.id | append: "" %}
+                  {% if block_id_str == target_block_id %}
+                    {% comment %} Distance from center: position 0 in display (leftmost) = furthest from center {% endcomment %}
+                    {% assign display_position = i | minus: 1 %}
+                    {% assign distance = left_count | minus: 1 | minus: display_position %}
+                    <div class="hover-highlight-deals__image-item" data-side="left" data-index="{{ reverse_index }}" data-distance="{{ distance }}" style="--item-index: {{ reverse_index }}; --distance: {{ distance }};" {{ block.shopify_attributes }}>
+                      {% if block.settings.link != blank %}
+                        <a href="{{ block.settings.link }}" class="hover-highlight-deals__image-link">
+                      {% endif %}
+
+                      <div class="hover-highlight-deals__image-wrapper">
+                        {% if block.settings.image != blank %}
+                          <img
+                            src="{{ block.settings.image | image_url: width: 400 }}"
+                            alt="{{ block.settings.image.alt | escape }}"
+                            loading="lazy"
+                            width="400"
+                            height="{{ 400 | divided_by: block.settings.image.aspect_ratio | round }}"
+                          >
+                        {% else %}
+                          <div class="hover-highlight-deals__placeholder">
+                            {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                          </div>
+                        {% endif %}
+                      </div>
+
+                      {% if block.settings.link != blank %}
+                        </a>
+                      {% endif %}
+                    </div>
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <!-- Center circular text (always in the middle) -->
+          <div class="hover-highlight-deals__image-item is-center">
+            <div class="hover-highlight-deals__center circular-text-wrapper section-{{ section.id }}">
+              <div class="circular-text">
+                <svg viewBox="0 0 200 200">
+                  <defs>
+                    <path id="circle-{{ section.id }}" d="M 100, 100 m -80, 0 a 80, 80 0 1, 1 160, 0 a 80, 80 0 1, 1 -160, 0"/>
+                  </defs>
+                  <text>
+                    <textPath xlink:href="#circle-{{ section.id }}" startOffset="0%">
+                      {{ section.settings.circular_text }}
+                    </textPath>
+                  </text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right side images -->
+          <div class="hover-highlight-deals__side hover-highlight-deals__right">
+            {% assign right_count = right_images_array.size %}
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'image' %}
+                  {% assign block_id_str = block.id | append: "" %}
+                  {% if right_images contains block_id_str %}
+                    {% assign right_index = 0 %}
+                    {% for right_id in right_images_array %}
+                      {% if right_id == block_id_str %}
+                        {% break %}
+                      {% endif %}
+                      {% assign right_index = right_index | plus: 1 %}
+                    {% endfor %}
+                    {% assign distance = right_index %}
+                    <div class="hover-highlight-deals__image-item" data-side="right" data-index="{{ right_index }}" data-distance="{{ distance }}" style="--item-index: {{ right_index }}; --distance: {{ distance }};" {{ block.shopify_attributes }}>
+                      {% if block.settings.link != blank %}
+                        <a href="{{ block.settings.link }}" class="hover-highlight-deals__image-link">
+                      {% endif %}
+
+                      <div class="hover-highlight-deals__image-wrapper">
+                        {% if block.settings.image != blank %}
+                          <img
+                            src="{{ block.settings.image | image_url: width: 400 }}"
+                            alt="{{ block.settings.image.alt | escape }}"
+                            loading="lazy"
+                            width="400"
+                            height="{{ 400 | divided_by: block.settings.image.aspect_ratio | round }}"
+                          >
+                        {% else %}
+                          <div class="hover-highlight-deals__placeholder">
+                            {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                          </div>
+                        {% endif %}
+                      </div>
+
+                      {% if block.settings.link != blank %}
+                        </a>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+              {% endcase %}
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function createCircularText() {
+      const text = "{{ section.settings.rotating_text | default: '50% OFF FLASH SALE ★ HURRY! ★ ' }}";
+      const circularText = document.getElementById('circularText-{{ section.id }}');
+      
+      if (!circularText) return;
+      
+      // Clear existing content
+      circularText.innerHTML = '';
+      
+      // Calculate angle for each character
+      const totalChars = text.length;
+      const angleStep = 360 / totalChars;
+      
+      // Create each character
+      for (let i = 0; i < totalChars; i++) {
+        const char = text[i];
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.className = 'text-char';
+        
+        // Calculate rotation angle for this character
+        const rotation = i * angleStep;
+        span.style.transform = `rotate(${rotation}deg)`;
+        
+        circularText.appendChild(span);
+      }
+    }
+
+    // Initialize the circular text
+    createCircularText();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.spinning-gallery.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Special Deals",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Heading position"
+    },
+    {
+      "type": "select",
+      "id": "text_center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Desktop alignment"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Mobile alignment"
+    },
+    {
+      "type": "header",
+      "content": "Center circle settings"
+    },
+    {
+      "type": "text",
+      "id": "circular_text",
+      "label": "Circular Text",
+      "default": "50% OFF • FLASH SALE • HURRY UP • "
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "min": 5,
+      "max": 20,
+      "step": 1,
+      "unit": "s",
+      "label": "Animation Speed",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.spinning-gallery.name",
+      "category": "Storytelling",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  }
+}
+{% endschema %}
+
+

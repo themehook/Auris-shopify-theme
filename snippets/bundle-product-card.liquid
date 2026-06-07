@@ -1,0 +1,75 @@
+{% comment %}
+  Bundle Product Card - Displayed in the bundle sidebar
+  This snippet is rendered for each selected product in the bundle
+{% endcomment %}
+
+{%- liquid
+    assign product = all_products[product_handle]
+    if product == blank
+      assign product = product_handle
+    endif
+  -%}
+  
+  <div class="bundle-selected-card-vertical" data-section-id="bundle-product-card" data-product-handle="{{ product.handle }}">
+    <div class="bundle__vertical-product-media">
+      {%- if product.featured_media -%}
+        <img
+          src="{{ product.featured_media | image_url: width: 200 }}"
+          alt="{{ product.featured_media.alt | escape }}"
+          width="80"
+          height="102"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+  
+    <div class="bundle-selected-info-vertical">
+      <h4 class="bundle-selected-title">{{ product.title }}</h4>
+      <div class="bundle-selected-variant">
+        <span class="variant-title"></span>
+      </div>
+      <div class="price">{{ product.price | money }}</div>
+  
+      <div class="bundle-selected-info__footer">
+        <div class="quantity bundle-quantity-wrapper">
+          <button class="quantity__button" name="minus" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="2" viewBox="0 0 10 2" fill="none">
+              <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <input
+            class="quantity__input bundle-quantity-input"
+            type="number"
+            name="quantity"
+            id="Quantity-{{ product.id }}"
+            data-index="{{ product.id }}"
+            min="1"
+            max="10"
+            value="1"
+            aria-label="Quantity"
+          >
+          <button class="quantity__button" name="plus" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M5 1V9M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+  
+        <button
+          type="button"
+          class="remove-from-bundle bundle-remove-button"
+          data-handle="{{ product.handle }}"
+          aria-label="Remove {{ product.title | escape }}"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+  
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-price="{{ product.price }}">
+    </div>
+  </div>
+  

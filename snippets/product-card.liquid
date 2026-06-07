@@ -1,0 +1,366 @@
+{%- comment -%}
+  {% render 'product-card-item',
+            product_card_product: product,
+            media_size: settings.image_ratio,
+            show_secondary_image: settings.show_secondary_image,
+            show_vendor: settings.show_vendor,
+            show_badge: settings.show_badges,
+            show_cart_button: settings.show_cart_button,
+            show_quick_view: settings.show_quick_view_button,
+            show_quick_compare: settings.show_compare_view_button,
+            show_wishlist: settings.show_wishlist_button,
+            show_countdown: settings.show_countdown,
+            show_title: settings.show_title,
+            show_price: settings.show_price,
+            show_product_description: settings.show_product_description,
+            show_rating: settings.show_product_rating
+  %}
+
+  assign total_item = product_card_product.metafields.metaname.total_stock.value | default: 500
+  assign current_total_stock = 0
+
+  for variant in product_card_product.variants
+    assign current_total_stock = current_total_stock | plus: variant.inventory_quantity
+  endfor
+
+  assign itemsold = total_item | minus: current_total_stock
+  assign sales_progress = total_item | minus: current_total_stock | times: 100 | divided_by: total_item
+  assign sales_progress_percent = 100 | minus: sales_progress
+{%- endcomment -%}
+
+{%- liquid
+  assign variant = product_card_product.selected_or_first_available_variant
+
+  assign product_countdown = product_card_product.metafields.metaname.countdown_timer.value
+  assign today_date = 'now' | date: '%s'
+  assign countdown_date = product_countdown | date: '%s'
+
+  assign first_variant_featured_media_check = false
+  if variant.featured_media == null
+    assign first_variant_featured_media_check = true
+  endif
+
+  assign second_img_position = 1
+
+  unless show_secondary_image
+    assign second_image_class = 'second--image__hide'
+  endunless
+
+  case action_buttons_position
+    when 'top_right', 'bottom_right'
+      assign tooltip_position = 'tooltip--left'
+    when 'top_left', 'bottom_left'
+      assign tooltip_position = 'tooltip--right'
+    else
+      assign tooltip_position = 'tooltip--top'
+  endcase
+
+  unless card_style == 'style_2'
+    assign tooltip_position = 'tooltip--left'
+  endunless
+
+  case settings.product_content_alignment
+    when 'left'
+      assign price_class = 'product__card__price justify-content-start'
+      assign inventory_align_class = 'justify-content-start'
+    when 'right'
+      assign price_class = 'product__card__price justify-content-end'
+      assign inventory_align_class = 'justify-content-end'
+    else
+      assign price_class = 'product__card__price justify-content-center'
+      assign inventory_align_class = 'justify-content-center'
+  endcase
+-%}
+
+<div class="product__card {{ className }} product__card--{{ card_style }} {% if box_shadow %} product__shadow {% endif %} {% if corner_radius %} product--corner-radius-true{% endif %} {% if show_border %} product--card-border card--client-height{% endif %} color-{{ color_scheme }}">
+  <div class="product__card__thumbnail {% unless show_border %}card--client-height{% endunless %} {{ second_image_class }}">
+    {%- if show_badge -%}
+      {%- render 'product-badge', product: product_card_product -%}
+    {%- endif -%}
+
+    {%- if product_card_product.featured_media -%}
+      {%- liquid
+        assign featured_media_aspect_ratio = product_card_product.featured_media.aspect_ratio
+
+        if product_card_product.featured_media.aspect_ratio == null
+          assign featured_media_aspect_ratio = 1
+        endif
+      -%}
+      <a
+        href="{{ product_card_product.url | default: '#' }}"
+        class="d-block product__media_thumbnail product__card--link"
+      >
+        {%- render 'product-card-media',
+          product_card_product: product_card_product,
+          variant: variant,
+          media_size: media_size,
+          featured_media_aspect_ratio: featured_media_aspect_ratio,
+          second_img_position: second_img_position,
+          show_secondary_image: show_secondary_image,
+          first_variant_featured_media_check: first_variant_featured_media_check,
+          sizes: sizes
+        -%}
+      </a>
+
+    {%- else -%}
+      <div class="card__content">
+        <a href="{{ product_card_product.url | default: '#' }}" class="d-block">
+          <div class="placeholder placeholder_svg_parent" style="padding-bottom: 100%">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg-2' }}
+          </div>
+        </a>
+      </div>
+    {%- endif -%}
+
+    {%- if show_countdown -%}
+      {%- if today_date < countdown_date -%}
+        <countdown-timer
+          class="product__grid_timer"
+          {% if product_card_product.metafields.meta.product_badges.value != null %}
+            style="--timer-padding-bottom: 37px;"
+          {% endif %}
+        >
+          <div class="deals__product--countdown d-flex" data-countdown="{{ product_countdown }}"></div>
+        </countdown-timer>
+      {%- endif -%}
+    {%- endif -%}
+
+    {% comment %} Product badge marquee {% endcomment %}
+    {%- render 'product-badge-marquee', product: product_card_product -%}
+    {% comment %} Product badge marquee ./ {% endcomment %}
+
+    {% comment %} Add To cart button style 2 desktop {% endcomment %}
+    {% if show_cart_button and card_style == 'style_1' %}
+      {% render 'add-to-cart-form',
+        product_card_product: product_card_product,
+        variant: variant,
+        custom_class: 'product--card--style1 d-md-none',
+        button_class: 'button cart-button--full-width cart--custom-button-bg',
+        show_preorder_button: show_preorder_button,
+        button_label: true
+      %}
+    {%- endif -%}
+    {% comment %} Add To cart button style 2 desktop ./ {% endcomment %}
+
+    {% comment %} Product action button style 2  {% endcomment %}
+    <div class="product--card-action-buttons {% if card_style == 'style_2' %}buttons--position-{{ action_buttons_position }} {% if action_buttons_position == "bottom_center" or action_buttons_position == "middle_center" %}action--buttons-flex{% endif %}{% else %}buttons--position-top_right{% endif %} action--buttons-{{ action_buttons_style }}">
+      {% if show_cart_button and card_style == 'style_2' %}
+        {% render 'add-to-cart-form',
+          product_card_product: product_card_product,
+          variant: variant,
+          button_class: 'product--card-single-action-button',
+          custom_class: 'd-md-none',
+          show_preorder_button: show_preorder_button,
+          button_label: false,
+          tooltip: true,
+          tooltip_position: tooltip_position,
+          tooltip_desktop: true
+        %}
+      {%- endif -%}
+
+      {%- if show_wishlist and settings.show_all_wishlist -%}
+        {%- render 'button-wishlist',
+          product: product_card_product,
+          tooltip: true,
+          tooltip_position: tooltip_position,
+          className: 'product--card-single-action-button'
+        -%}
+      {%- endif -%}
+
+      {%- if show_quick_compare and settings.show_all_compare -%}
+        {%- render 'button-compare',
+          product: product_card_product,
+          tooltip: true,
+          tooltip_position: tooltip_position,
+          className: 'product--card-single-action-button'
+        -%}
+      {%- endif -%}
+
+      {%- if show_quick_view -%}
+        {%- render 'quick-view-trigger',
+          product_card_product: product_card_product,
+          section_id: section_id,
+          type: 'quick_view',
+          tooltip: true,
+          tooltip_position: tooltip_position,
+          className: 'product--card-single-action-button',
+          wrapper_class: 'd-md-none'
+        -%}
+      {%- endif -%}
+    </div>
+    {% comment %} Product action button style 2 {% endcomment %}
+  </div>
+
+  {% comment %} Product action buttons for mobile  {% endcomment %}
+  {% if show_cart_button or show_quick_view %}
+    <div class="product--card-action-buttons-mobile d-md-only-visible">
+      {% if show_cart_button %}
+        {% render 'add-to-cart-form',
+          product_card_product: product_card_product,
+          variant: variant,
+          button_class: 'product--card-single-action-button',
+          show_preorder_button: show_preorder_button,
+          button_label: false,
+          tooltip: true,
+          tooltip_position: tooltip_position,
+          tooltip_desktop: true
+        %}
+      {% endif %}
+
+      {%- if show_quick_view -%}
+        {%- render 'quick-view-trigger',
+          product_card_product: product_card_product,
+          section_id: section_id,
+          type: 'quick_view',
+          tooltip: true,
+          tooltip_position: tooltip_position,
+          className: 'product--card-single-action-button'
+        -%}
+      {%- endif -%}
+    </div>
+  {% endif %}
+  {% comment %} Product action buttons for mobile {% endcomment %}
+
+  <div class="product__card__content text-{{ settings.product_content_alignment }} {% if spacing %} product--card-spacing-true{% endif %}">
+    {%- if show_vendor -%}
+      <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+      <div class="product__vendor">{{ product_card_product.vendor }}</div>
+    {%- endif -%}
+
+    {%- if show_title -%}
+      <h3 class="product__card__title {{ settings.product_title_size }}">
+        <a class="product__card-title--link" href="{{ product_card_product.url | default: '#' }}">
+          {{- product_card_product.title -}}
+        </a>
+      </h3>
+    {%- endif -%}
+
+    {%- if show_price -%}
+      {% render 'price', product: product_card_product, price_class: price_class %}
+    {%- endif -%}
+
+    {% if settings.color_swatches %}
+      {% if color_swatches %}
+        {% render 'product-card-color-swatch', product: product_card_product, current_variant: variant %}
+      {% endif %}
+    {% endif %}
+
+    {%- if show_rating and product_card_product.metafields.reviews.rating.value != blank -%}
+      <div class="product-card--rating">
+        {% liquid
+          assign rating_decimal = 0
+          assign decimal = product_card_product.metafields.reviews.rating.value.rating | modulo: 1
+          if decimal >= 0.3 and decimal <= 0.7
+            assign rating_decimal = 0.5
+          elsif decimal > 0.7
+            assign rating_decimal = 1
+          endif
+        %}
+        <div
+          class="rating"
+          role="img"
+          aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: product_card_product.metafields.reviews.rating.value, rating_max: product_card_product.metafields.reviews.rating.value.scale_max }}"
+        >
+          <span
+            aria-hidden="true"
+            class="rating-star color-icon-{{ settings.accent_icons }}"
+            style="--rating: {{ product_card_product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ product_card_product.metafields.reviews.rating.value.scale_max }}; --rating-decimal: {{ rating_decimal }};"
+          ></span>
+        </div>
+        <p class="rating-text caption">
+          <span aria-hidden="true">
+            {{- product_card_product.metafields.reviews.rating.value }} /
+            {{ product_card_product.metafields.reviews.rating.value.scale_max -}}
+          </span>
+        </p>
+        <p class="rating-count caption">
+          <span aria-hidden="true">({{ product_card_product.metafields.reviews.rating_count }})</span>
+          <span class="visually-hidden">
+            {{- product_card_product.metafields.reviews.rating_count }}
+            {{ 'accessibility.total_reviews' | t -}}
+          </span>
+        </p>
+      </div>
+    {%- endif -%}
+
+    {% if show_inventory_status %}
+      {% render 'product-card-inventory',
+        current_variant: product_card_product.selected_or_first_available_variant,
+        show_always: show_always,
+        low_stock_value: low_stock_value,
+        minimum_amount_value: minimum_amount_value,
+        product: product_card_product,
+        show_inventory_quantity: show_inventory_quantity,
+        custom_class: inventory_align_class,
+        in_stock_color: in_stock_color,
+        out_of_stock_color: out_of_stock_color,
+        low_stock_color: low_stock_color,
+        continue_selling_color: continue_selling_color,
+        bullet_point: true
+      %}
+    {% endif %}
+
+    {% comment %} Add To cart button style 3 desktop {% endcomment %}
+    {% if show_cart_button and card_style == 'style_3' %}
+      {% render 'add-to-cart-form',
+        product_card_product: product_card_product,
+        variant: variant,
+        custom_class: 'd-md-none product__card--style3',
+        button_class: 'button cart-button--full-width product--cart-bottom',
+        show_preorder_button: show_preorder_button,
+        button_label: true,
+        cart_button_type: cart_button_type
+      %}
+    {%- endif -%}
+    {% comment %} Add To cart button style 3 desktop ./ {% endcomment %}
+
+    {% comment %} Select Option button {% endcomment %}
+    {% if show_select_button %}
+      {% liquid
+        assign button_class = ''
+        case section.settings.button_style
+          when 'primary'
+            assign button_class = 'button button--primary'
+          when 'secondary'
+            assign button_class = 'button button--secondary'
+          when 'icon'
+            assign button_class = 'link with--icon'
+          else
+            assign button_class = 'link'
+        endcase
+
+        # Check if product has real variants (not just default "Title" option)
+        assign has_real_variants = false
+        if product_card_product.variants.size > 1
+          assign has_real_variants = true
+        elsif product_card_product.options.size > 0
+          assign first_option = product_card_product.options[0]
+          unless first_option == 'Title'
+            assign has_real_variants = true
+          endunless
+        endif
+
+        # Set button text based on variant availability
+        if has_real_variants
+          assign bundle_button_text = 'sections.bundle.select_option' | t
+        else
+          assign bundle_button_text = 'sections.bundle.add_to_bundle' | t
+        endif
+      %}
+      <div class="product-card-actions bundle-select-wrapper">
+        <button type="button" class="button add-to-bundle-variant {{ button_class }} button--small w-100 " data-product-id="{{ product_card_product.id }}" data-product-handle="{{ product_card_product.handle }}">
+          <span>{{ bundle_button_text }}</span>
+        </button>
+      </div>
+    {% endif %}
+    {% comment %} Select Option button ./ {% endcomment %}
+  </div>
+
+  {%- comment -%} Quick View Modal Instance - Unique per product {%- endcomment -%}
+  {%- if show_quick_view -%}
+    {%- render 'quick-view-modal-instance',
+      product_card_product: product_card_product,
+      section_id: section_id
+    -%}
+  {%- endif -%}
+</div>

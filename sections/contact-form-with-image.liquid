@@ -1,0 +1,751 @@
+{{ 'contact-form-with-image.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    --padding-top: {{ section.settings.mobile_padding_top }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      --padding-top: {{ section.settings.padding_top }}px;
+    }
+  }
+
+  .reservation-form-section .reservation-time__btn.active {
+    background-color: {{ section.settings.button_color }};
+    color: {{ section.settings.button_text_color }};
+    border-color: {{ section.settings.button_color }};
+  }
+{%- endstyle -%}
+
+{%- liquid
+
+  assign container = ''
+  assign page_offset = false
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+    unless section.settings.show_offset
+      assign page_offset = true
+    endunless
+  else
+    assign container = 'container-fluid px-0'
+  endif
+
+
+  assign button_class = ''
+  case section.settings.button_style
+    when 'primary'
+      assign button_class = 'button button--primary'
+    when 'secondary'
+      assign button_class = 'button button--secondary'
+    when 'icon'
+      assign button_class = 'link with--icon'
+    else
+      assign button_class = 'link'
+  endcase
+
+-%}
+
+<script src="{{ 'contact-form-with-image.js' | asset_url }}" defer="defer"></script>
+
+<div class="reservation-form-section section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+  <div class="{{ container }} {% if page_offset %}p-0{% endif %}">
+    <div class="reservation-form__wrapper {{ section.settings.layout }}">
+      <!-- Left Column - Image & Content -->
+      <div class="reservation-form__left">
+        <div class="reservation-form__thmbnail color-{{ section.settings.color_scheme2 }} {% if section.settings.image_rounded %} rounded-corners {% endif %}">
+          <div
+            class="reservation-form__media media conatct-form-media-{{ section.settings.image_ratio }} {% if section.settings.image == blank %} placeholder{% endif %} {% if section.settings.image2 != blank %} d-sm-none {% endif %} {% if section.settings.image_rounded %} rounded-corners {% endif %}"
+            {% if section.settings.image_ratio == 'adapt' and section.settings.image != blank %}
+              style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
+            {% endif %}
+          >
+            {% liquid
+              assign height = section.settings.image.width | divided_by: section.settings.image.aspect_ratio | round
+            %}
+            {%- if section.settings.image -%}
+              {{
+                section.settings.image
+                | image_url: width: 3840
+                | image_tag:
+                  loading: 'lazy',
+                  sizes: sizes,
+                  height: height,
+                  widths: '275, 550, 710, 1420, 3840',
+                  class: 'parallax_desktop_image_class'
+              }}
+            {%- else -%}
+              {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+          {%- if section.settings.image2 != blank -%}
+            <div class="reservation-form__media conatct-form-media-{{ section.settings.image_ratio }} media d-sm-only-visible {% if section.settings.image_rounded %} rounded-corners {% endif %}"
+              {% if section.settings.image_ratio == 'adapt' and section.settings.image2 != blank %}
+                style="padding-bottom: {{ 1 | divided_by: section.settings.image2.aspect_ratio | times: 100 }}%;"
+              {% endif %}
+            >
+              <img
+                srcset="
+                  {%- if section.settings.image2.width >= 375 -%}{{ section.settings.image2 | image_url: width: 375 }} 375w,{%- endif -%}
+                  {%- if section.settings.image2.width >= 550 -%}{{ section.settings.image2 | image_url: width: 550 }} 550w,{%- endif -%}
+                  {%- if section.settings.image2.width >= 750 -%}{{ section.settings.image2 | image_url: width: 750 }} 750w,{%- endif -%}
+                  {%- if section.settings.image2.width >= 1100 -%}{{ section.settings.image2 | image_url: width: 1100 }} 1100w,{%- endif -%}
+                  {%- if section.settings.image2.width >= 1500 -%}{{ section.settings.image2 | image_url: width: 1500 }} 1500w,{%- endif -%}
+                  {{ section.settings.image2 | image_url }} {{ section.settings.image2.width }}w
+                "
+                sizes="100vw"
+                src="{{ section.settings.image2 | image_url: width: 1500 }}"
+                loading="lazy"
+                alt="{{ section.settings.image2.alt | escape }}"
+                width="{{ section.settings.image2.width }}"
+                height="{{ section.settings.image2.width | divided_by: section.settings.image2.aspect_ratio | round }}"
+              >
+            </div>
+          {%- endif -%}
+        
+          <div class="reservation-form__content {{ section.settings.content_position }} {{ section.settings.content_alignment }}">
+            {%- if section.settings.title != blank -%}
+              <h2 class="reservation-form__title {{ section.settings.heading_size }}">
+                {{ section.settings.title }}
+              </h2>
+            {%- endif -%}
+
+            {%- if section.settings.description != blank -%}
+              <div class="reservation-form__description">
+                {{ section.settings.description }}
+              </div>
+            {%- endif -%}
+
+            {% if section.settings.button_label != blank %}
+              <div
+                class="button__wrapper reservation-form-btn"
+
+              >
+                <a
+                  {% if section.settings.button_link == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ section.settings.button_link }}"
+                  {% endif %}
+                  class="{{ button_class }} {% unless section.settings.button_type == 'icon' %}button--{{ section.settings.button_size }}{% endunless %} {% if section.settings.button_icon %} button--with-icon{% endif %}"
+                >
+                  {{- section.settings.button_label | escape }}
+                  {% if section.settings.button_icon %}
+                    <span class="button--icon button--icon-right">{% render 'hooktheme-icon-chevron-right' %}</span>
+                  {% endif %}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column - Form -->
+      <div class="reservation-form__right">
+        <div class="reservation-form__card color-{{ section.settings.color_scheme3 }}">
+          {%- if section.settings.form_title != blank -%}
+            <h3 class="reservation-form__form-title {{ section.settings.form_heading_size }}">
+              {{ section.settings.form_title }}
+            </h3>
+          {%- endif -%}
+
+          {%- if section.settings.form_description != blank -%}
+            <p class="reservation-form__form-description">
+              {{ section.settings.form_description }}
+            </p>
+          {%- endif -%}
+
+          {%- form 'contact', class: 'reservation-form' -%}
+            {%- if form.posted_successfully? -%}
+              <div class="form-status form-status--success" tabindex="-1" autofocus>
+                <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 18 18">
+                  <path d="M9 0C4.03 0 0 4.03 0 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm4.5 6.3l-5.4 6.3c-.15.15-.45.3-.6.3s-.45-.15-.6-.3L4.5 9.9c-.3-.3-.3-.75 0-1.05s.75-.3 1.05 0l1.8 1.65 4.8-5.55c.3-.3.75-.3 1.05 0 .3.3.3.75 0 1.05l-.7.3z" fill="currentColor"/>
+                </svg>
+                <span>{{ section.settings.success_message }}</span>
+              </div>
+            {%- endif -%}
+
+            <input type="hidden" name="contact[tags]" value="reservation">
+
+            <div class="reservation-form__row">
+              <!-- Full Name -->
+              <div class="reservation-form__field reservation-form__field--half">
+                <label for="ReservationName-{{ section.id }}" class="reservation-form__label">
+                  {{ section.settings.name_label }}
+                </label>
+                <input
+                  type="text"
+                  id="ReservationName-{{ section.id }}"
+                  name="contact[{{ section.settings.name_label | handle }}]"
+                  class="reservation-form__input"
+                  placeholder="{{ section.settings.name_placeholder }}"
+                  required
+                >
+              </div>
+
+              <!-- Email Address -->
+              <div class="reservation-form__field reservation-form__field--half">
+                <label for="ReservationEmail-{{ section.id }}" class="reservation-form__label">
+                  {{ section.settings.email_label }}
+                </label>
+                <input
+                  type="email"
+                  id="ReservationEmail-{{ section.id }}"
+                  name="contact[email]"
+                  class="reservation-form__input"
+                  placeholder="{{ section.settings.email_placeholder }}"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="reservation-form__row">
+              <!-- Date -->
+              <div class="reservation-form__field reservation-form__field--half">
+                <label for="ReservationDate-{{ section.id }}" class="reservation-form__label">
+                  {{ section.settings.date_label }}
+                </label>
+                <div class="reservation-form__date-wrapper">
+                  <input
+                    type="date"
+                    id="ReservationDate-{{ section.id }}"
+                    name="contact[{{ section.settings.date_label | handle }}]"
+                    class="reservation-form__input reservation-form__date-input"
+                    required
+                  >
+                  <span class="reservation-form__date-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Guests -->
+              <div class="reservation-form__field reservation-form__field--half">
+                <label for="ReservationGuests-{{ section.id }}" class="reservation-form__label">
+                  {{ section.settings.guests_label }}
+                </label>
+                <div class="reservation-form__guests-wrapper">
+                  <button type="button" class="reservation-guests__btn reservation-guests__btn--minus" aria-label="Decrease guests">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  </button>
+                  <input
+                    type="number"
+                    id="ReservationGuests-{{ section.id }}"
+                    name="contact[{{ section.settings.guests_label | handle }}]"
+                    class="reservation-form__input reservation-form__guests-input"
+                    value="2"
+                    min="1"
+                    max="20"
+                    readonly
+                  >
+                  <button type="button" class="reservation-guests__btn reservation-guests__btn--plus" aria-label="Increase guests">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Time Selection -->
+            <div class="reservation-form__field mobile_mb_20">
+              <label class="reservation-form__label">{{ section.settings.time_label }}</label>
+              <input type="hidden" id="ReservationTime-{{ section.id }}" name="contact[{{ section.settings.time_label | handle }}]" class="reservation-time__hidden-input" required>
+              <div class="reservation-time__grid">
+                {%- assign times = section.settings.time_slots | split: ',' -%}
+                {%- for time in times -%}
+                  {%- assign time_trimmed = time | strip -%}
+                  {%- if time_trimmed != blank -%}
+                    <button type="button" class="reservation-time__btn" data-time="{{ time_trimmed }}">
+                      {{ time_trimmed }}
+                    </button>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+
+            <!-- Special Requests -->
+            <div class="reservation-form__field mobile_mb_20">
+              <label for="ReservationMessage-{{ section.id }}" class="reservation-form__label">
+                {{ section.settings.message_label }}
+              </label>
+              <textarea
+                id="ReservationMessage-{{ section.id }}"
+                name="contact[{{ section.settings.message_label | handle }}]"
+                class="reservation-form__textarea"
+                rows="4"
+                placeholder="{{ section.settings.message_placeholder }}"
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="reservation-form__submit">
+              <button type="submit" class="button reservation__btn">
+                {{ section.settings.submit_label }}
+              </button>
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% schema %}
+{
+  "name": "Contact form with image",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_offset",
+      "label": "Enable Offset (left & right)",
+      "info": "It will work if you select the \"Full width\" of the page",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Thumbnail"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image2",
+      "label": "Image on mobile",
+      "info": "750 x 480px recommended"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_rounded",
+      "label": "Enable rounded corners",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to first image"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "adapt",
+      "label": "Image height"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "image_first",
+          "label": "t:sections.image-with-text.settings.layout.options__1.label"
+        },
+        {
+          "value": "text_first",
+          "label": "t:sections.image-with-text.settings.layout.options__2.label"
+        }
+      ],
+      "default": "image_first",
+      "label": "t:sections.image-with-text.settings.layout.label"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Taste the Moment."
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Heading 1"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h4",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h6",
+          "label": "Heading 6"
+        }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>A culinary journey waiting for you. Reserve the best seat in the house.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Button label",
+      "label": "t:sections.image-with-text.blocks.button.settings.button_label.label",
+      "info": "t:sections.image-with-text.blocks.button.settings.button_label.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_icon",
+      "label": "Use arrow icon",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.image-with-text.blocks.button.settings.button_link.label"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "primary",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.buttons.settings.solid_button.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.buttons.settings.outline_button.label"
+        },
+        {
+          "value": "icon",
+          "label": "t:sections.all.buttons.settings.link_button.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Button size",
+      "default": "small",
+      "info": "Works on the solid/outline button",
+      "options": [
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "options": [
+        {
+          "value": "justify-content-start",
+          "label": "t:sections.image-with-text.settings.desktop_content_position.options__1.label"
+        },
+        {
+          "value": "justify-content-center",
+          "label": "t:sections.image-with-text.settings.desktop_content_position.options__2.label"
+        },
+        {
+          "value": "justify-content-end",
+          "label": "t:sections.image-with-text.settings.desktop_content_position.options__3.label"
+        }
+      ],
+      "default": "justify-content-start",
+      "label": "Content position"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.image-with-text.settings.desktop_content_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.image-with-text.settings.desktop_content_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.image-with-text.settings.desktop_content_alignment.options__3.label"
+        }
+      ],
+      "default": "left",
+      "label": "Content alignment"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme2",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Contact form"
+    },
+    {
+      "type": "text",
+      "id": "form_title",
+      "label": "Title",
+      "default": "Book a Table"
+    },
+    {
+      "type": "select",
+      "id": "form_heading_size",
+      "label": "Title size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Heading 1"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h4",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h6",
+          "label": "Heading 6"
+        }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "text",
+      "id": "form_description",
+      "label": "Description",
+      "default": "We can't wait to host you. Reserve your spot today."
+    },
+    {
+      "type": "header",
+      "content": "Form Fields"
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Label",
+      "default": "FULL NAME"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Placeholder",
+      "default": "e.g. Jane Doe"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Label",
+      "default": "EMAIL ADDRESS"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Placeholder",
+      "default": "jane@example.com"
+    },
+    {
+      "type": "text",
+      "id": "date_label",
+      "label": "Label",
+      "default": "DATE"
+    },
+    {
+      "type": "text",
+      "id": "guests_label",
+      "label": "Label",
+      "default": "GUESTS"
+    },
+    {
+      "type": "text",
+      "id": "time_label",
+      "label": "Label",
+      "default": "SELECT TIME"
+    },
+    {
+      "type": "textarea",
+      "id": "time_slots",
+      "label": "Time slots (comma separated)",
+      "default": "05:00 PM, 05:30 PM, 06:00 PM, 06:30 PM, 07:00 PM, 07:30 PM, 08:00 PM, 08:30 PM, 09:00 PM, 09:30 PM",
+      "info": "Enter time slots separated by commas"
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Label",
+      "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Placeholder",
+      "default": "Allergies, high chair needed, etc"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Button",
+      "default": "Confirm Booking"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you for your reservation! We will contact you shortly to confirm your booking."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme3",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 70
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form with image",
+      "category": "Forms"
+    }
+  ]
+}
+{% endschema %}

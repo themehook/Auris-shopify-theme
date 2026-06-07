@@ -1,0 +1,261 @@
+/* ============================================
+   Luvix Sticky Scroll Showcase Section Styles
+   - Sticky content that stays fixed while scrolling
+   - Parallax scrolling images with rotation effects
+   - Fully responsive design
+   ============================================ */
+
+/* Main Container */
+.luvix-sticky-showcase {
+  min-block-size: 100vh;
+  position: relative;
+}
+
+/* Fixed Content Area - Stays centered in viewport */
+.luvix-sticky-showcase__fixed-content {
+  position: sticky;
+  block-size: 100vh;
+  inset-block-start: 0;
+  justify-content: center;
+  align-items: center;
+  background: rgba(var(--color-background));
+  z-index: 0;
+  max-inline-size: 117rem;
+  inline-size: 100%;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content Wrapper - Constrains content width */
+.luvix-sticky-showcase__content-wrapper {
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+/* Image Frame Container */
+.luvix-sticky-showcase__image-frame {
+  display: block;
+  background: rgba(var(--color-background));
+  transition: transform 0.1s ease;
+  block-size: auto;
+  opacity: 1;
+  visibility: visible;
+  z-index: 5;
+  position: relative;
+  overflow: hidden;
+}
+
+.luvix-sticky-showcase__image-frame .product-grid-item__thumbnail {
+  padding: 0;
+}
+
+.luvix-sticky-showcase__image-frame .placeholder_content {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+/* Image Container - Constrains max width */
+.luvix-sticky-showcase__image-container {
+  inline-size: 100%;
+  max-inline-size: 50rem;
+}
+
+@media only screen and (min-width: 750px) {
+  .luvix-sticky-showcase__image-container {
+    max-inline-size: 30rem;
+  }
+}
+
+/* Scrolling Images Section */
+.luvix-sticky-showcase__scrolling-images {
+  margin: auto;
+  padding: 0vh calc(var(--gap, 8px) * 4) 100vh;
+  overflow: visible;
+  position: relative;
+  inline-size: 85%;
+}
+
+@media only screen and (min-width: 750px) {
+  .luvix-sticky-showcase__scrolling-images {
+    inline-size: 100%;
+  }
+}
+
+/* Image List */
+.luvix-sticky-showcase__image-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  @media only screen and (min-width: 750px) {
+    gap: 15rem;
+  }
+}
+
+/* Individual Image Items */
+.luvix-sticky-showcase__image-item {
+  display: flex;
+  position: relative;
+  inline-size: 100%;
+}
+
+/* Alternate image alignment with negative margin for overlap effect */
+.luvix-sticky-showcase__image-item:nth-child(2n) {
+  justify-content: flex-end;
+  margin-block-start: -15rem;
+}
+
+/* Placeholder Styling */
+.luvix-sticky-showcase__image-frame--placeholder {
+  inline-size: 100%;
+  max-inline-size: 300px;
+  aspect-ratio: 3/4;
+  background-color: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.luvix-sticky-showcase__image-frame--placeholder svg {
+  inline-size: 80%;
+  block-size: 80%;
+  opacity: 1;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 991px) {
+  .luvix-sticky-showcase__image-list {
+    gap: 5rem;
+  }
+
+  .luvix-sticky-showcase__image-item:nth-child(2n) {
+    margin-block-start: 0rem;
+  }
+}
+
+/* Scroll Trigger Animation Support */
+.luvix-sticky-showcase .scroll-trigger {
+  inline-size: 100%;
+}
+
+/* Typography - Subheading */
+.luvix-sticky-showcase__subheading {
+  font-size: 1.8rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+@media only screen and (min-width: 750px) {
+  .luvix-sticky-showcase__subheading {
+    font-size: 2rem;
+    letter-spacing: var(--letter-spacing);
+  }
+}
+
+/* Button Wrapper */
+.luvix-sticky-showcase__button-wrapper {
+  margin-top: 2rem;
+}
+
+/* Content Inner Layout */
+.luvix-sticky-showcase__content-inner {
+  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Slide-in Animation */
+@keyframes luvixSlideInContent {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Desktop Content Alignment Options */
+@media (min-width: 750px) {
+  .luvix-sticky-showcase__align-desktop--right {
+    align-items: flex-end;
+    text-align: end;
+  }
+
+  .luvix-sticky-showcase__align-desktop--center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .luvix-sticky-showcase__align-desktop--left {
+    align-items: flex-start;
+    text-align: start;
+  }
+}
+
+/* Mobile Content Alignment Options */
+@media (max-width: 749px) {
+  .luvix-sticky-showcase__align-mobile--right {
+    align-items: flex-end;
+    text-align: end;
+  }
+
+  .luvix-sticky-showcase__align-mobile--center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .luvix-sticky-showcase__align-mobile--left {
+    align-items: flex-start;
+    text-align: start;
+  }
+
+  .disabled-on-mobile {
+    display: none;
+  }
+
+  /* Increased section height to allow full image scroll */
+  .luvix-sticky-showcase {
+    min-height: 350vh;
+  }
+
+  /* Increased bottom padding to push images all the way to top before content moves */
+  .luvix-sticky-showcase__scrolling-images {
+    padding: 10vh calc(var(--gap, 8px) * 2) 150vh;
+  }
+
+  /* Increased gap between images for better mobile spacing */
+  .luvix-sticky-showcase__image-list {
+    gap: 30vh;
+  }
+
+  /* Ensure fixed content stays sticky longer on mobile */
+  .luvix-sticky-showcase__fixed-content {
+    z-index: 1;
+  }
+}
+
+/* Placeholder SVG Positioning */
+.placeholder_svg_parent {
+  & svg.placeholder-svg {
+    position: absolute;
+    left: 50%;
+    max-width: 100%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    fill: currentColor;
+  }
+}
+
+/* Product Grid Item Spacing */
+.product-grid-item__content {
+  padding-top: 1rem;
+}
+
+/* Adaptive Media Placeholder */
+.luvix-sticky-showcase__image-frame {
+  & .placeholder.media--adapt {
+    padding-bottom: 100%;
+  }
+}

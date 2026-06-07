@@ -1,0 +1,485 @@
+{% comment %}
+  Sticky Scroll Showcase Section
+  - Displays content that remains fixed in the viewport while scrolling
+  - Features parallax scrolling images with optional rotation effects
+  - Fully customizable through section settings and content blocks
+{% endcomment %}
+{% liquid
+  assign theme_rtl = false
+  if settings.enable_rtl and settings.langauges_rtl == blank
+    assign theme_rtl = true
+  endif
+
+  if settings.enable_rtl and settings.langauges_rtl != blank
+    assign rtl_languages = settings.langauges_rtl | split: ','
+    for language in rtl_languages
+      if language == request.locale.iso_code
+        assign theme_rtl = true
+      endif
+    endfor
+  endif
+%}
+{{ 'luvix-sticky-scroll-showcase.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'luvix-sticky-scroll-showcase.js' | asset_url }}" defer="defer"></script>
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+     --padding-top: {{ section.settings.mobile_padding_top }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      --padding-top: {{ section.settings.padding_top }}px;
+    }
+  }
+</style>
+
+<div class="section luvix-sticky-showcase color-{{ section.settings.color_scheme }}">
+  <div class="container">
+    <luvix-sticky-gallery data-enable-rotation="{{ section.settings.rotation_active }}">
+      <div class="luvix-sticky-showcase__fixed-content section-{{ section.id }}-padding" data-section-id="{{ section.id }}">
+        <div class="{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %} luvix-sticky-showcase__content-wrapper">
+          <div
+            class="luvix-sticky-showcase__content-inner luvix-sticky-showcase__align-desktop--{{ section.settings.content_alignment }} luvix-sticky-showcase__align-mobile--{{ section.settings.mobile_content_alignment }} section-{{ section.id }}-padding"
+            data-section-id="{{ section.id }}"
+          >
+            {% for block in section.blocks %}
+              {% case block.type %}
+                  {%- liquid
+                    if block.settings.button_type == 'primary'
+                      assign button_class = ''
+                    else
+                      assign button_class = 'button--secondary'
+                    endif
+                  -%}
+                {% when 'subheading' %}
+                  {% if block.settings.sub_heading != blank %}
+                    <div
+                      class="luvix-sticky-showcase__subheading"
+                      style="--letter-spacing: {{ block.settings.subheading_letter_spacing }}px;"
+                      tabindex="-1"
+                      {{ block.shopify_attributes }}
+                    >
+                      {{ block.settings.sub_heading }}
+                    </div>
+                  {% endif %}
+                {% when 'heading' %}
+                  {%- if block.settings.heading != blank -%}
+                    <h2
+                      class="luvix-sticky-showcase__heading {{ block.settings.heading_size }} mb-0 gradient--title"
+                      tabindex="-1"
+                      {{ block.shopify_attributes }}
+                    >
+                      {{ block.settings.heading }}
+                    </h2>
+                  {%- endif -%}
+                {% when 'text' %}
+                  {%- if block.settings.description != blank -%}
+                    <div
+                      class="luvix-sticky-showcase__description"
+                      tabindex="-1"
+                      {{ block.shopify_attributes }}
+                    >
+                      {{ block.settings.description }}
+                    </div>
+                  {%- endif -%}
+                {% when 'button' %}
+                  {%- if block.settings.button_label != blank -%}
+                    <div
+                      class="luvix-sticky-showcase__button-wrapper"
+                      tabindex="-1"
+                      {{ block.shopify_attributes }}
+                    >
+                      <a
+                        {% if block.settings.link %}
+                          href="{{ block.settings.link }}"
+                        {% else %}
+                          role="link" aria-disabled="true"
+                        {% endif %}
+                        class="button button--{{ block.settings.button_size }} {{ button_class }} {% if block.settings.button_type != 'primary' %} button--secondary{% endif %}"
+                      >
+                        {{ block.settings.button_label | escape }}
+                      </a>
+                    </div>
+                  {%- endif -%}
+              {% endcase %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="luvix-sticky-showcase__scrolling-images {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+        <ul class="luvix-sticky-showcase__image-list">
+          <li class="luvix-sticky-showcase__image-item">
+            <div class="luvix-sticky-showcase__image-container">
+              <div class="luvix-sticky-showcase__image-frame {% if section.settings.image_round_corner %}rounded--image{% endif %}">
+                {% if section.settings.first_image != blank %}
+                  <div
+                    class="media media--{{ section.settings.image_ratio }} media--hover-effect overflow-hidden"
+                    {% if section.settings.image_ratio == 'adapt' %}
+                      style="padding-bottom: {{ 1 | divided_by: section.settings.first_image.aspect_ratio | times: 100 }}%;"
+                    {% endif %}
+                  >
+                    {% liquid
+                      assign height = section.settings.first_image.width | divided_by: section.settings.first_image.aspect_ratio | round
+                    %}
+                    {{
+                      section.settings.first_image
+                      | image_url: width: 1500
+                      | image_tag:
+                        loading: 'lazy',
+                        height: height,
+                        alt: section.settings.first_image.alt,
+                        widths: '165, 360, 750, 1000, 1500, 1780, 2000, 3000, 3840'
+                    }}
+                  </div>
+                {% else %}
+                  <div class="placeholder placeholder_svg_parent media media--{{ section.settings.image_ratio }}">
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </li>
+          <li class="luvix-sticky-showcase__image-item">
+            <div class="luvix-sticky-showcase__image-container">
+              <div class="luvix-sticky-showcase__image-frame {% if section.settings.image_round_corner %}rounded--image{% endif %}">
+                {% if section.settings.second_image != blank %}
+                  <div
+                    class="media media--{{ section.settings.image_ratio }} media--hover-effect overflow-hidden"
+                    {% if section.settings.image_ratio == 'adapt' %}
+                      style="padding-bottom: {{ 1 | divided_by: section.settings.second_image.aspect_ratio | times: 100 }}%;"
+                    {% endif %}
+                  >
+                    {% liquid
+                      assign height = section.settings.second_image.width | divided_by: section.settings.second_image.aspect_ratio | round
+                    %}
+                    {{
+                      section.settings.second_image
+                      | image_url: width: 1500
+                      | image_tag:
+                        loading: 'lazy',
+                        height: height,
+                        alt: section.settings.second_image.alt,
+                        widths: '165, 360, 750, 1000, 1500, 1780, 2000, 3000, 3840'
+                    }}
+                  </div>
+                {% else %}
+                  <div class="placeholder placeholder_svg_parent media media--{{ section.settings.image_ratio }}">
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </luvix-sticky-gallery>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Sticky scroll gallery",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "first_image",
+      "label": "First Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "second_image",
+      "label": "Second Image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to first image"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.multicolumn.settings.image_ratio.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "rotation_active",
+      "default": true,
+      "label": "Enable card rotate"
+    },
+    {
+      "type": "text_alignment",
+      "id": "content_alignment",
+      "default": "center",
+      "label": "Content Alignment"
+    },
+    {
+      "type": "text_alignment",
+      "id": "mobile_content_alignment",
+      "default": "center",
+      "label": "Mobile Content Alignment"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_round_corner",
+      "default": true,
+      "label": "Round the corners of the image"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-2",
+      "label": "Color scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "Subtitle",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "sub_heading",
+          "default": "Sub heading",
+          "label": "Subheading"
+        },
+        {
+          "type": "range",
+          "id": "subheading_letter_spacing",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "unit": "px",
+          "label": "Letter spacing",
+          "default": 1
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Unlock exclusive discounts.",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "hxl2",
+              "label": "Heading 3XL"
+            },
+            {
+              "value": "hxl",
+              "label": "Heading 2XL"
+            },
+            {
+              "value": "h0",
+              "label": "Heading XL"
+            },
+            {
+              "value": "h1",
+              "label": "Heading 1"
+            },
+            {
+              "value": "h2",
+              "label": "Heading 2"
+            },
+            {
+              "value": "h3",
+              "label": "Heading 3"
+            },
+            {
+              "value": "h4",
+              "label": "Heading 4"
+            },
+            {
+              "value": "h5",
+              "label": "Heading 5"
+            },
+            {
+              "value": "h6",
+              "label": "Heading 6"
+            }
+          ],
+          "default": "h2",
+          "label": "Heading size"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "description",
+          "default": "<p>Elevate your everyday look with this effortlessly stylish piece.</p>",
+          "label": "Description"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "Button label",
+          "label": "Button label",
+          "info": "Leave the label blank to hide the button."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "button_type",
+          "label": "Button type",
+          "default": "secondary",
+          "options": [
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "value": "primary",
+              "label": "Primary"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "button_size",
+          "label": "Button size",
+          "default": "medium",
+          "options": [
+            {
+              "value": "large",
+              "label": "Large"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "small",
+              "label": "Small"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky scroll gallery",
+      "category": "Storytelling",
+      "blocks": [
+        {
+          "type": "subheading"
+        },
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

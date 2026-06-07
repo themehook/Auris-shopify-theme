@@ -1,0 +1,214 @@
+{{ 'reveal-text-animation.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  .reveal__heading--title{
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+  .text__reveal--boxed.content_boxed{
+    max-width: 105rem;
+    margin: 0 auto;
+  }
+  .text__reveal--item-content-inner.content_padded{
+    padding: 3rem 2rem;
+  }
+  .text__reveal--item-content-inner.rounded{
+    border-radius: 1rem
+  }
+    .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .text__reveal--item-content-inner.content_padded{
+      padding: 6rem 3rem;
+    }
+  }
+{% endstyle %}
+
+<script src="{{ 'reveal-text-animation.js' | asset_url }}" defer="defer"></script>
+<div class="reveal--text-wrapper color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding">
+  <div class="{{ section.settings.container }}">
+    <div class="text__reveal--item-content-inner text-{{ section.settings.text_alignment }} color-{{ section.settings.color_scheme_2 }} {% if section.settings.text_padded == true %}content_padded{% endif %} {% if section.settings.text_rounded == true %}rounded{% endif %}">
+      <div class="text__reveal--boxed {% if section.settings.text_boxed == true %}content_boxed{% endif %}">
+        <text-animation>
+          <h3
+            class="reveal__heading--title {{ section.settings.text_size }}"
+            style="--text-alignment: {% if section.settings.text_alignment == 'left' %}flex-start{% elsif section.settings.text_alignment == 'right' %}flex-end{% else %}center{% endif %}"
+          >
+            {{ section.settings.reveal_text }}
+          </h3>
+        </text-animation>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Reveal Text Animation",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container-fluid",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "reveal_text",
+      "label": "Text",
+      "default": "<p>Modern style blends comfort, creativity, and confidence, allowing individuals to showcase their identity through thoughtful choices. From timeless classics to bold contemporary designs, fashion evolves with culture and lifestyle. Every piece whether a minimalist outfit accessory,</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {
+          "value": "h4",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h1",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h0",
+          "label": "Extra large"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_boxed",
+      "label": "Text boxed",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "text_padded",
+      "label": "Text boxed padded",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "text_rounded",
+      "label": "Text rounded",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme_2",
+      "label": "Color scheme in container",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reveal text animation",
+      "category": "Storytelling"
+    }
+  ]
+}
+{% endschema %}

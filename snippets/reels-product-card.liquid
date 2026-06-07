@@ -1,0 +1,39 @@
+<div class="video-reels__product color-{{ color_scheme }}">
+  {%- if product_card != blank -%}
+    <a href="{{ product_card.url }}" class="video-reels__product-link">
+      {%- if product_card.featured_media -%}
+        {{
+          product_card.featured_media
+          | image_url: width: '120x'
+          | image_tag:
+            class: 'video-reels__product-image',
+            widths: '40, 80, 120',
+            height: 40,
+            width: 40,
+            loading: 'lazy',
+            alt: product_card.featured_media.alt
+          | escape
+        }}
+      {%- endif -%}
+      <div class="video-reels__product-info">
+        <h3 class="video-reels__product-title">{{ product_card.title }}</h3>
+        <div class="video-reels__product-price">
+          {%- render 'price', product: product_card, use_variant: true -%}
+        </div>
+      </div>
+    </a>
+  {% else %}
+    <div class="video-reels__product-link ">
+      {{ 'product-apparel-1' | placeholder_svg_tag: 'reels-placeholder-svg' }}
+      <div class="video-reels__product-info">
+        <h3 class="video-reels__product-title">{{ 'onboarding.product_title' | t }}</h3>
+        <div class="video-reels__product-price">$99.99</div>
+      </div>
+    </div>
+  {% endif %}
+  {% if button_text != blank %}
+    <div class="video-reels__product-actions">
+      <a href="{{ product_card.url }}" class="button button--extra-small button--primary">{{ button_text }}</a>
+    </div>
+  {% endif %}
+</div>

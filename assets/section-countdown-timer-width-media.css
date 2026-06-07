@@ -1,0 +1,116 @@
+.countdown--timer-column {
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+@meida only screen and (min-width: 750px) {
+  .countdown--timer-column {
+    margin-top: 3rem;
+    margin-bottom: 4rem;
+  }
+}
+.countdown--timer-media-height--adapt.placeholder {
+  height: 35rem;
+}
+.countdown--timer-media-height--small {
+  height: 19.4rem;
+}
+.countdown--timer-media-height--medium {
+  height: 35rem;
+}
+.countdown--timer-media-height--large {
+  height: 43.5rem;
+}
+.countdown--timer-media-height--extra-large {
+  height: 45rem;
+}
+@media screen and (min-width: 750px) and (max-width: 991px) {
+  .countdown--timer-media-height--small {
+    height: 30rem;
+  }
+
+  .countdown--timer-media-height--large {
+    height: 50rem;
+  }
+  .countdown--timer-media-height--adapt.placeholder {
+    height: 50rem;
+  }
+  .countdown--timer-media-height--extra-large {
+    height: 55rem;
+  }
+  .countdown--timer-media-height--medium {
+    height: 45rem;
+  }
+}
+@media screen and (min-width: 992px) {
+  .countdown--timer-media-height--small {
+    height: 31.4rem;
+  }
+  .countdown--timer-media-height--medium {
+    height: 55rem;
+  }
+  .countdown--timer-media-height--large {
+    height: 69.5rem;
+  }
+  .countdown--timer-media-height--adapt.placeholder {
+    height: 65rem;
+  }
+  .countdown--timer-media-height--extra-large {
+    height: 72rem;
+  }
+}
+/*  timer with media css */
+
+
+.countdown--timer-section.timer--with-media {
+  position: relative;
+}
+.countdown--timer-media-field{
+  position: relative;
+}
+.countdown--timer-media-field.media::before,
+.countdown--timer-media-field.placeholder::before {
+  position: absolute;
+  content: "";
+  background: var(--gradient-overlay-color, #000);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  opacity: var(--countdown-timer-media-overlay-opacity, 0.3);
+}
+.countdown--timer-media-content.content--stack-on-image-in-mobile {
+  position: absolute;
+  left: 0;
+  top: 3rem;
+  bottom: 3rem;
+  right: 0;
+  z-index: 11;
+}
+.countdown--timer-media-content > div {
+  height: 100%;
+}
+.countdown--timer-media-content-inner {
+  display: flex;
+}
+.countdown--timer-media-content-inner > div {
+  width: 100%;
+}
+@media only screen and (min-width: 750px) {
+  .countdown--timer-media-content {
+    position: absolute;
+    left: 0;
+    top: 5rem;
+    bottom: 5rem;
+    right: 0;
+    z-index: 11;
+  }
+}
+@media only screen and (max-width: 749px) {
+  .countdown--timer-media-content:not(.content--stack-on-image-in-mobile) {
+    padding-top: 3rem;
+  }
+}
+.countdown--timer-content__maintitle > span {
+  display: block;
+}

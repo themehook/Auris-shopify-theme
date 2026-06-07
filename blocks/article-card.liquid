@@ -1,0 +1,424 @@
+{% stylesheet %}
+  .article-card-block {
+    min-width: 0;
+    max-width: 100%;
+    width: var(--article-width, fit-content);
+    padding-top: var(--article-pad-top, 0);
+    padding-bottom: var(--article-pad-bottom, 0);
+    padding-left: var(--article-pad-left, 0);
+    padding-right: var(--article-pad-right, 0);
+  }
+
+  @media screen and (max-width: 749px) {
+    .article-card-block {
+      width: var(--article-width-mobile, var(--article-width, fit-content));
+      padding-top: calc(var(--article-pad-top, 0) * var(--article-mobile-scale, 0.8));
+      padding-bottom: calc(var(--article-pad-bottom, 0) * var(--article-mobile-scale, 0.8));
+      padding-left: calc(var(--article-pad-left, 0) * var(--article-mobile-scale, 0.8));
+      padding-right: calc(var(--article-pad-right, 0) * var(--article-mobile-scale, 0.8));
+    }
+  }
+
+  .article-card-block .article--card {
+    border-radius: var(--article-corner-radius, 0);
+  }
+
+  .article-card-block .article-card__image {
+    border-radius: var(--article-image-radius, 0);
+    overflow: hidden;
+  }
+
+  .article-card-block .article-card__image.placeholder {
+    border-radius: var(--article-image-radius, 0);
+  }
+
+  .article-card-block--bordered .article--card {
+    border: var(--article-border-thickness, 1px) solid rgba(var(--color-foreground), var(--article-border-opacity, 0.12));
+  }
+{% endstylesheet %}
+
+{%- liquid
+  assign s = block.settings
+
+  case s.width
+    when 'fill'
+      assign width_value = '100%'
+    when 'custom'
+      assign width_value = s.custom_width | append: '%'
+    else
+      assign width_value = 'fit-content'
+  endcase
+
+  case s.width_mobile
+    when 'fill'
+      assign width_mobile_value = '100%'
+    when 'custom'
+      assign width_mobile_value = s.custom_width_mobile | append: '%'
+    else
+      assign width_mobile_value = 'fit-content'
+  endcase
+
+  if s.width == 'custom'
+    assign _custom_px = settings.container_lg_width | times: s.custom_width | divided_by: 100 | round
+    assign article_sizes = '(min-width: ' | append: settings.container_lg_width | append: 'px) ' | append: _custom_px | append: 'px, calc((100vw - 30px) * ' | append: s.custom_width | append: ' / 100)'
+  elsif s.width == 'fill'
+    assign article_sizes = '(min-width: ' | append: settings.container_lg_width | append: 'px) ' | append: settings.container_lg_width | append: 'px, calc(100vw - 30px)'
+  else
+    assign article_sizes = '(min-width: 990px) 500px, calc(100vw - 30px)'
+  endif
+-%}
+
+<div
+  class="article-card-block{% if s.border_style == 'solid' %} article-card-block--bordered{% endif %}"
+  style="
+    --article-width: {{ width_value }};
+    --article-width-mobile: {{ width_mobile_value }};
+    --article-corner-radius: {{ s.corner_radius }}px;
+    --article-image-radius: {{ s.image_corner_radius }}px;
+    --article-border-thickness: {{ s.border_thickness }}px;
+    --article-border-opacity: {{ s.border_opacity | divided_by: 100.0 }};
+    --article-pad-top: {{ s.padding_top }}px;
+    --article-pad-bottom: {{ s.padding_bottom }}px;
+    --article-pad-left: {{ s.padding_left }}px;
+    --article-pad-right: {{ s.padding_right }}px;
+    --article-mobile-scale: {{ s.mobile_scale | divided_by: 100.0 }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- if s.article != blank -%}
+    {% render 'article-card',
+      article: s.article,
+      show_image: s.show_image,
+      image_ratio: s.image_ratio,
+      show_date: s.show_date,
+      show_author: s.show_author,
+      show_comment: s.show_comment,
+      show_content: s.show_content,
+      content_limit: s.content_limit,
+      button_label: s.button_label,
+      button_icon: s.button_icon,
+      button_type: s.read_more_btn_type,
+      article_heading_size: s.article_heading_size,
+      spacing: s.spacing,
+      color_scheme: s.color_scheme,
+      sizes: article_sizes
+    %}
+  {%- else -%}
+    <article class="article--card {% if s.spacing %}article--card-spacing-true{% endif %}">
+      {%- if s.show_image -%}
+        <div class="blog__items--thumbnail card--client-height">
+          {%- liquid
+            case s.image_ratio
+              when 'landscape'
+                assign ratio_padding = '66.6%'
+              when 'portrait'
+                assign ratio_padding = '125%'
+              else
+                assign ratio_padding = '100%'
+            endcase
+          -%}
+          <div class="article-card__image placeholder placeholder_svg_parent" style="padding-bottom: {{ ratio_padding }}; aspect-ratio: auto; height: 0;">
+            {{ 'blog-apparel-1' | placeholder_svg_tag: 'placeholder-svg-new' }}
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="blog__items--content">
+        <h3 class="article-card__title {{ s.article_heading_size | default: 'h4' }} mb-0">
+          {{ 'sections.featured_blog.onboarding_title' | t }}
+        </h3>
+        {%- if s.show_content -%}
+          <p class="blog__items--desc">{{ 'sections.featured_blog.onboarding_content' | t }}</p>
+        {%- endif -%}
+      </div>
+    </article>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Article card",
+  "tag": null,
+  "settings": [
+    {
+      "type": "article",
+      "id": "article",
+      "label": "Article"
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show image",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "info": "It works unless you enable the collage layout",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" },
+        { "value": "landscape", "label": "Landscape" }
+      ],
+      "default": "landscape",
+      "visible_if": "{{ block.settings.show_image }}"
+    },
+    {
+      "type": "select",
+      "id": "article_heading_size",
+      "label": "Title size",
+      "options": [
+        { "value": "h1", "label": "Heading 1" },
+        { "value": "h2", "label": "Heading 2" },
+        { "value": "h3", "label": "Heading 3" },
+        { "value": "h4", "label": "Heading 4" },
+        { "value": "h5", "label": "Heading 5" },
+        { "value": "h6", "label": "Heading 6" }
+      ],
+      "default": "h5"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_content",
+      "label": "Show content",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "content_limit",
+      "label": "Content word limit",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "default": 10,
+      "visible_if": "{{ block.settings.show_content }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comment",
+      "label": "Show comment",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Read more button label",
+      "default": "Read more"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_icon",
+      "label": "Use arrow icon",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "read_more_btn_type",
+      "label": "Read more button type",
+      "default": "link",
+      "options": [
+        { "value": "primary", "label": "Solid" },
+        { "value": "secondary", "label": "Outline" },
+        { "value": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing",
+      "label": "Card spacing",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Borders"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Borders",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "solid", "label": "Solid" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border width",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Border opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 12,
+      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_corner_radius",
+      "label": "Image corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width (desktop)",
+      "options": [
+        { "value": "fit-content", "label": "Fit content" },
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "Width (mobile)",
+      "options": [
+        { "value": "fit-content", "label": "Fit content" },
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_scale",
+      "label": "Mobile scale",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article card",
+      "category": "Blog"
+    }
+  ]
+}
+{% endschema %}

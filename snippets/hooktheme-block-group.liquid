@@ -1,0 +1,97 @@
+{%- liquid
+  assign color_class = ''
+  unless settings.inherit_color_scheme
+    assign color_class = 'color-' | append: settings.color_scheme
+  endunless
+
+  case settings.width
+    when 'fill'
+      assign width_val = '100%'
+    when 'custom'
+      assign width_val = settings.custom_width | append: '%'
+    else
+      assign width_val = 'fit-content'
+  endcase
+
+  case settings.width_mobile
+    when 'fill'
+      assign width_mobile_val = '100%'
+    when 'custom'
+      assign width_mobile_val = settings.custom_width_mobile | append: '%'
+    else
+      assign width_mobile_val = 'fit-content'
+  endcase
+
+  case settings.height
+    when 'fill'
+      assign height_val = '100%'
+    when 'custom'
+      assign height_val = settings.custom_height | append: '%'
+    else
+      assign height_val = 'fit-content'
+  endcase
+-%}
+
+{%- if settings.link != blank -%}
+  <a
+    href="{{ settings.link }}"
+    {% if settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+    class="block-group__link"
+  >
+{%- endif -%}
+
+<div
+  class="block-group {{ color_class }}"
+  style="
+    --group-width: {{ width_val }};
+    --group-width-mobile: {{ width_mobile_val }};
+    --group-height: {{ height_val }};
+    {% render 'hooktheme-layout-vars', settings: settings %}
+    {% render 'hooktheme-style-vars', settings: settings %}
+  "
+  {{ shopify_attributes }}
+>
+  {% render 'hooktheme-style-elements', settings: settings %}
+
+  <div class="block-group__body has-border layout-panel">
+    {{ children }}
+  </div>
+</div>
+
+{%- if settings.link != blank -%}
+  </a>
+{%- endif -%}
+
+{% stylesheet %}
+  .block-group {
+    position: relative;
+    width: var(--group-width, 100%);
+    height: var(--group-height, fit-content);
+    padding-block-start: var(--pad-block-start, 0);
+    padding-block-end: var(--pad-block-end, 0);
+    padding-inline-start: var(--pad-inline-start, 0);
+    padding-inline-end: var(--pad-inline-end, 0);
+  }
+
+  .block-group__body {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+  }
+
+  .block-group__link {
+    text-decoration: none;
+    color: inherit;
+    display: contents;
+  }
+
+  @media screen and (max-width: 749px) {
+    .block-group {
+      width: var(--group-width-mobile, var(--group-width, 100%));
+      padding-block-start: calc(var(--pad-block-start, 0) * var(--pad-mobile-scale, 1));
+      padding-block-end: calc(var(--pad-block-end, 0) * var(--pad-mobile-scale, 1));
+      padding-inline-start: calc(var(--pad-inline-start, 0) * var(--pad-mobile-scale, 1));
+      padding-inline-end: calc(var(--pad-inline-end, 0) * var(--pad-mobile-scale, 1));
+    }
+  }
+{% endstylesheet %}

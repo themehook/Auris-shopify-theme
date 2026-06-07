@@ -1,0 +1,222 @@
+.countdown--timer-countdown {
+  gap: 3rem;
+}
+.countdown--timer-section {
+  position: relative;
+}
+.countdown--banner__media {
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+.countdown--banner__content {
+  position: relative;
+  z-index: 8;
+}
+
+.countdown__item > span {
+  display: block;
+}
+.countdown--banner__content--box {
+  position: relative;
+}
+.countdown--timer-content__desc > p {
+  margin-bottom: 0;
+}
+.countdown--timer-content__descc {
+  margin-bottom: 1.5rem;
+}
+
+.countdown--timer-content > .button__wrapper {
+  margin-top: 2rem;
+}
+.countdown--banner__content--box.rounded--image {
+  border-radius: 1rem;
+}
+.countdown--timer-countdown.promo--banner-countdown-timer {
+  gap: 1.5rem;
+}
+.countdown--timer-content > countdown-timer {
+  margin-top: 1.5rem;
+  display: block;
+}
+@media only screen and (min-width: 992px) {
+  .countdown--timer-content-column {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .timer-column-grid-three .countdown--timer-content {
+    grid-column: 1 / span 3;
+  }
+  .timer-column-grid-three .countdown--timer-child-column {
+    grid-column: 4;
+    grid-column-end: 7;
+  }
+  .timer-column-grid-three .countdown--timer-button-column {
+    grid-column: -1 / 7;
+    text-align: right;
+  }
+
+  .timer-column-grid-two .countdown--timer-content {
+    grid-column: 1 / span 4;
+  }
+  .timer-column-grid-two .countdown--timer-child-column {
+    grid-column: -1 / 5;
+  }
+
+  .countdown--timer-button-column .link.with--icon.button--with-icon {
+    justify-content: flex-end;
+  }
+  .countdown--timer-child-column.desktop--timer-align-center
+    .countdown--timer-countdown.d-flex,
+  .countdown--timer-content.desktop-text-center
+    .countdown--timer-countdown.d-flex {
+    justify-content: center;
+  }
+  .countdown--timer-child-column.desktop--timer-align-right
+    .countdown--timer-countdown.d-flex,
+  .countdown--timer-content.desktop-text-right
+    .countdown--timer-countdown.d-flex {
+    justify-content: flex-end;
+  }
+  .countdown--timer-child-column.desktop--timer-align-left
+    .countdown--timer-countdown.d-flex,
+  .countdown--timer-content.desktop-text-left
+    .countdown--timer-countdown.d-flex {
+    justify-content: flex-start;
+  }
+  .countdown--content-padding-small {
+    padding: 0 3rem;
+  }
+  .countdown--content-padding-medium {
+    padding: 0 6rem;
+  }
+  .countdown--content-padding-large {
+    padding: 0 9rem;
+  }
+}
+@media only screen and (min-width: 750px) {
+  .countdown--timer-countdown.promo--banner-countdown-timer.countdown--timer-colon
+    > .countdown__item
+    + .countdown__item:before {
+    left: -1.3rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer.countdown--timer-border
+    > .countdown__item
+    + .countdown__item:before {
+    right: 0.96rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer.countdown--font-medium
+    > .countdown__item
+    .countdown__number {
+    font-size: 2.5rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer.countdown--font-small
+    > .countdown__item
+    .countdown__number {
+    font-size: 1.8rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer.countdown--font-large
+    > .countdown__item
+    .countdown__number {
+    font-size: 3.2rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer > .countdown__item {
+    min-width: 7rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer.countdown--timer-box
+    > .countdown__item {
+    min-height: 7rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer:is(
+      .countdown--font-large
+    )
+    > .countdown__item {
+    min-width: 10rem;
+  }
+  .countdown--timer-countdown.promo--banner-countdown-timer > .countdown__item {
+    min-width: 8rem;
+  }
+}
+@media only screen and (max-width: 991px) {
+  .countdown--timer-content,
+  .countdown--timer-button-column,
+  .countdown--timer-child-column {
+    padding: 0 1.5rem;
+  }
+  .countdown--timer-content.mobile-text-center
+    ~ .countdown--timer-button-column {
+    text-align: center;
+  }
+  .countdown--timer-content.mobile-text-right
+    ~ .countdown--timer-button-column {
+    text-align: right;
+  }
+  .countdown--timer-content.mobile-text-center
+    ~ .countdown--timer-button-column
+    .countdown--timer-countdown.d-flex {
+    justify-content: center;
+  }
+  .countdown--timer-button-column {
+    margin-top: 2rem;
+  }
+  .countdown--timer-content.mobile-text-center
+    ~ .countdown--timer-child-column
+    .countdown--timer-countdown {
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+  .countdown--timer-content.mobile-text-right
+    ~ .countdown--timer-child-column
+    .countdown--timer-countdown {
+    -webkit-box-pack: flex-end;
+    -ms-flex-pack: flex-end;
+    justify-content: flex-end;
+  }
+  .countdown--timer-content.mobile-text-center
+    .countdown--timer-countdown.d-flex {
+    justify-content: center;
+  }
+  .countdown--timer-content.mobile-text-right
+    .countdown--timer-countdown.d-flex {
+    justify-content: flex-end;
+  }
+  .countdown--timer-content.mobile-text-left
+    .countdown--timer-countdown.d-flex {
+    justify-content: flex-start;
+  }
+  .countdown--timer-content-wrapper.countdown--timer-content-column.timer-column-grid-two {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .countdown--timer-content-column.timer-column-grid-two
+    .countdown--timer-child-column {
+    margin-bottom: 2rem;
+  }
+  .countdown--timer-content + .countdown--timer-child-column {
+    margin-top: 1.5rem;
+  }
+  .countdown--timer-content.mobile-text-center {
+    text-align: center;
+  }
+  .countdown--timer-content.mobile-text-left {
+    text-align: left;
+  }
+  .countdown--timer-content.mobile-text-right {
+    text-align: right;
+  }
+}
+.countdown--timer-content__maintitle > span {
+  display: block;
+}
+
+
+.slideshow--banner--card-content-inner .banner__card--timer{
+  margin-top: 1.5rem;
+}

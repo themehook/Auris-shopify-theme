@@ -1,0 +1,530 @@
+{%- liquid
+  assign is_rtl_theme = false
+  if settings.use_rtl and settings.rtl_languages == blank
+    assign is_rtl_theme = true
+  endif
+
+  if settings.use_rtl and settings.rtl_languages != blank
+    assign rtl_langs = settings.rtl_languages | split: ','
+    for lang in rtl_langs
+      if lang == request.locale.iso_code
+        assign is_rtl_theme = true
+      endif
+    endfor
+  endif
+
+  assign image_content_alignment_on_desktop = section.settings.content_alignment_on_desktop
+
+  case image_content_alignment_on_desktop
+    when 'right'
+      assign image_content_alignment_on_desktop_attribute = 'align-items-end'
+    when 'center'
+      assign image_content_alignment_on_desktop_attribute = 'align-items-center'
+    else
+      assign image_content_alignment_on_desktop_attribute = 'align-items-start'
+  endcase
+
+  case section.settings.container
+    when 'container'
+      assign container = 'container'
+    when 'container-fluid'
+      assign container = 'container-fluid'
+    else
+      assign container = 'container-fluid px-0'
+  endcase
+
+  assign fetch_priority = 'auto'
+  if section.index == 1
+    assign fetch_priority = 'high'
+  endif
+-%}
+
+{{ 'sticky-content-with-media.css' | asset_url | stylesheet_tag }}
+
+
+{%- style -%}
+   .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.mobile_padding_top }}px;
+      padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    }
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+{%- endstyle -%}
+
+
+<div class="vertical__image--scroll section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+  <div class="{{ container }}">
+    <div class="vertical__image--scroll__inner">
+        <div class="vertical__scroll--content">
+          <div class="vertical__scroll--content__inner h-100 {{ image_content_alignment_on_desktop_attribute }} text-{{ section.settings.content_alignment_on_desktop }}">
+              {% if section.settings.caption != blank %}
+                <p
+                  class="vertical__scroll--content-text"
+                  >
+                  {{ section.settings.caption | escape }}
+              </p>
+              {% endif %}
+              <h2
+                  class="vertical__scroll--content-heading {{ section.settings.heading_size }} mb-0"
+              >
+                  {{-
+                  section.settings.heading
+                  | replace: 'p>', 'span>'
+                  | replace: 'h1>', 'span>'
+                  | replace: 'h2>', 'span>'
+                  | replace: 'h3>', 'span>'
+                  | replace: 'h4>', 'span>'
+                  | replace: 'h5>', 'span>'
+                  | replace: 'h6>', 'span>'
+                  -}}
+              </h2>
+              
+              <div
+                  class="vertical__scroll--content-desc rte {{ section.settings.text_style }}"
+              >
+                  {{ section.settings.text }}
+              </div>
+              {% liquid
+                  assign button_class = ''
+                  case section.settings.button_style
+                  when 'primary'
+                      assign button_class = 'button button--primary'
+                  when 'secondary'
+                      assign button_class = 'button button--secondary'
+                  when 'icon'
+                      assign button_class = 'link with--icon'
+                  else
+                      assign button_class = 'link'
+                  endcase
+              %}
+              {% if section.settings.button_label != blank %}
+                  <div
+                  class="button__wrapper"
+                  >
+                  <a
+                      {% if section.settings.button_link == blank %}
+                      role="link" aria-disabled="true"
+                      {% else %}
+                      href="{{ section.settings.button_link }}"
+                      {% endif %}
+                      class="{{ button_class }} {% unless section.settings.button_type == 'icon' %}button--{{ section.settings.button_size }}{% endunless %} {% if section.settings.button_icon %} button--with-icon{% endif %}"
+                  >
+                      {{- section.settings.button_label | escape }}
+                      {% if section.settings.button_icon %}
+                      <span class="button--icon button--icon-right">{% render 'hooktheme-icon-chevron-right' %}</span>
+                      {% endif %}
+                  </a>
+                  </div>
+              {% endif %}
+          </div>
+        </div>
+        <div class="vertical__scroll--gallery">
+          <div class="vertical__scroll--gallery__inner">
+            {%- for block in section.blocks -%}
+                {% case block.type %}
+                    {%- when 'image' -%}
+                        {%- assign widths = '165, 360, 535, 750, 1070, 1500' -%}
+                        {%- capture sizes -%}
+                                (min-width: {{ settings.container_lg_width }}px) {{ settings.container_lg_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), 100vw
+                            {%- endcapture -%}
+                        <div class="vertical__scroll--gallery__items" 
+                        style="
+                            width: {{ block.settings.media_items_width }}%;
+                           ">
+                            <div
+                                class="vertical__scroll--gallery__media media--{{ block.settings.image_ratio }} {% if block.settings.image != blank %}media{% else %}placeholder{% endif %} {% if section.settings.round_corner %} rounded--image {% endif %}"
+                                {% if block.settings.image_ratio == 'adapt' and block.settings.image != blank %}
+                                style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                                {% endif %}
+                            >
+                                {%- if block.settings.image != blank -%}
+                                {{
+                                    block.settings.image
+                                    | image_url: width: 1500
+                                    | image_tag: sizes: sizes, widths: widths, fetchpriority: fetch_priority
+                                }}
+                                {%- else -%}
+                                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg-new' }}
+                                {%- endif -%}
+                            </div>
+                        </div>
+                    {%- when 'video' -%}
+                        <div class="vertical__scroll--gallery__items"
+                          style="
+                            width: {{ block.settings.media_items_width }}%;
+                           "
+                        >
+                            <div
+                                class="vertical__scroll--gallery__media media--{{ block.settings.image_ratio }} {% if block.settings.video != blank %}media{% else %}placeholder{% endif %} {% if section.settings.round_corner %} rounded--image {% endif %}"
+                                {% if block.settings.image_ratio == 'adapt' and block.settings.video != blank %}
+                                style="padding-bottom: {{ 1 | divided_by: block.settings.video.aspect_ratio | times: 100 }}%;"
+                                {% endif %}
+                            >
+                                {%- if block.settings.video != blank -%}
+                                    {{ block.settings.video | video_tag: autoplay: true, loop: true, controls: false, muted: true }}
+                                {%- else -%}
+                                    {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg-new' }}
+                                {%- endif -%}
+                            </div>
+                        </div>
+                {%- endcase -%}
+            {%- endfor -%}
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Sticky content with media",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "info": "It will affect on the larger screen",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "t:sections.image-with-text.blocks.caption.settings.text.label"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "default": "<p>Sticky content</p>",
+      "label": "t:sections.image-with-text.blocks.heading.settings.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "hxl2",
+          "label": "Heading 3XL"
+        },
+        {
+          "value": "hxl",
+          "label": "Heading 2XL"
+        },
+        {
+          "value": "h0",
+          "label": "Heading XL"
+        },
+        {
+          "value": "h1",
+          "label": "Heading 1"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h4",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h6",
+          "label": "Heading 6"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+      "label": "t:sections.image-with-text.blocks.text.settings.text.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Button label",
+      "label": "t:sections.image-with-text.blocks.button.settings.button_label.label",
+      "info": "t:sections.image-with-text.blocks.button.settings.button_label.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_icon",
+      "label": "Use arrow icon",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.image-with-text.blocks.button.settings.button_link.label"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "primary",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.buttons.settings.solid_button.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.buttons.settings.outline_button.label"
+        },
+        {
+          "value": "icon",
+          "label": "t:sections.all.buttons.settings.link_button.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Button size",
+      "default": "small",
+      "info": "Works on the solid/outline button",
+      "options": [
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "round_corner",
+      "label": "Round corner",
+      "default": true
+    },
+    {
+      "type": "text_alignment",
+      "id": "content_alignment_on_desktop",
+      "label": "Desktop content alignment",
+      "default": "center"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "options": [
+            {
+              "value": "adapt",
+              "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__1.label"
+            },
+            {
+              "value": "portrait",
+              "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__2.label"
+            },
+            {
+              "value": "square",
+              "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__3.label"
+            },
+            {
+              "value": "landscape",
+              "label": "Landscape"
+            }
+          ],
+          "default": "adapt",
+          "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.label"
+        },
+        {
+          "type": "range",
+          "id": "media_items_width",
+          "min": 5,
+          "max": 50,
+          "step": 1,
+          "unit": "%",
+          "label": "Width",
+          "default": 12
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video",
+          "info": "Optional! Instead of the image, the selected video will be displayed."
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "options": [
+            {
+              "value": "adapt",
+              "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__1.label"
+            },
+            {
+              "value": "portrait",
+              "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__2.label"
+            },
+            {
+              "value": "square",
+              "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__3.label"
+            },
+            {
+              "value": "landscape",
+              "label": "Landscape"
+            }
+          ],
+          "default": "adapt",
+          "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.label"
+        },
+        {
+          "type": "range",
+          "id": "media_items_width",
+          "min": 5,
+          "max": 50,
+          "step": 1,
+          "unit": "%",
+          "label": "Width",
+          "default": 10
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky content with media",
+      "category": "Storytelling",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "video"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "video"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "video"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  }
+}
+{% endschema %}

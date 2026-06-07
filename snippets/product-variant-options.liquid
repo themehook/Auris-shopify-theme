@@ -1,0 +1,169 @@
+{% comment %}
+  Renders product variant options with native swatch support.
+
+  Accepts:
+  - product: {Object} product object.
+  - option: {Object} current product_option object.
+  - block: {Object} block object.
+  - picker_type: {String} 'button', 'dropdown', 'swatch', or 'swatch_dropdown'
+  - choose_option: {String} the option name for custom color swatches
+  - swatch_type: {String} 'color' or 'image' (for custom swatches)
+  - swatch_button_style: {String} 'square' or 'round'
+  - use_native_swatches: {Boolean} whether to use native Shopify swatches
+  - swatch_shape: {String} 'square' or 'circle' (for native swatches)
+
+  Usage:
+  {% render 'product-variant-options',
+    product: product,
+    option: option,
+    block: block,
+    picker_type: picker_type
+  %}
+{% endcomment %}
+
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id
+  assign option_name_lower = option.name | downcase
+
+  # Support comma-separated option names for multi-language support
+  # E.g., "Color,Colour,Skin,Farbe" should match any of these option names
+  assign is_color_option = false
+  assign choose_option_list = choose_option | split: ','
+  for opt in choose_option_list
+    assign opt_trimmed = opt | strip | downcase
+    if opt_trimmed == option_name_lower
+      assign is_color_option = true
+      break
+    endif
+  endfor
+-%}
+
+{%- for value in option.values -%}
+  {%- liquid
+    # Modern approach: Use value.available directly (replaces deprecated option1/2/3 logic)
+    assign option_disabled = true
+    if value.available
+      assign option_disabled = false
+    endif
+
+    # Get option value ID for option_values API
+    # Shopify provides value.id for ALL products
+    assign option_value_id = value.id
+
+    # Native swatch detection
+    assign swatch = value.swatch
+    assign has_native_swatch = false
+    assign swatch_value = null
+
+    if swatch.color != blank or swatch.image != blank
+      assign has_native_swatch = true
+      if swatch.image
+        assign image_url = swatch.image | image_url: width: 50
+        assign swatch_value = 'url(' | append: image_url | append: ')'
+      elsif swatch.color
+        assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
+      endif
+    endif
+
+    # Build input ID
+    assign input_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index0
+
+    # Use value.selected (modern API) for checked state
+    assign is_selected = value.selected
+  -%}
+
+  {%- capture unavailable_label -%}
+    <span class="visually-hidden label-unavailable">
+      {{- 'products.product.variant_sold_out_or_unavailable' | t -}}
+    </span>
+  {%- endcapture -%}
+
+  {%- if picker_type == 'swatch' -%}
+    {%- comment %} Native swatch picker - uses swatch-input component {% endcomment -%}
+    {% render 'swatch-input',
+      id: input_id,
+      name: option.name,
+      value: value,
+      swatch: value.swatch,
+      product_form_id: product_form_id,
+      checked: is_selected,
+      disabled: option_disabled,
+      shape: swatch_shape,
+      option_value_id: option_value_id,
+      help_text: unavailable_label
+    %}
+
+  {%- elsif picker_type == 'button' -%}
+    <input
+      type="radio"
+      id="{{ input_id }}"
+      name="{{ option.name }}"
+      value="{{ value | escape }}"
+      form="{{ product_form_id }}"
+      data-option-value-id="{{ option_value_id }}"
+      {% if is_selected %}checked{% endif %}
+      {% if option_disabled %}class="disabled"{% endif %}
+    >
+    {%- if is_color_option -%}
+      {%- comment %} Custom swatch - uses variant featured image or CSS color {% endcomment -%}
+      {%- assign color_slug = value | escape | downcase | split: ' ' | join: '-' -%}
+      {%- liquid
+        # Determine the swatch background
+        # Priority: 1) Native swatch (if enabled) 2) Variant featured image 3) Color name
+        assign custom_swatch_style = ''
+        assign swatch_focal_point = ''
+
+        if has_native_swatch and use_native_swatches and swatch_value
+          # Use native Shopify swatch
+          assign custom_swatch_style = '--swatch--background: ' | append: swatch_value
+        elsif swatch_type == 'image'
+          # Use variant featured image (Liquid-based, no JavaScript needed)
+          if value.variant.featured_image
+            assign variant_image_url = value.variant.featured_image | image_url: width: 100
+            assign custom_swatch_style = '--swatch-background-image: url(' | append: variant_image_url | append: '); --swatch-background-color: ' | append: value
+            # Capture focal point for image positioning
+            assign swatch_focal_point = value.variant.featured_image.presentation.focal_point
+          else
+            # Fallback to color name if no variant image
+            assign custom_swatch_style = '--swatch-background-color: ' | append: value
+          endif
+        else
+          # Use variant name as CSS color (works for named colors like red, blue, green, etc.)
+          assign custom_swatch_style = '--swatch-background-color: ' | append: value
+        endif
+      -%}
+      <label
+        class="variant--swatch-custom {% if swatch_type == 'image' %}variant--swatch-image{% else %}variant--swatch-color{% endif %} {% if swatch_button_style == 'circle' %}swatch-button-circle{% endif %}{% if has_native_swatch and use_native_swatches %} has-native-swatch{% endif %}"
+        for="{{ input_id }}"
+        data-value="{{ value | escape }}"
+        data-color="{{ color_slug }}"
+        style="{{ custom_swatch_style }}{% if swatch_focal_point != blank %} --swatch-focal-point: {{ swatch_focal_point }};{% endif %}"
+      >
+        <span class="swatch--variant-tooltip">{{ value }}</span>
+        <span class="visually-hidden">{{ value }}</span>
+      </label>
+    {%- else -%}
+      {%- comment %} Regular text button {% endcomment -%}
+      <label for="{{ input_id }}">
+        {{ value }}
+        {{ unavailable_label }}
+      </label>
+    {%- endif -%}
+
+  {%- elsif picker_type == 'dropdown' or picker_type == 'swatch_dropdown' -%}
+    <option
+      value="{{ value | escape }}"
+      data-option-value-id="{{ option_value_id }}"
+      {% if is_selected %}selected="selected"{% endif %}
+      {% if swatch_value and picker_type == 'swatch_dropdown' %}
+        data-option-swatch-value="{{ swatch_value }}"
+      {% endif %}
+    >
+      {%- if option_disabled -%}
+        {{- 'products.product.value_unavailable' | t: option_value: value -}}
+      {%- else -%}
+        {{- value -}}
+      {%- endif -%}
+    </option>
+  {%- endif -%}
+{%- endfor -%}

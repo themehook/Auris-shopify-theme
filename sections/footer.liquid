@@ -1,0 +1,724 @@
+{%- liquid
+  assign theme_rtl = false
+  if settings.enable_rtl and settings.langauges_rtl == blank
+    assign theme_rtl = true
+  endif
+
+  if settings.enable_rtl and settings.langauges_rtl != blank
+    assign rtl_languages = settings.langauges_rtl | split: ','
+    for language in rtl_languages
+      if language == request.locale.iso_code
+        assign theme_rtl = true
+      endif
+    endfor
+  endif
+-%}
+
+{{ 'footer.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="{{ 'hooktheme-list-payment.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'hooktheme-list-payment.css' | asset_url | stylesheet_tag }}</noscript>
+<script src="{{ 'footer.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign container = ''
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+  else
+    assign container = 'container-fluid px-0'
+  endif
+-%}
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+</style>
+{% if section.settings.snow_fall %}
+  {{ 'snow-fall.css' | asset_url | stylesheet_tag }}
+{% endif %}
+{% if theme_rtl %}
+  {{ 'footer-rtl.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+<footer
+  class="footer gradient color-{{ section.settings.color_scheme }} {% if section.settings.snow_fall %}snow--fall{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="footer"
+>
+  {%- if section.settings.image != blank -%}
+    <div class="footer--banner__media media">
+      <img
+        srcset="
+          {%- if section.settings.image.width >= 375 -%}{{ section.settings.image | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if section.settings.image.width >= 550 -%}{{ section.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if section.settings.image.width >= 750 -%}{{ section.settings.image | image_url: width: 750 }} 750w,{%- endif -%}
+          {%- if section.settings.image.width >= 1100 -%}{{ section.settings.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+          {%- if section.settings.image.width >= 1500 -%}{{ section.settings.image | image_url: width: 1500 }} 1500w,{%- endif -%}
+          {%- if section.settings.image.width >= 1780 -%}{{ section.settings.image | image_url: width: 1780 }} 1780w,{%- endif -%}
+          {%- if section.settings.image.width >= 2000 -%}{{ section.settings.image | image_url: width: 2000 }} 2000w,{%- endif -%}
+          {%- if section.settings.image.width >= 3000 -%}{{ section.settings.image | image_url: width: 3000 }} 3000w,{%- endif -%}
+          {%- if section.settings.image.width >= 3840 -%}{{ section.settings.image | image_url: width: 3840 }} 3840w,{%- endif -%}
+          {{ section.settings.image | image_url }} {{ section.settings.image.width }}w
+        "
+        sizes="100vw"
+        src="{{ section.settings.image | image_url: width: 1500 }}"
+        loading="lazy"
+        alt="{{ section.settings.image.alt | escape }}"
+        width="{{ section.settings.image.width }}"
+        height="{{ section.settings.image.width | divided_by: section.settings.image.aspect_ratio }}"
+      >
+    </div>
+  {%- endif -%}
+  <div class="footer__content--inner">
+    <!-- Footer Top Start -->
+    <div class="footer__top section-{{ section.id }}-padding">
+      <div class="{{ container }}">
+        <div class="row row-cols-lg-{{ section.settings.column }} row-cols-md-2 row-cols-1">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'about_us' -%}
+                <div class="col mb-30" {{ block.shopify_attributes }}>
+                  <div class="footer__widget">
+                    <h2 class="footer__widget_title h5">
+                      {{ block.settings.heading }}
+                      <button class="footer__widget_toggle" aria-label="{{ block.settings.heading }}">
+                        <span aria-hidden="true"> {{ block.settings.heading }} </span>
+                      </button>
+                    </h2>
+                    <div class="footer__widget_inner">
+                      <div class="footer__widget--text">{{ block.settings.about_information }}</div>
+                      {% if block.settings.social_media %}
+                        {%- render 'social-media', className: 'footer__list-social' -%}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {%- when 'column_space' -%}
+                <div
+                  class="col column__max--width {% if section.blocks.size >= 5 %}  d-lg-none {% else %} d-md-none {% endif %}"
+                  {{ block.shopify_attributes }}
+                ></div>
+
+              {%- when 'link_list' -%}
+                <div class="col mb-30" {{ block.shopify_attributes }}>
+                  <div class="footer__widget">
+                    <h2 class="footer__widget_title h5">
+                      {{ block.settings.heading }}
+                      <button class="footer__widget_toggle" aria-label="{{ block.settings.heading }}">
+                        <span aria-hidden="true"> {{ block.settings.heading }} </span>
+                      </button>
+                    </h2>
+                    <div class="footer__widget_inner">
+                      {%- if block.settings.menu != blank and block.settings.heading != blank -%}
+                        <ul class="list-unstyled">
+                          {%- for link in block.settings.menu.links -%}
+                            <li>
+                              <a href="{{ link.url }}">
+                                {{ link.title }}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </div>
+              {%- when 'contact_info' -%}
+                <div class="col mb-30" {{ block.shopify_attributes }}>
+                  <div class="footer__widget">
+                    <h2 class="footer__widget_title h5">
+                      {{ block.settings.heading }}
+                      <button class="footer__widget_toggle" aria-label="{{ block.settings.heading }}">
+                        <span aria-hidden="true"> {{ block.settings.heading }} </span>
+                      </button>
+                    </h2>
+                    <div class="footer__widget_inner">
+                      <div class="contact__info_box">
+                        <address>
+                          {{ block.settings.contact_address }}
+                        </address>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {%- when 'newsletter' -%}
+                <div class="col mb-30" {{ block.shopify_attributes }}>
+                  <div class="footer__widget">
+                    <h2 class="footer__widget_title h5">
+                      {{ block.settings.heading }}
+                      <button class="footer__widget_toggle" aria-label="{{ block.settings.heading }}">
+                        <span aria-hidden="true"> {{ block.settings.heading }} </span>
+                      </button>
+                    </h2>
+                    <div class="footer__widget_inner">
+                      <p class="newsletter__content">{{ block.settings.text }}</p>
+                      {%- form 'customer', id: 'ContactFooter', class: 'footer__newsletter newsletter-form' -%}
+                        <input type="hidden" name="contact[tags]" value="newsletter">
+                        <div class="newsletter-form__field-wrapper">
+                          <div class="input__field_form">
+                            <span class="newsletter__mail--icon"> {% render 'hooktheme-icon-email' %} </span>
+                            <input
+                              id="NewsletterForm--{{ section.id }}"
+                              type="email"
+                              name="contact[email]"
+                              class="input__field"
+                              value="{{ form.email }}"
+                              aria-required="true"
+                              autocorrect="off"
+                              autocapitalize="off"
+                              autocomplete="email"
+                              {% if form.errors %}
+                                autofocus
+                                aria-invalid="true"
+                                aria-describedby="ContactFooter-error"
+                              {% elsif form.posted_successfully? %}
+                                aria-describedby="ContactFooter-success"
+                              {% endif %}
+                              placeholder="{{ 'newsletter.label' | t }}"
+                              required
+                            >
+                            <button
+                              type="submit"
+                              class="input__field_form_button newsletter__subscribe--button"
+                              name="commit"
+                              id="Subscribe"
+                              aria-label="{{ 'newsletter.button_label' | t }}"
+                            >
+                              {% render 'hooktheme-icon-arrow-right' %}
+                            </button>
+                          </div>
+                          {%- if form.errors -%}
+                            <small class="newsletter-form__message form__message" id="ContactFooter-error">
+                              {%- render 'hooktheme-icon-error' -%}
+                              {{- form.errors.translated_fields.email | capitalize }}
+                              {{ form.errors.messages.email -}}
+                            </small>
+                          {%- endif -%}
+                        </div>
+                        {%- if form.posted_successfully? -%}
+                          <h3
+                            class="newsletter-form__message newsletter-form__message--success form__message"
+                            id="ContactFooter-success"
+                            tabindex="-1"
+                          >
+                            {% render 'hooktheme-icon-success' -%}
+                            {{- 'newsletter.success' | t }}
+                          </h3>
+                        {%- endif -%}
+                      {%- endform -%}
+                    </div>
+                  </div>
+                </div>
+              {%- when 'image' -%}
+                <div class="col mb-30">
+                  <div class="footer__widget" {{ block.shopify_attributes }}>
+                    <h2 class="footer__widget_title h5">
+                      {{ block.settings.heading }}
+                      <button class="footer__widget_toggle" aria-label="{{ block.settings.heading }}">
+                        <span aria-hidden="true"> {{ block.settings.heading }} </span>
+                      </button>
+                    </h2>
+                    <div class="footer__widget_inner">
+                      <div class="footer-block__details-content footer-block-image {{ block.settings.alignment }}">
+                        {%- if block.settings.image != blank -%}
+                          {%- assign image_size = block.settings.image_width | append: 'x' -%}
+                          <img
+                            srcset="{{ block.settings.image | img_url: image_size }}, {{ block.settings.image | img_url: image_size, scale: 2 }} 2x"
+                            src="{{ block.settings.image | img_url: '400x' }}"
+                            alt="{{ block.settings.image.alt | escape }}"
+                            loading="lazy"
+                            width="{{ block.settings.image.width }}"
+                            height="{{ block.settings.image.height }}"
+                            style="max-width: min(100%, {{ block.settings.image_width }}px);"
+                          >
+                        {%- else -%}
+                          {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+    <!-- Footer Top End -->
+
+    <!-- Footer Bottom Start -->
+    <div class="footer__bottom">
+      <div class="{{ container }}">
+        <div class="row justify-content-between align-items-center">
+          {% liquid
+            assign currency_selctor = false
+            assign language_selctor = false
+            if localization.available_countries.size > 1 and section.settings.enable_country_selector
+              assign currency_selctor = true
+            endif
+
+            if localization.available_languages.size > 1 and section.settings.enable_language_selector
+              assign language_selctor = true
+            endif
+          %}
+          {%- if currency_selctor or language_selctor -%}
+            <div class="col-12 col-md-auto mb--20">
+              {% render 'localization-form',
+                form_currency_id: 'FooterCountryForm-2',
+                form_language_id: 'FooterLanguageForm-2',
+                dropdown_position: 'dropdown__top--left-position',
+                enable_country_selector: section.settings.enable_country_selector,
+                enable_language_selector: section.settings.enable_language_selector,
+                place: 'footer',
+                className: 'footer__localization'
+              %}
+            </div>
+          {% endif %}
+
+          <div class="col-12 col-md-auto mb--20 footer--copyright-container">
+            <span class="footer__copyright">&copy; {{ 'now' | date: '%Y' }}, {{ section.settings.powered_by }}</span>
+          </div>
+
+          {% if section.settings.payment_icons_type == 'manual' %}
+            {% liquid
+              assign enabled_payment_types = section.settings.payment_icons | split: ','
+            %}
+            <div class="col-12 col-md-auto mb--20">
+              {%- if shop.features.follow_on_shop? and section.settings.enable_follow_on_shop -%}
+                <div class="footer__follow-on-shop">
+                  {% comment %}  TODO: enable theme-check once `login_button` is accepted as valid filter {% endcomment %}
+                  {% # theme-check-disable %}
+                  {{ shop | login_button: action: 'follow' }}
+                  {% # theme-check-enable %}
+                </div>
+              {%- endif -%}
+              <div class="footer__payment">
+                <ul class="list list-payment footer--list__payment" role="list">
+                  {%- for type in enabled_payment_types -%}
+                    <li class="list-payment__item">
+                      {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+          {% elsif section.settings.payment_icons_type == 'dynamic' %}
+            <div class="col-12 col-md-auto mb--20">
+              {%- if shop.features.follow_on_shop? and section.settings.enable_follow_on_shop -%}
+                <div class="footer__follow-on-shop">
+                  {% comment %}  TODO: enable theme-check once `login_button` is accepted as valid filter {% endcomment %}
+                  {% # theme-check-disable %}
+                  {{ shop | login_button: action: 'follow' }}
+                  {% # theme-check-enable %}
+                </div>
+              {%- endif -%}
+              <div class="footer__payment">
+                <ul class="list list-payment footer--list__payment" role="list">
+                  {%- for type in shop.enabled_payment_types -%}
+                    <li class="list-payment__item">
+                      {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+          {% else %}
+            {% comment %}
+              https://shopify.github.io/liquid-code-examples/example/payment-icons
+            {% endcomment %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- Footer Bottom End -->
+
+    <!-- Footer Logo Start -->
+    {% if section.settings.show_logo %}
+      <div class="footer__logo">
+        <div class="{{ container }}">
+          <div class="footer-logo-wrapper">
+            <div
+              class="footer-logo-media media--{{ section.settings.image_ratio }} media"
+              {% if section.settings.image_ratio == 'adapt' %}
+                style="padding-bottom: {{ 1 | divided_by: section.settings.footer_logo.aspect_ratio | times: 100 }}%;"
+              {% endif %}
+            >
+              {%- if section.settings.footer_logo != blank -%}
+                {%- assign image_size = section.settings.logo_width | append: 'x' -%}
+                {{
+                  section.settings.footer_logo
+                  | image_url: width: 1530
+                  | image_tag: loading: 'lazy', sizes: sizes, widths: '275, 550, 710, 1420, 1530'
+                }}
+              {%- else -%}
+                <span class="h2">{{ shop.name }}</span>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    <!-- Footer Logo End -->
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "snow_fall",
+      "label": "Enable snow fall",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-2"
+    },
+    {
+      "type": "select",
+      "id": "column",
+      "label": "Desktop footer widget column",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "richtext",
+      "id": "powered_by",
+      "default": "<p>Powered by HookThemes </p>",
+      "label": "Copyright"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__9.content",
+      "info": "t:sections.footer.settings.header__9.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_follow_on_shop",
+      "default": true,
+      "label": "t:sections.footer.settings.enable_follow_on_shop.label"
+    },
+    {
+      "type": "header",
+      "content": "Country/region selector",
+      "info": "To add a country/region, go to your [market settings.](/admin/settings/markets)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "default": true,
+      "label": "Enable country/region selector"
+    },
+    {
+      "type": "header",
+      "content": "Language selector",
+      "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "default": true,
+      "label": "Enable language selector"
+    },
+    {
+      "type": "header",
+      "content": "Payment icons"
+    },
+    {
+      "type": "radio",
+      "id": "payment_icons_type",
+      "label": "Icons type",
+      "options": [
+        {
+          "value": "dynamic",
+          "label": "Dynamic"
+        },
+        {
+          "value": "manual",
+          "label": "Manual"
+        }
+      ],
+      "default": "dynamic",
+      "info": "You must enable payment in your store to use the dynamic icons. To add payment provider, go to your [payment settings.](/admin/settings/payments)"
+    },
+    {
+      "type": "textarea",
+      "id": "payment_icons",
+      "default": "visa,master,american_express,paypal,discover,shopify_pay",
+      "label": "Manual icons list",
+      "info": "You must add icon names following this format, visa,master,paypal. Separate by \",\". You can find more icon names here, [Payment icons list](https://help.shopify.com/en/manual/online-store/themes/themes-by-shopify/vintage-themes/customizing-vintage-themes/add-credit-card-icons)",
+      "placeholder": "visa,master,paypal,shopify_pay"
+    },
+    {
+      "type": "header",
+      "content": "Footer logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_logo",
+      "label": "Show logo",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to first image"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        }
+      ],
+      "default": "adapt",
+      "label": "Logo height"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Quick Links",
+          "label": "t:sections.footer.blocks.text.settings.heading.label"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "default": "footer",
+          "label": "t:sections.footer.blocks.link_list.settings.menu.label",
+          "info": "t:sections.footer.blocks.link_list.settings.menu.info"
+        }
+      ]
+    },
+    {
+      "type": "about_us",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "About us",
+          "label": "t:sections.footer.blocks.text.settings.heading.label"
+        },
+        {
+          "type": "richtext",
+          "id": "about_information",
+          "label": "Text",
+          "default": "<p>The exciting contemporary brand Suruchi is known for its attention to detail and premium graphics.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "social_media",
+          "default": true,
+          "label": "Show social media",
+          "info": "To display your social media accounts, link them in your theme settings under “Social media”"
+        }
+      ]
+    },
+    {
+      "type": "contact_info",
+      "name": "Contact Info",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Contact Info",
+          "label": "t:sections.footer.blocks.text.settings.heading.label"
+        },
+        {
+          "type": "html",
+          "id": "contact_address",
+          "label": "Contact Address",
+          "default": "You can contact author at <a href=\"tel:+13115552368\">(311) 555-2368</a>.\n                  If you see any bugs, please <a href=\"mailto:admin@example.com\">admin@example.com</a>.<br>\n                  You may also want to visit us:<br>\n                  Mozilla Foundation<br>\n                  331 E Evelyn Ave<br>\n                  Mountain View, CA 94041<br>\n                  USA"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Newsletter",
+          "label": "t:sections.footer.blocks.text.settings.heading.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Heading",
+          "label": "t:sections.footer.blocks.text.settings.heading.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "min": 50,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "label": "Image width",
+          "default": 100
+        }
+      ]
+    },
+    {
+      "type": "column_space",
+      "name": "Column space",
+      "settings": []
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "about_us"
+      },
+      {
+        "type": "column_space"
+      },
+      {
+        "type": "link_list"
+      },
+      {
+        "type": "link_list"
+      },
+      {
+        "type": "contact_info"
+      }
+    ]
+  }
+}
+{% endschema %}

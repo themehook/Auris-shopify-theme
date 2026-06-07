@@ -1,0 +1,553 @@
+{% stylesheet %}
+  .product-card-block {
+    min-width: 0;
+    max-width: 100%;
+    width: var(--pc-width, 100%);
+    padding-top: var(--pc-pad-top, 0);
+    padding-bottom: var(--pc-pad-bottom, 0);
+    padding-left: var(--pc-pad-left, 0);
+    padding-right: var(--pc-pad-right, 0);
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-card-block {
+      width: var(--pc-width-mobile, var(--pc-width, 100%));
+      padding-top: calc(var(--pc-pad-top, 0) * var(--pc-mobile-scale, 0.8));
+      padding-bottom: calc(var(--pc-pad-bottom, 0) * var(--pc-mobile-scale, 0.8));
+      padding-left: calc(var(--pc-pad-left, 0) * var(--pc-mobile-scale, 0.8));
+      padding-right: calc(var(--pc-pad-right, 0) * var(--pc-mobile-scale, 0.8));
+    }
+  }
+
+  .product-card-block .product__card {
+    border-radius: var(--pc-corner-radius, 0);
+  }
+
+  .product-card-block .product__card__thumbnail {
+    border-radius: var(--pc-image-radius, 0);
+    overflow: hidden;
+  }
+
+  .product-card-block .product-card-placeholder > div:first-child {
+    border-radius: var(--pc-image-radius, 0);
+  }
+
+  .product-card-block--bordered .product__card {
+    border: var(--pc-border-thickness, 1px) solid rgba(var(--color-foreground), var(--pc-border-opacity, 0.12));
+  }
+{% endstylesheet %}
+
+{%- liquid
+  assign s = block.settings
+
+  case s.width
+    when 'fill'
+      assign width_value = '100%'
+    when 'custom'
+      assign width_value = s.custom_width | append: '%'
+    else
+      assign width_value = 'fit-content'
+  endcase
+
+  case s.width_mobile
+    when 'fill'
+      assign width_mobile_value = '100%'
+    when 'custom'
+      assign width_mobile_value = s.custom_width_mobile | append: '%'
+    else
+      assign width_mobile_value = 'fit-content'
+  endcase
+
+  if s.width == 'custom'
+    assign _custom_px = settings.container_lg_width | times: s.custom_width | divided_by: 100 | round
+    assign pc_sizes = '(min-width: ' | append: settings.container_lg_width | append: 'px) ' | append: _custom_px | append: 'px, calc((100vw - 40px) * ' | append: s.custom_width | append: ' / 100)'
+  elsif s.width == 'fill'
+    assign pc_sizes = '(min-width: ' | append: settings.container_lg_width | append: 'px) ' | append: settings.container_lg_width | append: 'px, calc(100vw - 40px)'
+  else
+    assign pc_sizes = '(min-width: 990px) 400px, calc(100vw - 40px)'
+  endif
+-%}
+
+<div
+  class="product-card-block{% if s.border_style == 'solid' %} product-card-block--bordered{% endif %}"
+  style="
+    --pc-width: {{ width_value }};
+    --pc-width-mobile: {{ width_mobile_value }};
+    --pc-corner-radius: {{ s.corner_radius }}px;
+    --pc-image-radius: {{ s.image_corner_radius }}px;
+    --pc-border-thickness: {{ s.border_thickness }}px;
+    --pc-border-opacity: {{ s.border_opacity | divided_by: 100.0 }};
+    --pc-pad-top: {{ s.padding_top }}px;
+    --pc-pad-bottom: {{ s.padding_bottom }}px;
+    --pc-pad-left: {{ s.padding_left }}px;
+    --pc-pad-right: {{ s.padding_right }}px;
+    --pc-mobile-scale: {{ s.mobile_scale | divided_by: 100.0 }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- if s.product != blank -%}
+    {% render 'product-card',
+      product_card_product: s.product,
+      section_id: block.id,
+      media_size: s.image_ratio,
+      sizes: pc_sizes,
+      show_secondary_image: s.show_secondary_image,
+      show_vendor: s.show_vendor,
+      show_badge: s.show_badges,
+      show_cart_button: s.show_cart_button,
+      show_preorder_button: s.show_preorder_button,
+      show_quick_view: s.show_quick_view_button,
+      show_quick_compare: s.show_compare_view_button,
+      show_wishlist: s.show_wishlist_button,
+      show_countdown: s.show_countdown,
+      show_title: s.show_title,
+      show_price: s.show_price,
+      show_rating: s.show_product_rating,
+      card_style: s.card_style,
+      color_swatches: s.color_swatches,
+      color_scheme: s.product_card_color_scheme,
+      spacing: s.product_card_spacing,
+      cart_button_type: s.cart_button_type,
+      action_buttons_position: s.action_buttons_position,
+      action_buttons_style: s.action_button_style,
+      show_always: s.show_always,
+      low_stock_value: s.low_stock_value,
+      minimum_amount_value: s.minimum_amount_value,
+      show_inventory_quantity: s.show_inventory_quantity,
+      show_inventory_status: s.show_inventory_status,
+      in_stock_color: s.in_stock,
+      out_of_stock_color: s.out_of_stock,
+      low_stock_color: s.low_stock,
+      continue_selling_color: s.continue_selling
+    %}
+  {%- else -%}
+    {% render 'product-card-placeholder',
+      image_ratio: s.image_ratio,
+      index: 1
+    %}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Product card",
+  "tag": null,
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Card style",
+      "options": [
+        { "value": "style_1", "label": "Style 1" },
+        { "value": "style_2", "label": "Style 2" },
+        { "value": "style_3", "label": "Style 3" }
+      ],
+      "default": "style_1"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" },
+        { "value": "landscape", "label": "Landscape" }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Show secondary image on hover",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "color_swatches",
+      "label": "Enable color swatches",
+      "info": "To display color swatches, you need to enable it. [Learn more](https://themihub.gitbook.io/suruchi-theme/theme-settings/color-swatches).",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show badges",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_rating",
+      "label": "Show product rating",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show countdown",
+      "info": "To display countdown timer, you need to enable it. [Learn more](https://themihub.gitbook.io/suruchi-theme/collections-and-products/products/add-a-countdown-timer-to-the-product).",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_button",
+      "label": "Show cart button",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "cart_button_type",
+      "label": "Cart button type",
+      "info": "It works when you select \"Card Style 3\"",
+      "default": "secondary",
+      "options": [
+        { "value": "primary", "label": "Solid button" },
+        { "value": "secondary", "label": "Outline button" }
+      ],
+      "visible_if": "{{ block.settings.card_style == 'style_3' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_preorder_button",
+      "label": "Show pre-order button",
+      "info": "You may want to allow customers to purchase out-of-stock items. [Learn more](https://themihub.gitbook.io/suruchi-theme/general-topics-faq/how-to-enable-the-pre-order-product-to-your-store)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_view_button",
+      "label": "Show quick view",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_view_button",
+      "label": "Show compare button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wishlist_button",
+      "label": "Show wishlist button",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "action_buttons_position",
+      "label": "Actions buttons position on desktop",
+      "info": "It works, when you enable the Card style \"Style 2\"",
+      "default": "top_right",
+      "options": [
+        { "value": "top_right", "label": "Top right" },
+        { "value": "top_left", "label": "Top left" },
+        { "value": "bottom_left", "label": "Bottom left" },
+        { "value": "bottom_right", "label": "Bottom right" },
+        { "value": "bottom_center", "label": "Bottom center" },
+        { "value": "middle_center", "label": "Middle center" }
+      ],
+      "visible_if": "{{ block.settings.card_style == 'style_2' }}"
+    },
+    {
+      "type": "select",
+      "id": "action_button_style",
+      "label": "Action buttons style",
+      "default": "round",
+      "options": [
+        { "value": "round", "label": "Round" },
+        { "value": "square", "label": "Square" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Inventory status"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inventory_status",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "low_stock_value",
+      "label": "Low inventory threshold",
+      "info": "Choose 0 to always show in stock if available.",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10,
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inventory_quantity",
+      "label": "Show inventory count",
+      "default": true,
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_always",
+      "label": "Show always status",
+      "info": "If you disable it, the inventory status will show based on the product's quantity. You can set \"Minimum number\" in the option below to display inventory status.",
+      "default": true,
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "range",
+      "id": "minimum_amount_value",
+      "label": "Minimum number of quantity",
+      "info": "It works until you enable \"Show always\"",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "color",
+      "id": "in_stock",
+      "label": "In stock",
+      "default": "#3ed660",
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "color",
+      "id": "out_of_stock",
+      "label": "Out of stock",
+      "default": "#c8c8c8",
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "color",
+      "id": "low_stock",
+      "label": "Low stock",
+      "default": "#844b15",
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "color",
+      "id": "continue_selling",
+      "label": "Continue selling",
+      "info": "You may want to allow customers to purchase out-of-stock items. [Learn more](https://themihub.gitbook.io/vector-shopify-theme/general-topics-faq/how-to-enable-the-pre-order-product-to-your-store)",
+      "default": "#3ed660",
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "product_card_color_scheme",
+      "label": "Product card color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "product_card_spacing",
+      "label": "Card spacing",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Borders"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Borders",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "solid", "label": "Solid" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border width",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Border opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 12,
+      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_corner_radius",
+      "label": "Image corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width (desktop)",
+      "options": [
+        { "value": "fit-content", "label": "Fit content" },
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "Width (mobile)",
+      "options": [
+        { "value": "fit-content", "label": "Fit content" },
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_scale",
+      "label": "Mobile scale",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product card",
+      "category": "Products"
+    }
+  ]
+}
+{% endschema %}

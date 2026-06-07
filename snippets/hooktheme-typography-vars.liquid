@@ -1,0 +1,151 @@
+{%- liquid
+  # Global heading line-height
+  case settings.heading_line_height
+    when 'none'
+      assign heading_lh = 1.0
+    when 'tight'
+      assign heading_lh = 1.2
+    when 'snug'
+      assign heading_lh = 1.4
+    when 'normal'
+      assign heading_lh = 1.5
+    else
+      assign heading_lh = 1.2
+  endcase
+
+  # Global body line-height
+  case settings.body_line_height
+    when 'compact'
+      assign body_lh = 1.4
+    when 'normal'
+      assign body_lh = 1.6
+    when 'relaxed'
+      assign body_lh = 1.8
+    when 'loose'
+      assign body_lh = 2.0
+    else
+      assign body_lh = 1.6
+  endcase
+-%}
+
+{%- style -%}
+  :root {
+    --body-line-height: {{ body_lh }};
+
+    {%- comment -%} Global heading font source {%- endcomment -%}
+    {%- case settings.heading_font_source -%}
+      {%- when 'body' -%}
+        --heading-global-family: var(--font-body-family);
+        --heading-global-style: var(--font-body-style);
+        --heading-global-weight: var(--font-body-weight);
+      {%- when 'accent' -%}
+        --heading-global-family: var(--font-accent-family);
+        --heading-global-style: var(--font-accent-style);
+        --heading-global-weight: var(--font-accent-weight);
+      {%- when 'display' -%}
+        --heading-global-family: var(--font-display-family);
+        --heading-global-style: var(--font-display-style);
+        --heading-global-weight: var(--font-display-weight);
+      {%- else -%}
+        --heading-global-family: var(--font-heading-family);
+        --heading-global-style: var(--font-heading-style);
+        --heading-global-weight: var(--font-heading-weight);
+    {%- endcase -%}
+
+    --heading-global-line-height: {{ heading_lh }};
+    --heading-global-letter-spacing: var(--heading-letter-spacing, 0px);
+    --heading-global-text-transform: var(--header-text-case, none);
+
+    {%- comment -%} Per-heading variables — only emitted when the level is enabled {%- endcomment -%}
+    {%- for i in (1..6) -%}
+      {%- assign h_enabled     = 'h' | append: i | append: '_custom_enabled' -%}
+      {%- assign h_font_source = 'h' | append: i | append: '_font_source' -%}
+      {%- assign h_font_size   = 'h' | append: i | append: '_font_size' -%}
+      {%- assign h_line_height = 'h' | append: i | append: '_line_height' -%}
+      {%- assign h_letter_sp   = 'h' | append: i | append: '_letter_spacing' -%}
+      {%- assign h_text_case   = 'h' | append: i | append: '_text_case' -%}
+
+      {%- if settings[h_enabled] -%}
+
+        {%- comment -%} Font family {%- endcomment -%}
+        {%- unless settings[h_font_source] == 'inherit' -%}
+          {%- case settings[h_font_source] -%}
+            {%- when 'body' -%}
+              --h{{ i }}-font-family: var(--font-body-family);
+              --h{{ i }}-font-style: var(--font-body-style);
+              --h{{ i }}-font-weight: var(--font-body-weight);
+            {%- when 'accent' -%}
+              --h{{ i }}-font-family: var(--font-accent-family);
+              --h{{ i }}-font-style: var(--font-accent-style);
+              --h{{ i }}-font-weight: var(--font-accent-weight);
+            {%- when 'display' -%}
+              --h{{ i }}-font-family: var(--font-display-family);
+              --h{{ i }}-font-style: var(--font-display-style);
+              --h{{ i }}-font-weight: var(--font-display-weight);
+            {%- else -%}
+              --h{{ i }}-font-family: var(--font-heading-family);
+              --h{{ i }}-font-style: var(--font-heading-style);
+              --h{{ i }}-font-weight: var(--font-heading-weight);
+          {%- endcase -%}
+        {%- endunless -%}
+
+        {%- comment -%} Responsive font sizes {%- endcomment -%}
+        {%- unless settings[h_font_size] == 'inherit' -%}
+          {%- case settings[h_font_size] -%}
+            {%- when '12' -%}
+              --h{{ i }}-font-size-mobile: 1.2rem; --h{{ i }}-font-size-tablet: 1.4rem; --h{{ i }}-font-size-desktop: 1.6rem;
+            {%- when '14' -%}
+              --h{{ i }}-font-size-mobile: 1.4rem; --h{{ i }}-font-size-tablet: 1.6rem; --h{{ i }}-font-size-desktop: 1.8rem;
+            {%- when '16' -%}
+              --h{{ i }}-font-size-mobile: 1.6rem; --h{{ i }}-font-size-tablet: 1.8rem; --h{{ i }}-font-size-desktop: 2.0rem;
+            {%- when '18' -%}
+              --h{{ i }}-font-size-mobile: 1.8rem; --h{{ i }}-font-size-tablet: 2.0rem; --h{{ i }}-font-size-desktop: 2.2rem;
+            {%- when '20' -%}
+              --h{{ i }}-font-size-mobile: 2.0rem; --h{{ i }}-font-size-tablet: 2.2rem; --h{{ i }}-font-size-desktop: 2.4rem;
+            {%- when '24' -%}
+              --h{{ i }}-font-size-mobile: 2.4rem; --h{{ i }}-font-size-tablet: 2.8rem; --h{{ i }}-font-size-desktop: 3.2rem;
+            {%- when '28' -%}
+              --h{{ i }}-font-size-mobile: 2.8rem; --h{{ i }}-font-size-tablet: 3.2rem; --h{{ i }}-font-size-desktop: 4.0rem;
+            {%- when '32' -%}
+              --h{{ i }}-font-size-mobile: 3.2rem; --h{{ i }}-font-size-tablet: 4.0rem; --h{{ i }}-font-size-desktop: 4.8rem;
+            {%- when '36' -%}
+              --h{{ i }}-font-size-mobile: 3.6rem; --h{{ i }}-font-size-tablet: 4.4rem; --h{{ i }}-font-size-desktop: 5.6rem;
+            {%- when '40' -%}
+              --h{{ i }}-font-size-mobile: 4.0rem; --h{{ i }}-font-size-tablet: 4.8rem; --h{{ i }}-font-size-desktop: 6.4rem;
+            {%- when '48' -%}
+              --h{{ i }}-font-size-mobile: 4.8rem; --h{{ i }}-font-size-tablet: 5.6rem; --h{{ i }}-font-size-desktop: 7.2rem;
+            {%- when '56' -%}
+              --h{{ i }}-font-size-mobile: 5.6rem; --h{{ i }}-font-size-tablet: 6.4rem; --h{{ i }}-font-size-desktop: 8.0rem;
+            {%- when '64' -%}
+              --h{{ i }}-font-size-mobile: 6.4rem; --h{{ i }}-font-size-tablet: 7.6rem; --h{{ i }}-font-size-desktop: 9.6rem;
+            {%- when '72' -%}
+              --h{{ i }}-font-size-mobile: 7.2rem; --h{{ i }}-font-size-tablet: 8.8rem; --h{{ i }}-font-size-desktop: 11.2rem;
+            {%- when '80' -%}
+              --h{{ i }}-font-size-mobile: 8.0rem; --h{{ i }}-font-size-tablet: 9.6rem; --h{{ i }}-font-size-desktop: 12.0rem;
+          {%- endcase -%}
+        {%- endunless -%}
+
+        {%- comment -%} Line height {%- endcomment -%}
+        {%- unless settings[h_line_height] == 'inherit' -%}
+          {%- case settings[h_line_height] -%}
+            {%- when 'none' -%}   --h{{ i }}-line-height: 1.0;
+            {%- when 'tight' -%}  --h{{ i }}-line-height: 1.2;
+            {%- when 'snug' -%}   --h{{ i }}-line-height: 1.4;
+            {%- when 'normal' -%} --h{{ i }}-line-height: 1.5;
+          {%- endcase -%}
+        {%- endunless -%}
+
+        {%- comment -%} Letter spacing {%- endcomment -%}
+        {%- unless settings[h_letter_sp] == 'inherit' -%}
+          --h{{ i }}-letter-spacing: {{ settings[h_letter_sp] }}px;
+        {%- endunless -%}
+
+        {%- comment -%} Text transform {%- endcomment -%}
+        {%- unless settings[h_text_case] == 'inherit' -%}
+          --h{{ i }}-text-transform: {{ settings[h_text_case] }};
+        {%- endunless -%}
+
+      {%- endif -%}
+    {%- endfor -%}
+  }
+{%- endstyle -%}

@@ -1,0 +1,73 @@
+/**
+ * Swatch Component Styles
+ * Base swatch visual component - reusable anywhere (product page, dropdowns, etc.)
+ */
+
+.swatch {
+  --swatch--size: var(--swatch-input--size, 4rem);
+  --swatch--border-radius: var(--swatch-input--border-radius, 50%);
+
+  display: block;
+  width: var(--swatch--size);
+  height: var(--swatch--size);
+  aspect-ratio: 1 / 1;
+  background: var(--swatch--background);
+  background-size: cover;
+  background-position: center;
+  background-origin: border-box;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.45);
+  border-radius: var(--swatch--border-radius);
+}
+
+/* Square shape variant */
+.swatch--square {
+  --swatch--border-radius: var(--swatch-input--border-radius, 0.4rem);
+}
+
+/* Unavailable swatch (no color/image defined) */
+.swatch--unavailable {
+  border-style: dashed;
+  border-color: rgba(var(--color-foreground), 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-foreground), 0.08) 0%,
+    rgba(var(--color-foreground), 0.03) 100%
+  );
+}
+
+/* ===========================================
+   Dropdown Swatch Preview
+   Positioned inside the select field border
+   =========================================== */
+
+/* Swatch positioned absolutely inside the select wrapper */
+.dropdown-swatch {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-swatch .swatch {
+  --swatch--size: 2rem;
+}
+
+/* Select wrapper containing a swatch dropdown */
+.select:has(.dropdown-swatch) {
+  position: relative;
+}
+
+/* Add left padding to select to make room for swatch */
+.select:has(.dropdown-swatch) .select__select {
+  padding-left: 3.8rem;
+}
+
+/* Fallback for browsers without :has() support */
+.dropdown-swatch + .select__select {
+  padding-left: 3.8rem;
+}

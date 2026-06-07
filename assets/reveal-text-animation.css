@@ -1,0 +1,21 @@
+.reveal-word {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.reveal-text-trigger > * {
+  margin-bottom: 0;
+}
+
+.reveal-text-trigger {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: var(--text-alignment, flex-start);
+}
+
+.scroll-char {
+  display: inline-block;
+  will-change: opacity, transform;
+}

@@ -1,0 +1,119 @@
+/* Vertical image scroll css */
+.aspect-media--adapt.placeholder {
+    aspect-ratio: 1 / 1;
+}
+.vertical__image--scroll__inner{
+    position: relative;
+}
+.vertical__scroll--content{
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    height: 70vh;
+    @media screen and (min-width: 750px){
+        height: 80vh;
+    }
+}
+.vertical__scroll--gallery{
+    height: 190vh;
+    @media screen and (min-width: 750px){
+        height: 300vh;
+    }
+}
+.vertical__scroll--gallery__inner{
+    height: 130vh;
+    display: grid;
+    @media screen and (min-width: 750px){
+        height: 220vh;
+    }
+}
+.vertical__scroll--gallery__items{
+    &:nth-child(1){
+        place-self: start;
+    }
+    &:nth-child(2){
+        place-self: end;
+    }
+    &:nth-child(3){
+        place-self: center;
+    }
+    &:nth-child(4){
+        place-self: start;
+    }
+    &:nth-child(5){
+        place-self: end;
+    }
+    &:nth-child(6){
+        place-self: center;
+    }
+    &:nth-child(7){
+        place-self: start;
+    }
+    &:nth-child(8){
+        place-self: end;
+    }
+    &:nth-child(9){
+        place-self: center;
+    }
+    &:nth-child(10){
+        place-self: start;
+    }
+    &:nth-child(11){
+        place-self: end;
+    }
+}
+.vertical__scroll--content__inner{
+    align-content: center;
+    max-width: 95%;
+    margin: 0 auto;
+    @media screen and (min-width: 750px){
+        max-width: 90%;
+    }
+    @media screen and (min-width: 922px){
+        max-width: 70%;
+    }
+    @media screen and (min-width: 1200px){
+        max-width: 60%;
+    }
+}
+.vertical__scroll--content__inner>*+*{
+    margin-top: 3rem;
+}
+
+.vertical__scroll--content-heading{
+    & span{
+        display: block
+    }
+}
+.vertical__scroll--content-desc{
+    & p{
+        @media screen and (min-width: 750px){
+            font-size: 1.7rem;
+        }
+        @media screen and (min-width: 922px){
+            font-size: 1.8rem;
+        }
+        @media screen and (min-width: 1200px){
+            font-size: 2rem;
+        }
+    }
+}
+.vertical__scroll--gallery__media.rounded--image{
+    & .placeholder-svg-new{
+        border-radius: 1rem;
+    }
+}
+
+.vertical__scroll--gallery__media.media--adapt.placeholder{
+    height: 5rem;
+    @media screen and (min-width: 750px){
+        height: 10rem;
+    }
+    @media screen and (min-width: 1200px){
+        height: 12rem;
+    }
+    @media screen and (min-width: 1366px){
+        height: 13rem;
+    }
+    
+}

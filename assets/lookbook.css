@@ -1,0 +1,27 @@
+.lookbook--media.media--adapt.placeholder:not(.lookbook--media-placeholder) {
+  padding-top: 56.28%;
+}
+.lookbook--media.media--adapt.placeholder.lookbook--media-placeholder {
+  height: 42rem;
+}
+.media--custom_1_5 {
+  padding-bottom: 150%;
+}
+.media--custom_1_7 {
+  padding-bottom: 170%;
+}
+.media--custom_1_9 {
+  padding-bottom: 190%;
+}
+.media--custom_2_1 {
+  padding-bottom: 200%;
+}
+@media only screen and (min-width: 992px) {
+  .lookbook--media.media--adapt.placeholder.lookbook--media-placeholder {
+    height: 75rem;
+  }
+}
+
+.rounded--image{
+  border-radius: 1rem;
+}

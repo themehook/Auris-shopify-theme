@@ -1,0 +1,601 @@
+{% liquid
+  assign placeholder_1 = 'collection-apparel-1' | placeholder_svg_tag: 'collection__image placeholder'
+  assign placeholder_2 = 'collection-apparel-2' | placeholder_svg_tag: 'collection__image placeholder'
+  assign placeholder_3 = 'collection-apparel-3' | placeholder_svg_tag: 'collection__image placeholder'
+  assign placeholder_4 = 'collection-apparel-4' | placeholder_svg_tag: 'collection__image placeholder'
+
+  assign max_images = section.settings.max_images | default: 3 | plus: 0
+
+  assign container = ''
+  assign page_offset = false
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+    unless section.settings.show_offset
+      assign page_offset = true
+    endunless
+  else
+    assign container = 'container-fluid px-0'
+  endif
+%}
+{{ 'collection-showcase.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.5 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.5 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+</style>
+
+
+<script src="{{ 'collection-showcase.js' | asset_url }}" defer="defer"></script>
+
+<div class="featured-collections-wrapper section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+  <div class="{{ container }} {% if page_offset %}p-0{% endif %}">
+    <div class="section-heading text-{{ section.settings.text_center }} mobile--text-{{ section.settings.mobile_text_center }} {% if section.settings.heading != blank or section.settings.subtitle != blank %}mb-30{% endif %}">
+      {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
+        <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+      {% endif %}
+      <h2 class="section-heading__title {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {{- section.settings.heading -}}
+      </h2>
+      {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+        <span class="section-heading__sub_title  {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {{- section.settings.subtitle -}}
+        </span>
+      {% endif %}
+    </div>
+    <featured-collections
+      class="featured__collections  relative {% if section.settings.image_fullwidth and section.settings.max_images == '1' %} collections__fullwidth {% endif %} featured-collections--images-{{ max_images }} {% if section.settings.max_images == '1' %} {{ section.settings.image_1_layout }}{% endif %} {% if section.settings.collection_border and section.settings.max_images == '1' and section.settings.image_fullwidth != true %} featured__collections--border-style {% endif %}"
+      data-section-id="{{ section.id }}"
+      data-interaction-mode="{{ section.settings.interaction_mode }}"
+    >
+      {% for block in section.blocks %}
+        <div
+          id="tab-collection-{{ block.id }}"
+          class="featured__collections-images z--1 w-full{% if forloop.first %} is-active{% endif %}"
+          role="tabpanel"
+          data-index="{{ forloop.index0 }}"
+          {{ block.shopify_attributes }}
+          {% unless forloop.first %}
+            hidden
+          {% endunless %}
+        >
+          
+
+          <div class="featured__collections-images-inner {% if section.settings.collection_border and section.settings.max_images == '1' %} collection__image--border {% endif %}">
+            {% if max_images >= 1 %}
+              <div class="collection__image image-1 "
+              >
+                <div
+                  class="featured--collections-media media media--hover-effect media--{{ section.settings.image_ratio }} {% if block.settings.image_1 == blank %} placeholder {% endif %}"
+                  {% if section.settings.image_ratio == 'adapt' and block.settings.image_1 != blank %}
+                    style="padding-bottom: {{ 1 | divided_by: block.settings.image_1.aspect_ratio | times: 100 }}%;"
+                  {% endif %}
+                >
+                  {%- if block.settings.image_1 != blank -%}
+                    {{
+                      block.settings.image_1
+                      | image_url: width: 750
+                      | image_tag:
+                        loading: 'lazy',
+                        width: 750,
+                        sizes: '(min-width: 750x) 750px, 100vw',
+                        class: 'banner-image',
+                        alt: block.settings.collection.title
+                      | escape
+                    }}
+                  {%- else -%}
+                   {{ 'hero-apparel-3' | placeholder_svg_tag: 'placeholder-svg-new' }}
+                  {%- endif -%}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if max_images >= 2 %}
+              <div class="collection__image image-2">
+                <div
+                  class="featured--collections-media media media--hover-effect media--square"
+                  {% if section.settings.image_ratio == 'adapt' and block.settings.image_2 != blank %}
+                    style="padding-bottom: {{ 1 | divided_by: block.settings.image_2.aspect_ratio | times: 100 }}%;"
+                  {% endif %}
+                >
+                  {%- if block.settings.image_2 != blank -%}
+                    {{
+                      block.settings.image_2
+                      | image_url: width: 750
+                      | image_tag:
+                        loading: 'lazy',
+                        width: 750,
+                        sizes: '(min-width: 750px) 750px, 100vw',
+                        class: 'banner-image',
+                        alt: block.settings.collection.title
+                      | escape
+                    }}
+                  {%- else -%}
+                    {{ placeholder_2 }}
+                  {%- endif -%}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if max_images >= 3 %}
+              <div class="collection__image image-3">
+                <div
+                  class="featured--collections-media media media--hover-effect media--landscape"
+                  {% if section.settings.image_ratio == 'adapt' and block.settings.image_3 != blank %}
+                    style="padding-bottom: {{ 1 | divided_by: block.settings.image_3.aspect_ratio | times: 100 }}%;"
+                  {% endif %}
+                >
+                  {%- if block.settings.image_3 != blank -%}
+                    {{
+                      block.settings.image_3
+                      | image_url: width: 750
+                      | image_tag:
+                        loading: 'lazy',
+                        width: 750,
+                        sizes: '(min-width: 750px) 750px, 100vw',
+                        class: 'banner-image',
+                        alt: block.settings.collection.title
+                      | escape
+                    }}
+                  {%- else -%}
+                    {{ placeholder_3 }}
+                  {%- endif -%}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if max_images >= 4 %}
+              <div class="collection__image image-4">
+                <div
+                  class="featured--collections-media media media--hover-effect media--portrait"
+                  {% if section.settings.image_ratio == 'adapt' and block.settings.image_4 != blank %}
+                    style="padding-bottom: {{ 1 | divided_by: block.settings.image_4.aspect_ratio | times: 100 }}%;"
+                  {% endif %}
+                >
+                  {%- if block.settings.image_4 != blank -%}
+                    {{
+                      block.settings.image_4
+                      | image_url: width: 750
+                      | image_tag:
+                        loading: 'lazy',
+                        width: 750,
+                        sizes: '(min-width: 750px) 750px, 100vw',
+                        class: 'banner-image',
+                        alt: block.settings.collection.title
+                      | escape
+                    }}
+                  {%- else -%}
+                    {{ placeholder_4 }}
+                  {%- endif -%}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="featured__collections-content {% if section.settings.collection_border and section.settings.max_images == '1' and section.settings.image_fullwidth != true %} collection-items-border {% endif %}">
+        <div class="featured__collections-links-wrapper">
+          <div class="featured__collections-links text-center">
+            {% for block in section.blocks %}
+              {%- capture collection_title -%}
+              {%- if block.settings.custom_title != blank -%}
+                {{- block.settings.custom_title -}}
+              {%- else -%}
+                {{- block.settings.collection.title | default: 'Collection title' -}}
+              {%- endif -%}
+            {%- endcapture -%}
+
+              <div
+                id="collection-{{ block.id }}"
+                class="featured__collections-item {% if forloop.first %} is-active{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                {% if block.settings.collection != blank %}
+                  data-collection-url="{{ block.settings.collection.url }}"
+                {% endif %}
+                {{ block.shopify_attributes }}
+              >
+                {% if block.settings.collection != blank %}
+                  <span class="featured__collections-link {{ section.settings.title_size }} mb-0" role="button" tabindex="0">
+                    <span class="featured__collections-link-text" data-text="{{- collection_title -}}">
+                      {{- collection_title -}}
+                    </span>
+                    <span class="collection--count">
+                      (
+                      {{- block.settings.collection.products_count -}}
+                      )
+                    </span>
+                  </span>
+                {% else %}
+                  <span
+                    class="featured__collections-link {{ section.settings.title_size }} mb-0"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="featured__collections-link-text"
+                      data-text="{{ 'sections.collection_list.default_title' | t }}"
+                    >
+                      {{ 'sections.collection_list.default_title' | t }}
+                    </span>
+                    {% if section.settings.collection_border and section.settings.max_images == '1' and section.settings.image_fullwidth != true %}
+                      <span class="featured__collections--count">00</span>
+                    {% endif %}
+                  </span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </featured-collections>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Collections showcase",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container-fluid",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_offset",
+      "label": "Enable Offset (left & right)",
+      "info": "It will work if you select the \"Full width\" of the page",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Collection",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Heading position"
+    },
+    {
+      "type": "select",
+      "id": "text_center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Desktop alignment"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Mobile alignment"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "interaction_mode",
+      "options": [
+        {
+          "value": "hover",
+          "label": "Hover"
+        },
+        {
+          "value": "click",
+          "label": "Click"
+        }
+      ],
+      "default": "hover",
+      "label": "Interaction mode",
+      "info": "Choose how to switch collections. On mobile, click mode is always active."
+    },
+    {
+      "type": "select",
+      "id": "max_images",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 image"
+        },
+        {
+          "value": "2",
+          "label": "2 images"
+        },
+        {
+          "value": "3",
+          "label": "3 images"
+        },
+        {
+          "value": "4",
+          "label": "4 images"
+        }
+      ],
+      "default": "4",
+      "label": "Maximum images per collection"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to first image"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.multicolumn.settings.image_ratio.label"
+    },
+    {
+      "type": "select",
+      "id": "image_1_layout",
+      "options": [
+        {
+          "value": "image_first",
+          "label": "t:sections.image-with-text.settings.layout.options__1.label"
+        },
+        {
+          "value": "text_first",
+          "label": "t:sections.image-with-text.settings.layout.options__2.label"
+        }
+      ],
+      "default": "image_first",
+      "label": "Layout image 1",
+      "visible_if": "{{ section.settings.image_fullwidth == false }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_fullwidth",
+      "label": "Show image fullwidth",
+      "default": true,
+      "visible_if": "{{ section.settings.max_images == '1' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "collection_border",
+      "label": "Border style",
+      "default": false,
+      "visible_if": "{{ section.settings.max_images == '1' and section.settings.image_fullwidth == false  }}"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "options": [
+        {
+          "value": "h4",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h1",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h0",
+          "label": "Extra large"
+        }
+      ],
+      "default": "h2",
+      "label": "Title size"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "t:sections.header.settings.color_scheme.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Title",
+          "info": "Optional! Instead of the collection's title, the selected title will be displayed."
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Image 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image 2",
+          "visible_if": "{{ section.settings.max_images == '2' or section.settings.max_images == '3' or section.settings.max_images == '4' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Image 3",
+          "visible_if": "{{ section.settings.max_images == '3' or section.settings.max_images == '4' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Image 4",
+          "visible_if": "{{ section.settings.max_images == '4' }}"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections showcase",
+      "category": "Collections",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,662 @@
+/* ===== Cart Page Redesign - Two-Column Layout ===== */
+
+/* ---------- Two-Column Grid (internal layout) ---------- */
+.cart-page-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 990px) {
+  .cart-page-layout {
+    display: grid;
+    grid-template-columns: 1fr 38rem;
+    gap: 0 3rem;
+    align-items: start;
+  }
+}
+
+/* Sticky sidebar on desktop */
+@media screen and (min-width: 990px) {
+  .cart-page-layout__sidebar {
+    position: sticky;
+    top: 12rem;
+  }
+}
+
+/* ---------- Override existing cart styles for card design ---------- */
+.cart-page-main-section .cart__items {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.cart-page-main-section .cart__items.cart-page-card {
+  position: relative;
+  border: 1px solid rgba(var(--color-foreground), 0.08);
+  border-radius: 1.2rem;
+}
+
+@media screen and (min-width: 750px) {
+  .cart-page-main-section .cart__items {
+    grid-column: auto;
+    padding-bottom: 0;
+  }
+
+  .cart-page-main-section .cart__contents > * + * {
+    margin-top: 0;
+  }
+}
+
+/* ---------- Card Base Style ---------- */
+.cart-page-card {
+  background: rgb(var(--color-background));
+  border: 1px solid rgba(var(--color-foreground), 0.08);
+  border-radius: 1.2rem;
+  padding: 2.4rem;
+  margin-bottom: 2rem;
+}
+
+/* ---------- Cart Items Card ---------- */
+.cart-items-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.cart-items-card__title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.cart-items-card__count {
+  color: rgba(var(--color-foreground), 0.5);
+  font-size: 1.4rem;
+}
+
+/* ---------- Cart Item Row Redesign (CSS Grid + Card) ---------- */
+.cart-page-main-section .cart-items thead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Each cart item is a grid row with bottom border separator */
+.cart-page-main-section .cart-item {
+  display: grid !important;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0 1.6rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.08);
+  position: relative;
+}
+
+.cart-page-main-section .cart-item:last-child {
+  border-bottom: none;
+}
+
+/* Image: spans both rows, col 1 */
+.cart-page-main-section .cart-item__media {
+  grid-row: 1 / 3;
+  grid-column: 1;
+  width: 10rem;
+}
+
+.cart-page-main-section .cart-item__media img {
+  border-radius: 0.8rem;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Details: row 1, col 2 */
+.cart-page-main-section .cart-item__details {
+  grid-row: 1;
+  grid-column: 2;
+  padding-inline-end: 3.2rem;
+  min-width: 0;
+  width: auto;
+}
+
+/* Remove button: absolute top-end of the row */
+.cart-page-main-section cart-remove-button {
+  position: absolute;
+  top: 2rem;
+  inset-inline-end: 0;
+  z-index: 2;
+}
+
+.cart-page-main-section cart-remove-button a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  background: rgba(var(--color-foreground), 0.05);
+  color: rgba(var(--color-foreground), 0.5);
+  text-decoration: none;
+  font-size: 0;
+  transition: all 0.2s;
+}
+
+.cart-page-main-section cart-remove-button a::before {
+  content: "\00D7";
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.cart-page-main-section cart-remove-button a:hover {
+  background: rgba(var(--color-foreground), 0.1);
+  color: rgb(var(--color-foreground));
+}
+
+/* Quantity: row 2, col 2 — below details */
+.cart-page-main-section .cart-item__quantity {
+  grid-row: 2;
+  grid-column: 2;
+  align-self: end;
+  display: flex;
+  align-items: center;
+  padding-inline-start: 0 !important;
+  padding-top: 1rem !important;
+}
+
+/* Hide mobile-specific total column */
+.cart-page-main-section .cart-item__totals.medium-hide.large-up-hide {
+  display: none !important;
+}
+
+/* Price: spans both rows, col 3, bottom-aligned */
+.cart-page-main-section .cart-item__totals.small-hide {
+  grid-row: 1 / 3;
+  grid-column: 3;
+  align-self: end;
+  display: flex !important;
+  align-items: flex-end;
+  justify-content: flex-end;
+  text-align: end;
+  font-weight: 600;
+  padding-top: 0 !important;
+  padding-inline-start: 0 !important;
+  min-width: 8rem;
+  position: relative;
+}
+
+/* Loading spinner inside price cell */
+.cart-page-main-section .cart-item__totals .loading-overlay {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: auto;
+  top: auto;
+  width: 3rem;
+}
+
+/* Reset table cell padding in grid context */
+.cart-page-main-section .cart-items td {
+  padding-top: 0;
+  padding-inline-start: 0;
+}
+
+/* Mobile cart item adjustments */
+@media screen and (max-width: 989px) {
+  .cart-page-main-section .cart-item {
+    grid-template-columns: auto 1fr auto;
+    gap: 0 1.2rem;
+    padding: 1.6rem 0;
+  }
+
+  .cart-page-main-section .cart-item__media {
+    width: 8rem;
+  }
+
+  .cart-page-main-section .cart-item__details {
+    padding-inline-end: 2.8rem;
+  }
+}
+
+/* ---------- Feature Badges ---------- */
+.cart-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.6rem;
+  margin-bottom: 2rem;
+}
+
+.cart-features__item {
+  text-align: center;
+  padding: 2rem 1.6rem;
+  background: rgba(var(--color-foreground), 0.02);
+  border: 1px solid rgba(var(--color-foreground), 0.08);
+  border-radius: 1.2rem;
+}
+
+.cart-features__icon {
+  margin-bottom: 0.8rem;
+}
+
+.cart-features__icon svg,
+.cart-features__icon img {
+  width: 2.8rem;
+  height: 2.8rem;
+  color: rgb(var(--color-foreground));
+  object-fit: contain;
+}
+
+.cart-features__title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.cart-features__desc {
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.6);
+  margin: 0;
+}
+
+@media screen and (max-width: 749px) {
+  .cart-features {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-features__item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    text-align: start;
+    padding: 1.4rem 1.6rem;
+  }
+
+  .cart-features__icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .cart-features__text {
+    flex: 1;
+  }
+}
+
+/* ---------- Gift Options Card ---------- */
+.cart-gift-options__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.cart-gift-options__header svg {
+  width: 2.2rem;
+  height: 2.2rem;
+  flex-shrink: 0;
+}
+
+.cart-gift-options__title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.cart-gift-options #is-a-gift {
+  margin-bottom: 0;
+}
+
+.cart-gift-message {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(var(--color-foreground), 0.08);
+}
+
+.cart-gift-message.hidden {
+  display: none;
+}
+
+.cart-gift-message__title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 1.2rem;
+}
+
+.cart-gift-message__textarea {
+  width: 100%;
+  min-height: 10rem;
+  padding: 1.2rem;
+  border: 1px solid rgba(var(--color-foreground), 0.15);
+  border-radius: 0.8rem;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1.4rem;
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+}
+
+.cart-gift-message__textarea:focus {
+  outline: none;
+  border-color: rgba(var(--color-foreground), 0.4);
+}
+
+.cart-gift-message__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.8rem;
+}
+
+.cart-gift-message__counter {
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.5);
+}
+
+.cart-gift-message__save {
+  padding: 0.8rem 2rem;
+  font-size: 1.3rem;
+}
+
+/* Gift options loading state */
+.cart-gift-options--loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.cart-gift-options--loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--color-background), 0.5);
+  border-radius: 1.2rem;
+  z-index: 5;
+}
+
+/* ---------- Sidebar Card (Order Summary) ---------- */
+.cart-sidebar-card {
+  border-radius: 1.2rem;
+  border: 1px solid rgba(var(--color-foreground), 0.08);
+  overflow: hidden;
+  background: rgb(var(--color-background));
+}
+
+/* ---------- Details/Summary Dropdowns ---------- */
+.cart-sidebar__details {
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.08);
+}
+
+.cart-sidebar__details-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.4rem 2rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.4rem;
+  list-style: none;
+  user-select: none;
+}
+
+.cart-sidebar__details-header::-webkit-details-marker {
+  display: none;
+}
+
+.cart-sidebar__details-header > svg:first-child {
+  width: 1.8rem;
+  height: 1.8rem;
+  flex-shrink: 0;
+}
+
+.cart-sidebar__details-header > span {
+  flex: 1;
+}
+
+/* Chevron arrow */
+.cart-sidebar__details-chevron {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.cart-sidebar__details[open] .cart-sidebar__details-chevron {
+  transform: rotate(180deg);
+}
+
+/* Body of dropdown */
+.cart-sidebar__details-body {
+  padding: 0 2rem 1.6rem;
+}
+
+/* Override cart-discount styles inside sidebar dropdown */
+.cart-sidebar__details-body .coupon__box {
+  margin-bottom: 0;
+}
+
+.cart-sidebar__details-body .coupon__title {
+  display: none;
+}
+
+/* Discount input inside sidebar - white background */
+.cart-sidebar__details-body .cart-discount__input {
+  background: rgb(var(--color-background));
+  border-color: rgba(var(--color-foreground), 0.12);
+}
+
+/* Apply button — dark filled, compact */
+
+.cart-sidebar__details-body .cart-discount__button:hover {
+  opacity: 0.85;
+}
+
+/* ---------- Shipping Calculator in Sidebar ---------- */
+.cart-sidebar__shipping-form .select__field_form,
+.cart-sidebar__shipping-form .input__field_form {
+  margin-bottom: 1rem;
+}
+
+.cart-sidebar__shipping-form .select__field_form select,
+.cart-sidebar__shipping-form .input__field_form .input__field {
+  width: 100%;
+  border-color: rgba(var(--color-foreground), 0.15);
+}
+
+.cart-sidebar__shipping-form .select__field_form label,
+.cart-sidebar__shipping-form .input__field_form label {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* Calculate Shipping button — outlined style */
+.cart-sidebar__shipping-btn {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.cart-sidebar__shipping-results {
+  margin-top: 1.2rem;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.cart-sidebar__shipping-results .error {
+  color: #cc0000;
+}
+
+/* ---------- Cart Note in Sidebar Dropdown ---------- */
+.cart-sidebar__note-textarea {
+  width: 100%;
+  min-height: 10rem;
+  padding: 1.2rem;
+  border: 1px solid rgba(var(--color-foreground), 0.15);
+  border-radius: 0.8rem;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1.4rem;
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  line-height: 1.5;
+}
+
+.cart-sidebar__note-textarea:focus {
+  outline: none;
+  border-color: rgba(var(--color-foreground), 0.4);
+}
+
+.cart-sidebar__note-counter {
+  text-align: end;
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.5);
+  margin-top: 0.6rem;
+}
+
+/* ---------- Free Shipping Bar inside Sidebar ---------- */
+.cart-sidebar__summary .percent_shipping_bar_wrapper {
+  margin-inline-end: 2rem;
+}
+
+/* ---------- Order Summary section ---------- */
+.cart-sidebar__summary {
+  padding: 2rem;
+  background-color: rgb(var(--color-background));
+}
+
+.cart-sidebar__summary-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+
+.cart-sidebar__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+  font-size: 1.4rem;
+}
+
+.cart-sidebar__row--total {
+  font-weight: 700;
+  font-size: 1.6rem;
+  border-top: 1px solid rgba(var(--color-foreground), 0.08);
+  margin-top: 0.8rem;
+  padding-top: 1.6rem;
+}
+
+.cart-sidebar__row-value {
+  font-weight: 500;
+}
+
+.cart-sidebar__row--total .cart-sidebar__row-value {
+  font-weight: 700;
+}
+
+/* Discount display in sidebar */
+.cart-sidebar__discounts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cart-sidebar__discounts li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.cart-sidebar__discounts .discount-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Tax note */
+.cart-sidebar__tax-note {
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.5);
+  margin: 0.8rem 0 0;
+  text-align: center;
+}
+
+/* Checkout button */
+.cart-sidebar__checkout-btn {
+  width: 100%;
+  padding: 1.6rem;
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  border: none;
+  border-radius: 5rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+  transition: opacity 0.2s;
+}
+
+.cart-sidebar__checkout-btn:hover {
+  opacity: 0.85;
+}
+
+.cart-sidebar__checkout-btn[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cart-sidebar__checkout-btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+/* Trust badges */
+.cart-sidebar__trust {
+  text-align: center;
+  margin-top: 1.6rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid rgba(var(--color-foreground), 0.06);
+}
+
+.cart-sidebar__trust p {
+  margin: 0.4rem 0;
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.cart-sidebar__trust svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+/* Dynamic checkout buttons in sidebar */
+.cart-sidebar__summary .cart__dynamic-checkout-buttons {
+  max-width: 100%;
+  margin-top: 1rem;
+}
+
+/* ---------- Empty Cart State ---------- */
+.cart-page-main-section .cart__warnings {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.cart-page-layout__sidebar .is-empty .cart-sidebar-card {
+  display: none;
+}

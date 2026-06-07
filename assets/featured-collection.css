@@ -1,0 +1,343 @@
+.product_slider_wrapper {
+  position: relative;
+}
+.button.loadMoreBtn.loading:after {
+  top: unset;
+  left: unset;
+}
+
+.swiper-button-next.product-slider--nav-button {
+  right: 0;
+  left: auto;
+}
+.swiper-button-prev.product-slider--nav-button {
+  left: 0;
+}
+.product_slider_wrapper:hover .product-slider--nav-button {
+  opacity: 1;
+  visibility: visible;
+}
+.product_slider_wrapper:hover .swiper-button-next.product-slider--nav-button {
+  right: 0;
+}
+.product_slider_wrapper:hover .swiper-button-prev.product-slider--nav-button {
+  left: 0;
+}
+.product-slider--nav-button:after {
+  display: none;
+}
+.productSlider .swiper-wrapper {
+  box-sizing: inherit;
+}
+.product-slider--nav-button:hover {
+  background-color: rgba(var(--primary-button-hover-background));
+  color: rgba(var(--primary-button-hover-text)) !important;
+  border-color: rgba(var(--primary-button-hover-background));
+}
+.swiper-pagination.product-slider--pagination .swiper-pagination-bullet {
+  background: transparent;
+  border: 2px solid rgba(var(--color-foreground));
+  width: 14px;
+  height: 14px;
+}
+.swiper-pagination.product-slider--pagination {
+  margin-top: 35px;
+  position: inherit;
+}
+@media only screen and (min-width: 750px) {
+  [data-show-extra-large="4"]
+    .productSlider.swiper:not(.swiper-initialized)
+    .swiper-wrapper
+    .swiper-slide {
+    width: 25%;
+  }
+  [data-show-extra-large="5"]
+    .productSlider.swiper:not(.swiper-initialized)
+    .swiper-wrapper
+    .swiper-slide {
+    width: 20%;
+  }
+  [data-show-extra-large="3"]
+    .productSlider.swiper:not(.swiper-initialized)
+    .swiper-wrapper
+    .swiper-slide {
+    width: 33%;
+  }
+  [data-show-extra-large="2"]
+    .productSlider.swiper:not(.swiper-initialized)
+    .swiper-wrapper
+    .swiper-slide {
+    width: 50%;
+  }
+  .productSlider.swiper:not(.swiper-initialized) .swiper-wrapper {
+    gap: 2rem;
+  }
+}
+.button.loadMoreBtn.loading:hover::after {
+  border-color: rgba(var(--color-background));
+  border-left-color: transparent;
+}
+/* Featured collection with banner */
+@media only screen and (min-width: 750px) {
+  .collection__product--with-banner.collection--media-second {
+    flex-direction: row-reverse;
+  }
+  .collection__product--with-banner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  .collection__product--with-banner .featured--collection-card {
+    max-width: var(--collection-image-width);
+    width: 100%;
+  }
+  .collection__product--with-banner.collection--card-spacing
+    .featured--collection-card {
+    margin-bottom: 2rem;
+  }
+  .collection__product--with-banner .product_slider_wrapper {
+    width: 100%;
+    max-width: var(--collection-proudcts-width);
+  }
+  .featured--collection-card--media-wrapper,
+  .featured--collection-card-media {
+    height: 100%;
+  }
+  .collection-card--padding-medium {
+    padding: 1.5rem;
+  }
+  .collection-card--padding-large {
+    padding: 2rem;
+  }
+
+  .collection__product--with-banner .countdown__timer--card {
+    max-width: var(--collection-image-width);
+    width: 100%;
+  }
+}
+.featured--collection-card-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2rem;
+  background: transparent;
+}
+.featured--collection-card {
+  position: relative;
+  display: block;
+}
+@media only screen and (max-width: 749px) {
+  .featured--collection-card-media {
+    padding-bottom: var(--image-padding-bottom);
+  }
+  .featured--collection-card {
+    margin-bottom: 2rem;
+  }
+}
+.featured--collection-card.collection-card-radius-true {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.featured--collection-card .placeholder_svg_parent {
+  height: calc(100% - 2rem);
+  /* padding: 0 !important; */
+}
+.featured--collection-card.featured-image-hidden .placeholder_svg_parent{
+  padding: 0 !important;
+}
+.collection-card-radius-true .placeholder_svg_parent {
+  border-radius: 1rem;
+}
+
+@media only screen and (min-width: 992px) {
+  .collection-card--padding-medium {
+    padding: 2rem;
+  }
+  .collection-card--padding-large {
+    padding: 3rem;
+  }
+}
+.featured--collection-card-content-inner > * + button {
+  margin-top: 1rem;
+}
+.featured--collection-card-content-inner > * + .featured--collection--card-desc {
+     margin-bottom: 1rem !important;
+}
+/* Countdown timer box css start */
+.collection__timer--card{
+  margin-bottom: 1rem;
+}
+.featured--collection-card-content.text-center{
+  & .countdown__timer--box__wrapper{
+    justify-content: center;
+  }
+}
+.countdown__timer--box__wrapper {
+  gap: 1rem;
+  @media only screen and (min-width: 750px){
+    gap: 1.5rem;
+  }
+}
+.countdown__timer--box__wrapper .countdown__item {
+  position: relative;
+  text-align: center;
+}
+.countdown__timer--box__wrapper.box .countdown__item {
+  border: 0.1rem solid rgba(var(--color-foreground), 0.7);
+  padding: 0.7rem;
+  border-radius: 0.5rem;
+  min-width: 5.5rem;
+  text-align: center;
+  @media only screen and (min-width: 750px){
+     padding: 1rem;
+    min-width: 6rem;
+  }
+}
+.countdown__timer--box__wrapper.border {
+  gap: 3rem;
+}
+.countdown__timer--box__wrapper.border .countdown__item::before {
+  border-left: 0.1rem solid rgba(var(--color-foreground), 0.3);
+  position: absolute;
+  content: "";
+  height: 100%;
+  width: 100%;
+  right: 1.5rem;
+}
+.countdown__timer--box__wrapper.border .countdown__item:first-child::before {
+  display: none;
+}
+.countdown__timer--card__subtitle {
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  @media only screen and (min-width: 1200px){
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+  }
+}
+.countdown__timer--box__wrapper.colon {
+  gap: 3.5rem;
+}
+.countdown__timer--box__wrapper.colon .countdown__item::before {
+  position: absolute;
+  content: ":";
+  left: -2.4rem;
+  font-size: 5rem;
+  top: 40%;
+  transform: translateY(-50%);
+  line-height: 1;
+  color: rgba(var(--color-foreground), 1);
+}
+.countdown__timer--box__wrapper.colon .countdown__item:first-child::before {
+  display: none;
+}
+.countdown__timer--box__wrapper .countdown__number {
+  color: rgba(var(--color-foreground), 1);
+}
+.countdown__timer--box__wrapper.small .countdown__number {
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 2.8rem;
+}
+.countdown__timer--box__wrapper.small .countdown__text {
+  font-size: 1.3rem;
+  line-height: 2rem;
+}
+.countdown__timer--box__wrapper.medium .countdown__number {
+  font-weight: 700;
+  font-size: 1.8rem;
+  line-height: 3rem;
+}
+.countdown__timer--box__wrapper.medium .countdown__text {
+  font-size: 1.4rem;
+  line-height: 2rem;
+}
+.countdown__timer--box__wrapper.large .countdown__number {
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 2.8rem;
+}
+.countdown__timer--box__wrapper.medium .countdown__text {
+  font-size: 1.4rem;
+  line-height: 2.2rem;
+}
+@media only screen and (min-width: 992px) {
+  .countdown__timer--box {
+    padding: 2rem;
+  }
+  .countdown__timer--box__wrapper.small .countdown__number {
+    font-size: 1.8rem;
+    line-height: 3rem;
+  }
+  .countdown__timer--box__wrapper.small .countdown__text {
+    font-size: 1.4rem;
+    line-height: 2rem;
+  }
+  .countdown__timer--box__wrapper.medium .countdown__number {
+    font-size: 2.2rem;
+    line-height: 3.2rem;
+  }
+  .countdown__timer--box__wrapper.medium .countdown__text {
+    font-size: 1.5rem;
+    line-height: 2.2rem;
+  }
+  .countdown__timer--box__wrapper.large .countdown__number {
+    font-size: 2.5rem;
+    line-height: 3.4rem;
+  }
+}
+@media only screen and (max-width: 949px) {
+  .countdown__timer--card {
+    margin-bottom: 2.5rem;
+  }
+}
+
+.featured-image-hidden{
+  & .featured--collection-card-content{
+    background-color: rgb(var(--color-background));
+    @media only screen and (max-width: 749px) {
+       position: relative;
+      top: auto;
+      left: auto;
+      bottom: auto;
+      right: auto;
+    }
+   
+  }
+  & .placeholder_svg_parent{
+    z-index: -1;
+  }
+  & .featured--collection-card-media{
+    @media only screen and (max-width: 749px){
+        padding-bottom: 130%;
+        display: none;
+    }
+  }
+}
+
+.featured--collection-card.collection-card-border{
+  border: .1rem solid rgba(var(--color-foreground), .15);
+}
+.featured--collection--card-heading{
+  & span{
+    display: block;
+  }
+}
+
+.featured--collection-card-content.text-center{
+  & .featured--collection--card-desc{
+    margin: 0 auto;
+  }
+}
+.featured--collection-card-content.text-right{
+  & .featured--collection--card-desc{
+        margin: 0 0 0 auto;
+  }
+  & .countdown__timer--box__wrapper{
+    justify-content: end;
+  }
+}
+/* Countdown timer box css start */
+

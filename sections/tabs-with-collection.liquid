@@ -1,0 +1,898 @@
+{%- liquid
+  assign theme_rtl = false
+  if settings.enable_rtl and settings.langauges_rtl == blank
+    assign theme_rtl = true
+  endif
+
+  if settings.enable_rtl and settings.langauges_rtl != blank
+    assign rtl_languages = settings.langauges_rtl | split: ','
+    for language in rtl_languages
+      if language == request.locale.iso_code
+        assign theme_rtl = true
+      endif
+    endfor
+  endif
+-%}
+{{ 'tabs-with-collection.css' | asset_url | stylesheet_tag }}
+{{ 'featured-collection.css' | asset_url | stylesheet_tag }}
+{{ 'section-product-tabs.css' | asset_url | stylesheet_tag }}
+{{ 'hooktheme-rating.css' | asset_url | stylesheet_tag }}
+{{ 'countdown-timer.css' | asset_url | stylesheet_tag }}
+{{ 'stock-countdwon.css' | asset_url | stylesheet_tag }}
+{{ 'product-tooltip.css' | asset_url | stylesheet_tag }}
+{{ 'section-title.css' | asset_url | stylesheet_tag }}
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+{{ 'scrolling-text.css' | asset_url | stylesheet_tag }}
+
+<link rel="stylesheet" href="{{ 'hooktheme-price.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<noscript>{{ 'hooktheme-price.css' | asset_url | stylesheet_tag }}</noscript>
+
+
+<script src="{{ 'tabs-with-collection.js' | asset_url }}" defer="defer"></script>
+
+{%- comment -%} Quick View Assets - Conditional Loading {%- endcomment -%}
+{%- if section.settings.show_quick_view_button -%}
+  {{ 'hooktheme-quick-view.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'hooktheme-quick-view.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- liquid
+  assign product_item = 'col mb-25'
+  if section.settings.layout == 'slider'
+    assign slider_enable = true
+  endif
+
+  assign product_show_xl = section.settings.products_show_on_xl
+  assign product_show_sm = section.settings.products_show_on_sm
+  assign slide_auto_play = section.settings.auto_rotate
+  assign autoplay_time = section.settings.autoplay_time
+
+  if slider_enable
+    assign product_item = 'swiper-slide'
+    assign show_navigation = section.settings.show_navigation
+  endif
+  
+-%}
+{%- liquid
+  assign container = ''
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+  else
+    assign container = 'container-fluid px-0'
+  endif
+
+  assign flex_align = 'justify-content-center'
+  if section.settings.text_center == 'left'
+    assign flex_align = 'justify-content-start'
+  elsif section.settings.text_center == 'right'
+    assign flex_align = 'justify-content-end'
+  endif
+-%}
+
+{%- style -%}
+   .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.mobile_padding_top }}px;
+      padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    }
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+   [hidden] {
+      display: none !important;
+   }
+   {% liquid
+      assign media_query = settings.container_lg_width | plus: 60
+   %}
+   
+   {% if section.settings.full_width %}
+    @media only screen and (max-width: 750px){
+      {% if theme_rtl %}
+        .section-{{ section.id }} .slider--button--middle .swiper-button-prev.product__slider--button {
+          right: 0;
+          left: auto;
+        }
+        .section-{{ section.id }} .slider--button--middle .swiper-button-next.product__slider--button {
+          left: 0;
+          right: auto;
+        }
+     {% else %}
+        .section-{{ section.id }} .slider--button--middle .swiper-button-prev.product__slider--button {
+          right: -2.5rem;
+        }
+        .section-{{ section.id }} .slider--button--middle .swiper-button-next.product__slider--button {
+          left: -2.5rem;
+        }
+     {% endif %}}
+    }
+   {% else %}
+   @media only screen and (min-width: {{ media_query }}px){
+    {% if theme_rtl %}
+      .section-{{ section.id }} .product_slider_wrapper:hover .slider--button--middle .swiper-button-prev.product__slider--button {
+        right: -3.8rem;
+        left: auto;
+      }
+      .section-{{ section.id }} .product_slider_wrapper:hover .slider--button--middle .swiper-button-next.product__slider--button {
+        left: -3.8rem;
+        right: auto;
+      }
+    {% else %}
+      .section-{{ section.id }} .product_slider_wrapper:hover .slider--button--middle .swiper-button-prev.product__slider--button {
+        left: -3.8rem;
+      }
+      .section-{{ section.id }} .product_slider_wrapper:hover .slider--button--middle .swiper-button-next.product__slider--button {
+        right: -3.8rem;
+      }
+
+     {% endif %}
+    }
+  {% endif %}
+
+  {% if section.settings.full_width %}
+    @media only screen and (min-width: 1600px){
+       .container-fluid.page--width-{{ section.id }}{
+         --offset-fluid: 3rem;
+       }
+     }
+     @media only screen and (max-width: 1599px){
+       .container-fluid.page--width-{{ section.id }}{
+         --offset-fluid: 1.5rem;
+       }
+     }
+   {% endif %}
+  
+{%- endstyle -%}
+
+{%- capture section_status -%}
+  {% if slider_enable %}
+    tab-slider__activate swiper
+  {% else %}
+    row row-cols-xl-{{ product_show_xl }} row-cols-md-3 row-cols-sm-2 row-cols-{{ product_show_sm }}
+  {%- endif -%}
+{%- endcapture -%}
+
+<div
+  class="collection-list-wrapper section--top-space-{{ section.id }} section-{{ section.id }}-padding section-{{ section.id }} color-{{ section.settings.color_scheme }} gradient"
+  data-section-id="{{ section.id }}"
+>
+  <div class="{% if section.settings.full_width %}container-fluid page--width-{{ section.id }}{% else %}container{% endif %} {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+ 
+    <div class="collection-tab-with-banner-section">
+      <collection-tab-component class="collection-with-tab__grid">
+        {% if section.settings.tab_button_position == 'horizontal' %}<div class="product-tabs--horizontal">{% endif %}
+          {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+            <div class="section-heading text-{{ section.settings.text_center }} mobile--text-{{ section.settings.mobile_text_center }} {% if section.settings.tab_button_position == 'horizontal' %}mb-50{% else %}mb-20{% endif %}">
+              {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
+                <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+              {% endif %}
+              <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank and section.settings.border_line %}heading__space--bottom{% endif %} ">
+                {% if section.settings.border_line %}<span>{% endif %}
+                {{- section.settings.heading -}}
+                {% if section.settings.border_line %}</span>{% endif %}
+              </h2>
+              {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+                <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <ul class="product__tab--one product__tab--btn d-flex {{ flex_align }} {% if section.settings.show_buttons_border %} product__tab--btn__border {% endif %} mb-35">
+            {% for block in section.blocks %}
+              <li class="collection__tab--btn__list">
+              <button
+                class="collection-tab-links__link {{ section.settings.menu_size }}"
+                data-ref="link"
+                aria-selected="{{ forloop.first }}"
+              >
+                 {% if block.settings.collection_heading != blank %}
+                    {{- block.settings.collection_heading -}}
+                  {% elsif block.settings.collection.title != blank %}
+                    {{- block.settings.collection.title -}}
+                  {% else %}
+                    Tab title
+                  {% endif %}
+              </button>
+              </li>
+            {% endfor %}
+          </ul>
+        {% if section.settings.tab_button_position == 'horizontal' %}</div>{% endif %}
+
+        <collection-tab-content class="collection-tab-content">
+          {%- for block in section.blocks -%}
+            <collection-tab-item 
+              {% if forloop.first %}
+                aria-hidden="false"
+              {% endif %}
+              block-attr="{{ block.id }}"
+              section-id="{{ section.id }}"
+              data-slider-enable="true"
+              data-show-mobile="{{ product_show_sm }}"
+              data-show-tablet="3"
+              data-show-large="2"
+              data-show-extra-large="{{ product_show_xl }}"
+              data-autoplay="{{ slide_auto_play }}"
+              data-autoplay-time="{{ autoplay_time }}000"
+              {{ block.shopify_attributes }}
+            >
+               <div class="product_slider_wrapper">
+               {%- if slider_enable and show_navigation != false -%}
+                  <div class="collection__list-with--slider slider--controls--button slider--button--middle ">
+                    <div class="swiper-button-prev  product-slider--nav-button component--slider--nav button--{{ section.settings.navigation_button_style }}">
+                      {% render 'hooktheme-icon-chevron-left' %}
+                    </div>
+                    <div class="swiper-button-next product-slider--nav-button component--slider--nav button--{{ section.settings.navigation_button_style }}">
+                      {% render 'hooktheme-icon-chevron-right' %}
+                    </div>
+                  </div>
+               {% endif %}
+                 <div
+                  id="{{ block.id }}"
+                  class="tab-pane {{ section_status }}"
+                  data-block-id="{{ block.id }}"
+                 >
+                  {%- liquid
+                    assign featured_product_limit = section.settings.products_to_show
+                  -%}
+                   
+                  {% assign animations_enabled = false %}
+                  {% unless slider_enable %}
+                    {% assign animations_enabled = true %}
+                  {% endunless %}
+                  {% if slider_enable %}<div class="swiper-wrapper">{% endif %}
+                    {%- for product in block.settings.collection.products limit: featured_product_limit -%}
+                      <div
+                        class="{{ product_item }} {% if settings.animations_reveal_on_scroll and animations_enabled != false %}scroll-trigger animate--slide-in{% endif %}"
+                        {% if settings.animations_reveal_on_scroll and animations_enabled != false %}
+                          data-cascade
+                          style="--animation-order: {{ forloop.index }};"
+                        {% endif %}
+                      >
+                         {% render 'product-card',
+                            product_card_product: product,
+                            section_id: section.id,
+                            media_size: section.settings.image_ratio,
+                            show_secondary_image: section.settings.show_secondary_image,
+                            show_vendor: section.settings.show_vendor,
+                            show_badge: section.settings.show_badges,
+                            show_cart_button: section.settings.show_cart_button,
+                            show_preorder_button: section.settings.show_preorder_button,
+                            show_quick_view: section.settings.show_quick_view_button,
+                            show_quick_compare: section.settings.show_compare_view_button,
+                            show_wishlist: section.settings.show_wishlist_button,
+                            show_countdown: section.settings.show_countdown,
+                            show_title: section.settings.show_title,
+                            show_price: section.settings.show_price,
+                            show_rating: section.settings.show_product_rating,
+                            card_style: section.settings.card_style,
+                            color_swatches: section.settings.color_swatches,
+                            color_scheme: section.settings.product_card_color_scheme,
+                            spacing: section.settings.product_card_spacing,
+                            corner_radius: section.settings.product_card_radius,
+                            show_border: section.settings.show_border,
+                            cart_button_type: section.settings.cart_button_type,
+                            action_buttons_position: section.settings.action_buttons_position,
+                            action_buttons_style: section.settings.action_button_style,
+                            show_always: section.settings.show_always,
+                            low_stock_value: section.settings.low_stock_value,
+                            minimum_amount_value: section.settings.minimum_amount_value,
+                            show_inventory_quantity: section.settings.show_inventory_quantity,
+                            show_inventory_status: section.settings.show_inventory_status,
+                            in_stock_color: section.settings.in_stock,
+                            out_of_stock_color: section.settings.out_of_stock,
+                            low_stock_color: section.settings.low_stock,
+                            continue_selling_color: section.settings.continue_selling
+                          %}
+                      </div>
+                  {%- else -%}
+                    {%- assign a = 1 -%}
+                    {%- for i in (1..4) -%}
+                      {%- liquid
+                        assign product_card_placeholder = 'product-apparel-' | append: a
+                        assign a = a | plus: 1
+                      -%}
+                        <div
+                          class="{{ product_item }} {% if settings.animations_reveal_on_scroll and animations_enabled != false %}scroll-trigger animate--slide-in{% endif %}"
+                            {% if settings.animations_reveal_on_scroll and animations_enabled != false %}
+                              data-cascade
+                              style="--animation-order: {{ forloop.index }};"
+                            {% endif %}
+                        >
+                          <div
+                            class="mb-15 placeholder media {% if section.settings.image_round_corner %}rounded--image{% endif %} card--client-height"
+                            style="padding-bottom: 100%"
+                          >
+                            {{ product_card_placeholder | placeholder_svg_tag: 'placeholder-svg-new' }}
+                          </div>
+                          <div class="placholder__product--title h4">Product Title</div>
+                          <span class="product-grid-item__price">$99.99</span>
+                        </div>
+                      {%- liquid
+                        if a == 5
+                          assign a = 1
+                        endif
+                      -%}
+                    {%- endfor -%}
+                  {%- endfor -%}
+                  {% if slider_enable %}</div>{% endif %}
+                  </div>
+               </div>
+            </collection-tab-item>
+          {%- endfor -%}
+        </collection-tab-content>
+      </collection-tab-component>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tabs with collection",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "default": "Subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Product Tabs",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Heading position"
+    },
+    {
+      "type": "select",
+      "id": "text_center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Desktop alignment"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Mobile alignment"
+    },
+    {
+      "type": "select",
+      "id": "tab_button_position",
+      "options": [
+        {
+          "value": "vertical",
+          "label": "Vertical"
+        },
+        {
+          "value": "horizontal",
+          "label": "Horizontal"
+        }
+      ],
+      "default": "vertical",
+      "label": "Tab buttons position"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buttons_border",
+      "default": false,
+      "label": "Show border"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "standard",
+          "label": "Grid"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        }
+      ],
+      "default": "slider",
+      "label": "Style"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 50,
+      "step": 1,
+      "default": 8,
+      "label": "t:sections.featured-collection.settings.products_to_show.label"
+    },
+    {
+      "type": "select",
+      "id": "products_show_on_xl",
+      "label": "Number of columns on desktop",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "products_show_on_sm",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Card style",
+      "options": [
+        {
+          "value": "style_1",
+          "label": "Style 1"
+        },
+        {
+          "value": "style_2",
+          "label": "Style 2"
+        },
+        {
+          "value": "style_3",
+          "label": "Style 3"
+        }
+      ],
+      "default": "style_1"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.hooktheme-collection-product-grid.settings.image_ratio.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "t:sections.hooktheme-collection-product-grid.settings.show_secondary_image.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "color_swatches",
+      "default": true,
+      "label": "Enable color swatches",
+      "info": "To display color swatches, you need to enable it. [Learn more](https://themihub.gitbook.io/suruchi-theme/theme-settings/color-swatches)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "default": true,
+      "label": "Show badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_button",
+      "default": true,
+      "label": "Show cart button"
+    },
+    {
+      "type": "select",
+      "id": "cart_button_type",
+      "label": "Cart button type",
+      "info": "It works when you select \"Card Style 3\"",
+      "default": "secondary",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Solid button"
+        },
+        {
+          "value": "secondary",
+          "label": "Outline button"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_preorder_button",
+      "default": true,
+      "label": "Show pre-order button",
+      "info": "You may want to allow customers to purchase out-of-stock items. [Learn more](https://themihub.gitbook.io/suruchi-theme/general-topics-faq/how-to-enable-the-pre-order-product-to-your-store)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_view_button",
+      "default": true,
+      "label": "Show quick view"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_view_button",
+      "default": true,
+      "label": "Show compare button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wishlist_button",
+      "default": true,
+      "label": "Show wishlist button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "default": true,
+      "label": "Show title"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "default": true,
+      "label": "Show price"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "t:sections.hooktheme-collection-product-grid.settings.show_vendor.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "default": false,
+      "label": "Show countdown",
+      "info": "To display countdown timer, you need to enable it. [Learn more](https://themihub.gitbook.io/suruchi-theme/collections-and-products/products/add-a-countdown-timer-to-the-product)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_rating",
+      "default": false,
+      "label": "Show product rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "product_card_radius",
+      "label": "Round corner",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "product_card_spacing",
+      "label": "Card spacing",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "action_buttons_position",
+      "label": "Actions buttons position on desktop",
+      "info": "It works, when you enable the Card style \"Style 2\"",
+      "default": "top_right",
+      "options": [
+        {
+          "value": "top_right",
+          "label": "Top right"
+        },
+        {
+          "value": "top_left",
+          "label": "Top left"
+        },
+        {
+          "value": "bottom_left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom_right",
+          "label": "Bottom right"
+        },
+        {
+          "value": "bottom_center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "middle_center",
+          "label": "Middle center"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "action_button_style",
+      "label": "Action buttons style",
+      "default": "round",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "round",
+          "label": "Round"
+        }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "product_card_color_scheme",
+      "label": "Product card color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Inventory status"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inventory_status",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "low_stock_value",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "label": "Low inventory threshold",
+      "info": "Choose 0 to always show in stock if available.",
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inventory_quantity",
+      "label": "Show inventory count",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_always",
+      "default": true,
+      "label": "Show always status",
+      "info": "If you disable it, the inventory status will show based on the product's quantity. You can set \"Minimum number\" in the option below to display inventory status."
+    },
+    {
+      "type": "range",
+      "id": "minimum_amount_value",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "label": "Minimum number of quantity",
+      "info": "It works until you enable \"Show always \"",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "in_stock",
+      "default": "#3ed660",
+      "label": "In stock"
+    },
+    {
+      "type": "color",
+      "id": "out_of_stock",
+      "default": "#c8c8c8",
+      "label": "Out of stock"
+    },
+    {
+      "type": "color",
+      "id": "low_stock",
+      "default": "#844b15",
+      "label": "Low stock"
+    },
+    {
+      "type": "color",
+      "id": "continue_selling",
+      "default": "#3ed660",
+      "label": "Continue selling",
+      "info": "You may want to allow customers to purchase out-of-stock items. [Learn more](https://themihub.gitbook.io/vector-shopify-theme/general-topics-faq/how-to-enable-the-pre-order-product-to-your-store)"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "featured_collection",
+      "name": "t:sections.collection-list.blocks.featured_collection.name",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.collection-list.blocks.featured_collection.settings.collection.label"
+        },
+        {
+          "type": "text",
+          "id": "collection_heading",
+          "label": "Tab menu",
+          "info": "Leave blank to use collection title."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tabs with collection",
+      "category": "Products",
+      "blocks": [
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

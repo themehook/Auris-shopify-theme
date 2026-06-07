@@ -1,0 +1,408 @@
+{% stylesheet %}
+  .newsletter-block {
+    display: flex;
+    flex-direction: column;
+    width: var(--nl-width, 100%);
+    align-items: var(--nl-align, flex-start);
+    padding-top: var(--nl-pad-top, 0);
+    padding-bottom: var(--nl-pad-bottom, 0);
+    padding-left: var(--nl-pad-left, 0);
+    padding-right: var(--nl-pad-right, 0);
+  }
+
+  .newsletter-block__form {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .newsletter-block__form-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .newsletter-block__input {
+    flex: 1;
+    height: 5.5rem;
+    padding: 0 10rem 0 1.5rem;
+    border-radius: var(--nl-input-radius, 3rem);
+    background-color: transparent;
+    margin-bottom: 0;
+  }
+
+  /* Border: Box */
+  .newsletter-block--border-box .newsletter-block__input {
+    border: 1px solid rgba(var(--color-foreground), 0.55);
+  }
+
+  /* Border: Underline */
+  .newsletter-block--border-underline .newsletter-block__input {
+    border: none;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.55);
+    border-radius: 0;
+  }
+
+  /* Border: None */
+  .newsletter-block--border-none .newsletter-block__input {
+    border: none;
+  }
+
+  .newsletter-block__btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-weight: var(--button-font-weight);
+    color: rgba(var(--color-foreground));
+    cursor: pointer;
+    padding: 0.8rem 1.6rem;
+    line-height: 1;
+  }
+
+  /* Button: Primary */
+  .newsletter-block--btn-primary .newsletter-block__btn {
+    background: rgba(var(--color-button), var(--alpha-button-background));
+    color: rgb(var(--color-button-text));
+    border-radius: var(--nl-input-radius, 3rem);
+    border: none;
+  }
+
+  /* Button: Secondary */
+  .newsletter-block--btn-secondary .newsletter-block__btn {
+    background: transparent;
+    border: 1px solid rgba(var(--color-button), var(--alpha-button-border));
+    color: rgb(var(--color-button-text));
+    border-radius: var(--nl-input-radius, 3rem);
+  }
+
+  /* Button: Text */
+  .newsletter-block--btn-text .newsletter-block__btn {
+    background: none;
+    border: none;
+    color: rgba(var(--color-foreground));
+    padding: 0 1rem;
+  }
+
+  .newsletter-block__btn svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .newsletter-block__terms {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    opacity: 0.7;
+  }
+
+  .newsletter-block__terms a {
+    text-decoration: underline;
+  }
+
+  .newsletter-block .newsletter-form__message {
+    margin-top: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .newsletter-block {
+      width: var(--nl-width-mobile, var(--nl-width, 100%));
+      padding-top: calc(var(--nl-pad-top, 0) * var(--nl-mobile-scale, 1));
+      padding-bottom: calc(var(--nl-pad-bottom, 0) * var(--nl-mobile-scale, 1));
+      padding-left: calc(var(--nl-pad-left, 0) * var(--nl-mobile-scale, 1));
+      padding-right: calc(var(--nl-pad-right, 0) * var(--nl-mobile-scale, 1));
+    }
+  }
+{% endstylesheet %}
+
+{%- liquid
+  assign s = block.settings
+
+  case s.width
+    when 'custom'
+      assign width_value = s.custom_width | append: '%'
+    else
+      assign width_value = '100%'
+  endcase
+
+  case s.width_mobile
+    when 'custom'
+      assign width_mobile_value = s.custom_width_mobile | append: '%'
+    else
+      assign width_mobile_value = '100%'
+  endcase
+
+  case s.button_style
+    when 'primary'
+      assign btn_class = 'newsletter-block--btn-primary'
+    when 'secondary'
+      assign btn_class = 'newsletter-block--btn-secondary'
+    else
+      assign btn_class = 'newsletter-block--btn-text'
+  endcase
+-%}
+
+<div
+  class="newsletter-block newsletter-block--border-{{ s.border_style }} {{ btn_class }}"
+  style="
+    --nl-align: {{ s.alignment }};
+    --nl-input-radius: {{ s.border_radius | divided_by: 10.0 }}rem;
+    --nl-width: {{ width_value }};
+    --nl-width-mobile: {{ width_mobile_value }};
+    --nl-pad-top: {{ s.padding_top }}px;
+    --nl-pad-bottom: {{ s.padding_bottom }}px;
+    --nl-pad-left: {{ s.padding_left }}px;
+    --nl-pad-right: {{ s.padding_right }}px;
+    --nl-mobile-scale: {{ s.mobile_scale | divided_by: 100.0 }};
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="newsletter-block__form">
+    {%- form 'customer', class: 'newsletter-form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="newsletter-form__field-wrapper">
+        <div class="newsletter-block__form-row">
+          <label class="field__label visually-hidden" for="NewsletterBlock--{{ block.id }}">
+            {{ 'newsletter.label' | t }}
+          </label>
+          <input
+            id="NewsletterBlock--{{ block.id }}"
+            type="email"
+            name="contact[email]"
+            class="newsletter-block__input"
+            value="{{ form.email }}"
+            aria-required="true"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            placeholder="{{ 'newsletter.label' | t }}"
+            required
+          >
+          <button type="submit" class="newsletter-block__btn" name="commit">
+            {%- if s.button_display == 'arrow' -%}
+              {%- render 'hooktheme-icon-arrow-right' -%}
+            {%- else -%}
+              {{ s.button_label }}
+            {%- endif -%}
+          </button>
+        </div>
+      </div>
+      {%- if form.errors -%}
+        <small class="newsletter-form__message form__message">
+          {%- render 'hooktheme-icon-error' -%}
+          {{ form.errors.messages.email }}
+        </small>
+      {%- endif -%}
+      {%- if form.posted_successfully? -%}
+        <h3 class="newsletter-form__message newsletter-form__message--success">
+          {%- render 'hooktheme-icon-success' -%}
+          {{ 'newsletter.success' | t }}
+        </h3>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+
+  {%- if s.terms != blank -%}
+    <div class="newsletter-block__terms rte">
+      {{ s.terms }}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "header",
+      "content": "Input"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border",
+      "options": [
+        { "value": "box", "label": "Box (all sides)" },
+        { "value": "underline", "label": "Underline" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "box"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 30,
+      "visible_if": "{{ block.settings.border_style == 'box' }}"
+    },
+    {
+      "type": "header",
+      "content": "Submit button"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "text", "label": "Text" }
+      ],
+      "default": "text"
+    },
+    {
+      "type": "select",
+      "id": "button_display",
+      "label": "Display",
+      "options": [
+        { "value": "text", "label": "Text" },
+        { "value": "arrow", "label": "Arrow icon" }
+      ],
+      "default": "text"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Label",
+      "default": "Sign up",
+      "visible_if": "{{ block.settings.button_display == 'text' }}"
+    },
+    {
+      "type": "header",
+      "content": "Terms & policy"
+    },
+    {
+      "type": "richtext",
+      "id": "terms",
+      "label": "Terms and policy",
+      "default": "<p>By subscribing you agree to the <a href=\"#\">Terms of Use</a> & <a href=\"#\">Privacy Policy.</a></p>",
+      "info": "Add links to your privacy policy or terms of service"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width (desktop)",
+      "options": [
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "Width (mobile)",
+      "options": [
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_scale",
+      "label": "Mobile scale",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "category": "Forms"
+    }
+  ]
+}
+{% endschema %}

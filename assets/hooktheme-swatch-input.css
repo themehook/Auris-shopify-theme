@@ -1,0 +1,104 @@
+/**
+ * Swatch Input Component Styles
+ * Swatch input wrapper - for form contexts (product variant selection)
+ */
+
+/* Hide native input but keep accessible */
+.swatch-input__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Swatch label wrapper */
+.swatch-input__input + .swatch-input__label {
+  --swatch-input--size: 4.4rem;
+  --swatch-input--border-radius: 50%;
+
+  display: inline-block;
+  border-radius: var(--swatch-input--border-radius);
+  cursor: pointer;
+  outline-offset: 0.2rem;
+  margin: 0.4rem 0.6rem 0.4rem 0;
+  transition: outline 0.15s ease;
+  forced-color-adjust: none;
+}
+
+/* Square shape variant */
+.swatch-input__input + .swatch-input__label.swatch-input__label--square {
+  --swatch-input--border-radius: 0.4rem;
+}
+
+/* Hover state */
+.swatch-input__input + .swatch-input__label:hover {
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.4);
+}
+
+/* Active/Checked state */
+.swatch-input__input:active + .swatch-input__label,
+.swatch-input__input:checked + .swatch-input__label {
+  outline: 0.15rem solid rgb(var(--color-foreground));
+}
+
+/* Focus visible for accessibility */
+.swatch-input__input:focus-visible + .swatch-input__label {
+  box-shadow: 0 0 0 0.5rem rgb(var(--color-background)),
+    0 0 0 0.7rem rgba(var(--color-foreground), 0.55);
+}
+
+/* Visually disabled - no hover effect */
+.swatch-input__input.visually-disabled:not(:active):not(:checked) + .swatch-input__label:hover,
+.swatch-input__input.disabled:not(:active):not(:checked) + .swatch-input__label:hover {
+  outline: none;
+}
+
+/* Disabled state - overlay on swatch */
+.swatch-input__input:disabled + .swatch-input__label > .swatch,
+.swatch-input__input.disabled + .swatch-input__label > .swatch {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Semi-transparent overlay for disabled swatches */
+.swatch-input__input:disabled + .swatch-input__label > .swatch::before,
+.swatch-input__input.disabled + .swatch-input__label > .swatch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 250, 250, 0.5);
+  border-radius: inherit;
+}
+
+/* Diagonal strikethrough for disabled swatches */
+.swatch-input__input:disabled + .swatch-input__label > .swatch::after,
+.swatch-input__input.disabled + .swatch-input__label > .swatch::after {
+  --diagonal-size: calc(var(--swatch-input--size) * 1.414);
+  --line-size: 0.1rem;
+  --line-color: rgb(0, 0, 0);
+
+  content: "";
+  position: absolute;
+  bottom: calc(var(--line-size) * -0.5);
+  inset-inline-start: 0;
+  width: var(--diagonal-size);
+  height: var(--line-size);
+  background-color: var(--line-color);
+  transform: rotate(-45deg);
+  transform-origin: left;
+}
+
+/* Swatch input context - fieldset */
+fieldset.radio--swatch .swatch-input__input + .swatch-input__label {
+  --swatch-input--size: 4rem;
+}
+
+/* Product page native swatch context */
+.product-form__input--swatch .swatch-input__input + .swatch-input__label {
+  --swatch-input--size: 4.4rem;
+}

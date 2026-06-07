@@ -1,0 +1,211 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+ {
+    "type": "header",
+    "name": "Header",
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "blocks": {
+          "announcement-bar-0": {
+            "type": "announcement",
+            "settings": {
+              "text": "Welcome to our store",
+              "link": "shopify://collections"
+            }
+          },
+          "announcement_xzMH9N": {
+            "type": "announcement",
+            "settings": {
+              "text": "Welcome to our store",
+              "link": ""
+            }
+          },
+          "announcement_nTaxzk": {
+            "type": "announcement",
+            "settings": {
+              "text": "Welcome to our store",
+              "link": ""
+            }
+          },
+          "announcement_Ut4QX9": {
+            "type": "announcement",
+            "settings": {
+              "text": "Welcome to our store",
+              "link": ""
+            }
+          }
+        },
+        "block_order": [
+          "announcement-bar-0",
+          "announcement_xzMH9N",
+          "announcement_nTaxzk",
+          "announcement_Ut4QX9"
+        ],
+        "settings": {
+          "container": "container",
+          "show_offset": true,
+          "snow_fall": false,
+          "index": false,
+          "no_index": false,
+          "social_media": true,
+          "country_selector": true,
+          "language_selector": true,
+          "enable_loop": true,
+          "auto_rotate": false,
+          "change_slides_speed": 5,
+          "color_scheme": "inverse"
+        }
+      },
+      "header": {
+        "type": "header",
+        "blocks": {
+          "products_NEjtJN": {
+            "type": "products",
+            "settings": {
+              "heading": "Products",
+              "product_list": [
+                "luxe-cocktail-dress-copy",
+                "luxe-layered-satin-blouse-copy",
+                "opulent-noir-gown-copy",
+                "twilight-sequin-t-shirt-copy",
+                "comfort-seamless-bra-copy",
+                "ultra-boost-sneakers-copy-1"
+              ],
+              "product_heading": "Heading",
+              "product_column_width": "third",
+              "slider_enable": true,
+              "product_column": "2",
+              "product_column_laptop": "2",
+              "card_style": "style_2",
+              "image_ratio": "adapt",
+              "show_secondary_image": true,
+              "show_badges": false,
+              "show_cart_button": true,
+              "show_quick_view_button": false,
+              "show_compare_view_button": false,
+              "show_wishlist_button": false,
+              "show_title": true,
+              "show_price": true,
+              "show_vendor": false
+            }
+          },
+          "menu_promo_banner_r4bV6T": {
+            "type": "menu_promo_banner",
+            "settings": {
+              "heading": "Shop",
+              "height": "adapt",
+              "promo1_heading": "UP TO 70% OFF",
+              "promo1_text": "<p>SHOP NOW</p>",
+              "promo1_link": "",
+              "height_2": "adapt",
+              "promo2_heading": "",
+              "promo2_text": "",
+              "promo2_link": ""
+            }
+          },
+          "collection_list_jVVfN3": {
+            "type": "collection_list",
+            "settings": {
+              "heading": "Categories",
+              "image_width": "full",
+              "image_ratio": "square",
+              "product_items": true,
+              "mega_menu_column_width": "full",
+              "collection_1": "blazer",
+              "collection_2": "casual-wear",
+              "collection_2_image": "shopify://shop_images/3_6aa8801a-5899-4728-84df-6d71c8e846da.png",
+              "collection_3": "jacket",
+              "collection_3_image": "shopify://shop_images/6_374c3b9c-3863-4900-bd9a-1ed1032f6e17.png",
+              "collection_4": "elegant-dresses",
+              "collection_4_image": "shopify://shop_images/8_910dbf54-4699-4404-9bf3-b32e3bb57ffa.png",
+              "collection_5": "tops",
+              "collection_5_image": "shopify://shop_images/7_8ce42cc3-324a-4f5b-bad3-311559fee7f6.png",
+              "collection_6": ""
+            }
+          },
+          "menu_promo_banner_ERhdLK": {
+            "type": "menu_promo_banner",
+            "settings": {
+              "heading": "Home",
+              "height": "adapt",
+              "promo1_heading": "",
+              "promo1_text": "",
+              "promo1_link": "",
+              "height_2": "adapt",
+              "promo2_heading": "",
+              "promo2_text": "",
+              "promo2_link": ""
+            }
+          }
+        },
+        "block_order": [
+          "products_NEjtJN",
+          "menu_promo_banner_r4bV6T",
+          "collection_list_jVVfN3",
+          "menu_promo_banner_ERhdLK"
+        ],
+        "settings": {
+          "snow_fall": false,
+          "container": "container",
+          "show_offset": true,
+          "logo": "",
+          "logo_width": 160,
+          "menu": "main-menu",
+          "header_design": "logo__left--menu-center",
+          "menu_position": "center",
+          "border_hide_on_home_page": true,
+          "header_sticky": true,
+          "sticky_color_background": "#121212e8",
+          "sticky_text_color": "#ffffff",
+          "transparent_header": true,
+          "transparent_color_foreground": "#ffffff",
+          "transparent_color_background": "#121212",
+          "transparent_text_color": "#ffffff",
+          "account_button": true,
+          "cart_drawer_button": true,
+          "cart_icon_type": "bag",
+          "wishlist_button": true,
+          "compare_button": false,
+          "search_type": "search_box",
+          "show_button_border": true,
+          "search_bar_foreground_color": "#ffffff",
+          "search_bar_background_color": "#121212",
+          "search_bar_submit_icon_color": "#121212",
+          "vertical_menu": false,
+          "vertical_button_label": "All Categories",
+          "menu_toggle_button_label": "All Categories +",
+          "menu_toggle_button_label_2": "Hide Categories -",
+          "icon": "lightning_bolt",
+          "category_color_scheme": "",
+          "header_right_info": true,
+          "welcome_text_with_icon": "headphone",
+          "contact_type": "menu",
+          "contact_menu": "main-menu",
+          "phone_text": "",
+          "accent_text": "+84 2500 888 33",
+          "quick_action_button": false,
+          "quick_action_button_label": "Button Label",
+          "quick_action_button_link": "",
+          "enable_country_selector": true,
+          "enable_language_selector": true,
+          "color_scheme": "inverse",
+          "color_scheme_3": "inverse",
+          "color_scheme_2": "background-1",
+          "color_scheme_drawer": "accent-1"
+        }
+      }
+    },
+    "order": [
+      "announcement-bar",
+      "header"
+    ]
+  }
+  

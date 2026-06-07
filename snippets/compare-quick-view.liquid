@@ -1,0 +1,13 @@
+{%- assign quick_view_id = 'QuickView-' | append: product_card_product.id | append: '-compare' -%}
+<modal-opener data-modal="#{{ quick_view_id }}">
+  <button
+    aria-haspopup="dialog"
+    type="button"
+    class="button button--medium hooktheme-quick-view-trigger"
+    data-product-url="{{ product_card_product.handle }}"
+    aria-label="{{ 'products.product.quick_view' | t }}"
+  >
+    {{ 'products.product.select_options' | t }}
+  </button>
+</modal-opener>
+{%- render 'quick-view-modal-instance', product_card_product: product_card_product, section_id: 'compare' -%}

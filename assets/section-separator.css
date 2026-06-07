@@ -1,0 +1,22 @@
+.separator {
+  position: relative;
+  width: 100%;
+}
+
+.separator__heading {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.separator__line {
+  margin: 0;
+  opacity: 0.8;
+}
+
+@media screen and (max-width: 749px) {
+  .separator__line--full-width {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    width: calc(100% + 3rem);
+  }
+}

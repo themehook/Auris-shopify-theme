@@ -1,0 +1,46 @@
+{%- liquid
+  assign direction = settings.content_direction
+
+  if direction == 'row'
+    assign justify = settings.horizontal_alignment
+    if settings.align_baseline
+      assign align = 'baseline'
+    else
+      assign align = settings.vertical_alignment
+    endif
+  else
+    assign justify = settings.vertical_alignment_flex_direction_column
+    assign align = settings.horizontal_alignment_flex_direction_column
+  endif
+
+  assign mobile_direction = direction
+  if direction == 'row' and settings.vertical_on_mobile
+    assign mobile_direction = 'column'
+  endif
+-%}
+
+--layout-direction: {{ direction }};
+--layout-direction-mobile: {{ mobile_direction }};
+--layout-justify: {{ justify }};
+--layout-align: {{ align }};
+--layout-col-gap: {{ settings.horizontal_gap }}px;
+--layout-row-gap: {{ settings.vertical_gap }}px;
+--content-text-align: {% if align == 'center' %}center{% elsif align == 'flex-end' %}right{% else %}left{% endif %};
+
+{% stylesheet %}
+  .layout-panel {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: var(--layout-direction, column);
+    justify-content: var(--layout-justify, flex-start);
+    align-items: var(--layout-align, flex-start);
+    column-gap: var(--layout-col-gap, 12px);
+    row-gap: var(--layout-row-gap, 12px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .layout-panel {
+      flex-direction: var(--layout-direction-mobile, var(--layout-direction, column));
+    }
+  }
+{% endstylesheet %}

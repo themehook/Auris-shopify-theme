@@ -1,0 +1,88 @@
+{%- liquid
+  assign gift_wrap_product = linklists['gift-wrapping'].links.first.object
+  assign show_gift_options = false
+  if linklists['gift-wrapping'].links.size > 0 and linklists['gift-wrapping'].links.first.type == 'product_link'
+    assign show_gift_options = true
+  endif
+-%}
+
+{%- if show_gift_options -%}
+  <div class="cart-gift-options cart-page-card">
+    <div class="cart-gift-options__header">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 12 20 22 4 22 4 12"></polyline>
+        <rect x="2" y="7" width="20" height="5"></rect>
+        <line x1="12" y1="22" x2="12" y2="7"></line>
+        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+      </svg>
+      <h2 class="cart-gift-options__title">{{ 'sections.cart.gift_options_title' | t }}</h2>
+    </div>
+    <div class="cart-gift-options__body">
+      {% render 'add-gift-wrap' %}
+
+      {%- assign gift_card_wrap = false -%}
+      {%- if cart.attributes['gift-wrapping'] -%}
+        {%- assign gift_card_wrap = true -%}
+      {%- endif -%}
+
+      <div class="cart-gift-message {% unless gift_card_wrap %}hidden{% endunless %}" id="cart-gift-message">
+        <h3 class="cart-gift-message__title">{{ 'sections.cart.gift_message_title' | t }}</h3>
+        <div class="cart-gift-message__field">
+          <textarea
+            id="cart-gift-message-textarea"
+            class="cart-gift-message__textarea"
+            maxlength="500"
+            placeholder="{{ 'sections.cart.gift_message_placeholder' | t }}"
+          >{{ cart.attributes['gift_note'] }}</textarea>
+          <div class="cart-gift-message__footer">
+            <span class="cart-gift-message__counter">
+              <span id="gift-message-char-count">{{ cart.attributes['gift_note'] | size | default: 0 }}</span>/500 {{ 'sections.cart.gift_message_characters' | t }}
+            </span>
+            <button type="button" class="button button--small cart-gift-message__save" id="gift-message-save-btn">
+              {{ 'sections.cart.gift_message_save' | t }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const textarea = document.getElementById('cart-gift-message-textarea');
+      const counter = document.getElementById('gift-message-char-count');
+      const saveBtn = document.getElementById('gift-message-save-btn');
+
+      if (textarea && counter) {
+        textarea.addEventListener('input', function() {
+          counter.textContent = this.value.length;
+        });
+      }
+
+      if (saveBtn && textarea) {
+        saveBtn.addEventListener('click', function() {
+          saveBtn.disabled = true;
+          saveBtn.textContent = '...';
+
+          const body = JSON.stringify({
+            attributes: { gift_note: textarea.value }
+          });
+
+          fetch(routes.cart_update_url, { ...fetchConfig(), body })
+            .then(function(response) { return response.json(); })
+            .then(function() {
+              saveBtn.textContent = '{{ 'sections.cart.gift_message_save' | t }}';
+              saveBtn.disabled = false;
+            })
+            .catch(function() {
+              saveBtn.textContent = '{{ 'sections.cart.gift_message_save' | t }}';
+              saveBtn.disabled = false;
+            });
+        });
+      }
+
+      /* Gift message visibility is toggled by add-gift-wrap.js renderContents() after AJAX completes */
+    })();
+  </script>
+{%- endif -%}

@@ -1,0 +1,171 @@
+.image-with-feature-list-media--small {
+  height: 25rem;
+}
+.image-with-feature-list-media--medium {
+  height: 30rem;
+}
+.image-with-feature-list-media--large {
+  height: 40rem;
+}
+.image-with-feature-list-media--adapt.placeholder {
+  height: 35rem;
+}
+@media screen and (min-width: 750px) {
+  .image-with-feature-list-media--small {
+    height: 30rem;
+  }
+  .image-with-feature-list-media--medium {
+    height: 40rem;
+  }
+  .image-with-feature-list-media--large {
+    height: 50rem;
+  }
+  .image-with-feature-list-media--adapt.placeholder {
+    height: 45rem;
+  }
+}
+.image-with-feature-list-media.media-round-corner {
+  border-radius: 2rem;
+  overflow: hidden;
+}
+.image--with-feature-content-inner.features--list-block-padding {
+  padding: 3rem;
+  position: relative;
+}
+.image--with-feature-content-inner.card-round-corner {
+  border-radius: 2rem;
+}
+.single--feature-list--item + .single--feature-list--item {
+  margin-top: 3rem;
+  @media only screen and (min-width: 992px){
+    margin-top: 4rem;
+  }
+}
+.single--feature-list--item {
+  display: flex;
+  gap: 1.5rem;
+}
+.single--feature-list--item.feature-list--card-padding {
+  padding: 1.5rem;
+}
+.single--feature-list--item.card-round-corner {
+  border-radius: 2rem;
+}
+.single-feature--icon:is(.single-feature--solid-icon) {
+  width: 6rem;
+  height: 6rem;
+  background: rgba(var(--color-button), var(--alpha-button-background));
+  color: rgb(var(--color-button-text));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  min-width: 6rem;
+  max-width: 6rem;
+}
+.single-feature--icon.promotion--card-icon:is(.single-feature--solid-icon)
+  > svg {
+  color: rgb(var(--color-button-text));
+}
+.single-feature-list-content {
+  flex-grow: 1;
+}
+@media only screen and (max-width: 1499px) {
+  .single-feature--icon.promotion--card-icon:is(.single-feature--solid-icon)
+    > svg {
+    width: 2.2rem;
+  }
+}
+@media only screen and (min-width: 1500px) {
+  .single-feature--icon:is(.single-feature--solid-icon) {
+    width: 8rem;
+    height: 8rem;
+    min-width: 8rem;
+    max-width: 8rem;
+  }
+}
+@media only screen and (min-width: 750px) and (max-width: 1199px),
+  screen and (max-width: 575px) {
+  .single--feature-list--item {
+    flex-direction: column;
+  }
+}
+@media only screen and (max-width: 991px) {
+  .image--with-feature-content-inner {
+    padding: 1.5rem;
+  }
+  .single--feature-list--item + .single--feature-list--item {
+    margin-top: 1.5rem;
+  }
+}
+@media only screen and (min-width: 750px) {
+  .feature--list-triangle-shape {
+    position: absolute;
+    content: "";
+    width: 15rem;
+    height: 20rem;
+    background: rgba(var(--color-background));
+    display: flex;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 10px;
+    clip-path: polygon(0 29%, 0 61%, 30% 43%);
+  }
+  .feature--list-triangle-shape:is(.left--angle) {
+    right: -14.5rem;
+  }
+  .feature--list-triangle-shape:is(.right--angle) {
+    transform: translateY(-50%) rotate(-180deg);
+    left: -14.5rem;
+  }
+}
+.single-feature-list-content h3 + p {
+  margin-top: 0.5rem;
+  @media only screen and (min-width: 750px){
+     margin-top: 1rem;
+  }
+}
+.single--feature-list--item.feature-list--card-top_left {
+  flex-direction: column;
+}
+.single--feature-list--item.feature-list--card-top_center {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.single--feature-list--item.feature-list--card-top_right {
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+.single--feature-list--item.feature-list--card-bottom_left {
+  flex-direction: column-reverse;
+}
+.single--feature-list--item.feature-list--card-bottom_center {
+  flex-direction: column-reverse;
+  align-items: center;
+  text-align: center;
+}
+.single--feature-list--item.feature-list--card-bottom_right {
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  text-align: right;
+}
+.single--feature-list--item.feature-list--card-middle_right {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.featured-promotion--icon.image--icon {
+  display: inline-block;
+  margin: unset;
+}
+.single--feature-list--item .featured-promotion--icon.image--icon {
+  display: inline-block;
+  margin: unset;
+  margin: unset;
+}
+@media only screen and (max-width: 749px) {
+  .image--with-feature-wrapper.row {
+    --bs-gutter-x: 3rem !important;
+  }
+}

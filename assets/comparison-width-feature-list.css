@@ -1,0 +1,24 @@
+.image--with-feature-wrapper{
+  align-items: center;
+}
+.feature__comparison--wrapper {
+  & .media--adapt.placeholder_svg_parent {
+    padding-bottom: 100%;
+  }
+}
+.single-feature-list-content span {
+  display: block;
+}
+
+.featured-promotion--icon.image--icon.image-icon-width-small {
+  max-width: 5rem;
+  width: 5rem;
+}
+.featured-promotion--icon.image--icon.image-icon-width-medium {
+  max-width: 8.5rem;
+  width: 8.5rem;
+}
+.featured-promotion--icon.image--icon.image-icon-width-large {
+  max-width: 12rem;
+  width: 12rem;
+}

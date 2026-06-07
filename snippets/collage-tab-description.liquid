@@ -1,0 +1,38 @@
+<div class="tab-collage-description">
+  <p>
+    {{ block.settings.text }}
+  </p>
+</div>
+{% liquid
+  case block.settings.button_type
+    when 'primary'
+      assign button_class = 'button button--primary'
+    when 'secondary'
+      assign button_class = 'button button--secondary'
+    when 'icon'
+      assign button_class = 'link with--icon'
+    else
+      assign button_class = 'link'
+  endcase
+%}
+{%- if block.settings.button_label != blank -%}
+  <a
+    {% if block.settings.button_link == blank %}
+      {% if collection != blank %}
+        href="{{ collection.url }}"
+      {% elsif product != blank %}
+        href="{{ product.url }}"
+      {% else %}
+        role="link" aria-disabled="true"
+      {% endif %}
+    {% else %}
+      href="{{ block.settings.button_link }}"
+    {% endif %}
+    class="{% unless block.settings.button_type == "icon" %}button--{{ block.settings.button_size }} {% endunless %} {{ button_class }} {% if block.settings.button_icon %} button--with-icon{% endif %}"
+  >
+    {{ block.settings.button_label | escape }}
+    {% if block.settings.button_icon %}
+      <span class="button--icon button--icon-right"> {% render 'hooktheme-icon-chevron-right' %} </span>
+    {% endif %}
+  </a>
+{%- endif -%}

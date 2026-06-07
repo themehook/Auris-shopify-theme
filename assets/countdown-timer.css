@@ -1,0 +1,174 @@
+.deals__product--countdown {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+@media only screen and (min-width: 1200px) {
+  .deals__product--countdown {
+    bottom: calc(14px + var(--timer-padding-bottom, 0px));
+  }
+}
+.deals__product--countdown .countdown__item {
+  text-align: center;
+  background: rgba(var(--color-button), var(--alpha-button-background));
+  padding: 0.3rem 0.5rem;
+  color: rgb(var(--color-button-text));
+  border-radius: 0.3rem;
+}
+.deals__product--countdown .countdown__item:last-child {
+  margin-right: 0;
+}
+.deals__product--countdown .countdown__item::before {
+  display: none;
+}
+.countdown__item > span {
+  display: block;
+}
+.deals__product--countdown .countdown__number {
+  font-size: 1.4rem;
+  font-weight: 700;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  border-radius: 10px 0;
+}
+.deals__product--countdown .countdown__text {
+  font-size: 1.4rem;
+  line-height: 1;
+  padding-bottom: 0.5rem;
+}
+@media only screen and (min-width: 750px) {
+  .deals__product--countdown .countdown__item {
+    min-width: 4.5rem;
+  }
+}
+@media only screen and (max-width: 749px) {
+  .deals__product--countdown {
+    bottom: 15px;
+  }
+  .deals__product--countdown .countdown__text,
+  .deals__product--countdown .countdown__number {
+    font-size: 1.2rem;
+  }
+  .deals__product--countdown {
+    gap: 0.15rem;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .product__card:not(.product__card--style_1):hover .deals__product--countdown {
+    opacity: 0;
+  }
+}
+
+
+
+.countdown--timer-media-height--adapt.placeholder {
+  height: 35rem;
+}
+.countdown--timer-media-height--small {
+  height: 19.4rem;
+}
+.countdown--timer-media-height--medium {
+  height: 35rem;
+}
+.countdown--timer-media-height--large {
+  height: 43.5rem;
+}
+.countdown--timer-media-height--extra-large {
+  height: 45rem;
+}
+@media screen and (min-width: 750px) and (max-width: 991px) {
+  .countdown--timer-media-height--small {
+    height: 30rem;
+  }
+
+  .countdown--timer-media-height--large {
+    height: 50rem;
+  }
+  .countdown--timer-media-height--adapt.placeholder {
+    height: 50rem;
+  }
+  .countdown--timer-media-height--extra-large {
+    height: 55rem;
+  }
+  .countdown--timer-media-height--medium {
+    height: 45rem;
+  }
+}
+@media screen and (min-width: 992px) {
+  .countdown--timer-media-height--small {
+    height: 31.4rem;
+  }
+  .countdown--timer-media-height--medium {
+    height: 55rem;
+  }
+  .countdown--timer-media-height--large {
+    height: 69.5rem;
+  }
+  .countdown--timer-media-height--adapt.placeholder {
+    height: 65rem;
+  }
+  .countdown--timer-media-height--extra-large {
+    height: 72rem;
+  }
+}
+
+.countdown__timer--wrapper{
+  & .countdown--banner__content--box{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: none;
+  }
+  & .countdown__timer-media.rounded--image{
+    border-radius: 1rem;
+  }
+  & .countdown--timer-content-wrapper {
+    height: 100%;
+  }
+}
+.desktop--timer-align-center{
+  & .countdown-timer__field--text{
+    text-align: center;
+  }
+}
+.desktop--timer-align-right{
+  & .countdown-timer__field--text{
+    text-align: right;
+    @media screen and (max-width: 749px){
+      text-align: center
+    }
+  }
+}
+.desktop--timer-align-left{
+  & .countdown-timer__field--text{
+    text-align: left;
+    @media screen and (max-width: 749px){
+      text-align: center
+    }
+  }
+}
+.timer-column-grid-two .countdown--timer-child-column.timer-background-filter{
+  @media only screen and (min-width: 992px){
+    grid-column: -1 / 6;
+  }
+}
+
+.timer-background-filter{
+  padding: 2rem;
+  background: rgba(var(--color-foreground), .15);
+  backdrop-filter: blur(18px);
+  border-radius: 1rem;
+  border: 1px solid rgba(var(--color-foreground), .53);
+  @media screen and (max-width: 749px){
+    margin-inline: 1.5rem;
+  }
+}

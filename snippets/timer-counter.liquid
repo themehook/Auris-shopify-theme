@@ -1,0 +1,41 @@
+{%- liquid
+  assign countdown_timer = section.settings.countdown_year | append: '-' | append: section.settings.countdown_month | append: '-' | append: section.settings.countdown_days
+  assign countdown_timer_convert = countdown_timer | date: '%s'
+  assign today_date = 'now' | date: '%s'
+
+  assign timer = false
+  if countdown_timer_convert > today_date
+    assign timer = true
+  endif
+-%}
+<countdown-timer>
+  {% if timer %}
+    <div
+      class="countdown--timer-countdown promo--banner-countdown-timer d-flex countdown--timer-{{ section.settings.timer_style }} countdown--font-{{ section.settings.timer_size }}"
+      data-countdown="{{ section.settings.countdown_year }}-{{ section.settings.countdown_month }}-{{ section.settings.countdown_days }}"
+    >
+      <div class="countdown__item Days">
+        <span class="countdown__number">- -</span>
+        <span class="countdown__text">{{ 'products.product.countdown_timer.days' | t }}</span>
+      </div>
+      <div class="countdown__item Hrs">
+        <span class="countdown__number">- -</span>
+        <span class="countdown__text">{{ 'products.product.countdown_timer.hours' | t }}</span>
+      </div>
+      <div class="countdown__item Min">
+        <span class="countdown__number">- -</span>
+        <span class="countdown__text">{{ 'products.product.countdown_timer.minutes' | t }}</span>
+      </div>
+      <div class="countdown__item Sec">
+        <span class="countdown__number">- -</span>
+        <span class="countdown__text">{{ 'products.product.countdown_timer.seconds' | t }}</span>
+      </div>
+    </div>
+  {% else %}
+    {% if section.settings.timer_completed_message != blank %}
+      <div class="countdown--timer-countdown desktop-text-{{ section.settings.timer_text_center }}">
+        <div class="h4 mb-0">{{ section.settings.timer_completed_message }}</div>
+      </div>
+    {% endif %}
+  {% endif %}
+</countdown-timer>

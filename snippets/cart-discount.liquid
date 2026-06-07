@@ -1,0 +1,96 @@
+{% comment %} Cart Discount - Shared snippet for cart drawer and cart page {% endcomment %}
+{%- liquid
+  assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
+  for item in cart.items
+    for allocation in item.line_level_discount_allocations
+      if allocation.discount_application.type == 'discount_code'
+        assign discount_codes = item.line_level_discount_allocations | slice: forloop.index0 | map: 'discount_application' | map: 'title' | concat: discount_codes
+      endif
+    endfor
+  endfor
+  assign discount_codes = discount_codes | uniq
+-%}
+<cart-discount data-section-id="{{ section.id }}">
+  <form class="cart-discount__form">
+    <label for="cart-discount-{{ section.id }}" class="visually-hidden">
+      {{ 'sections.cart.discount_code_label' | t }}
+    </label>
+    <input
+      id="cart-discount-{{ section.id }}"
+      class="cart-discount__input input__field"
+      name="discount"
+      placeholder="{{ 'sections.cart.discount_code_placeholder' | t }}"
+      autocomplete="off"
+    >
+    <button
+      type="submit"
+      class="button button--small button--primary cart-discount__button"
+      data-default-text="{{ 'sections.cart.discount_apply' | t }}"
+      data-loading-text="{{ 'sections.cart.discount_applying' | t }}"
+    >
+      {{ 'sections.cart.discount_apply' | t }}
+    </button>
+  </form>
+
+  {%- comment -%} Error messages - shown/hidden via parent CSS class {%- endcomment -%}
+  <div class="cart-discount__error-container">
+    <div class="cart-discount__error cart-discount__error--general">
+      <span class="cart-discount__error-text">{{ 'sections.cart.discount_error_general' | t }}</span>
+    </div>
+    <div class="cart-discount__error cart-discount__error--discount-code">
+      <span class="cart-discount__error-text">{{ 'sections.cart.discount_error_invalid' | t }}</span>
+    </div>
+    <div class="cart-discount__error cart-discount__error--shipping">
+      <span class="cart-discount__error-text">{{ 'sections.cart.discount_error_shipping' | t }}</span>
+    </div>
+    <div class="cart-discount__error cart-discount__error--network">
+      <span class="cart-discount__error-text">{{ 'sections.cart.discount_error_network' | t }}</span>
+    </div>
+    <div class="cart-discount__error cart-discount__error--duplicate">
+      <span class="cart-discount__error-text">{{ 'sections.cart.discount_error_duplicate' | t }}</span>
+    </div>
+  </div>
+
+  {%- comment -%} Applied discount pills {%- endcomment -%}
+  {%- if discount_codes.size > 0 -%}
+    <div class="cart-discount__applied">
+      <h6 class="cart-discount__applied-title">{{ 'sections.cart.discount_applied_title' | t }}</h6>
+      <ul class="cart-discount__applied-list list-unstyled">
+        {%- for discount_code in discount_codes -%}
+          <li class="cart-discount__pill" data-discount-code="{{ discount_code }}">
+            <div class="cart-discount__applied-item">
+              <div class="cart-discount__applied-info">
+                <span class="cart-discount__applied-code">
+                  {%- render 'hooktheme-icon-discount' -%}
+                  {{ discount_code }}
+                </span>
+                {%- assign discount_amount = 0 -%}
+                {%- for discount in cart.cart_level_discount_applications -%}
+                  {%- if discount.title == discount_code -%}
+                    {%- assign discount_amount = discount.total_allocated_amount -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if discount_amount > 0 -%}
+                  <span class="cart-discount__applied-amount">(-{{ discount_amount | money }})</span>
+                {%- endif -%}
+              </div>
+              <button
+                type="button"
+                class="cart-discount__remove-btn"
+                data-discount-code="{{ discount_code }}"
+                aria-label="{{ 'sections.cart.discount_remove_aria' | t: code: discount_code }}"
+              >
+                <span>{{ 'sections.cart.discount_remove' | t }}</span>
+                <svg class="icon icon-close" aria-hidden="true" focusable="false" viewBox="0 0 18 17">
+                  <path d="M.865 15.978a.5.5 0 00.707.707l7.433-7.431 7.579 7.282a.501.501 0 00.846-.37.5.5 0 00-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 10-.707-.708L8.991 7.853 1.413.573a.5.5 0 10-.693.72l7.563 7.268-7.418 7.417z" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</cart-discount>
+{% comment %} Cart Discount End {% endcomment %}

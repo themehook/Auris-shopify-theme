@@ -1,0 +1,172 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+ {
+    "sections": {
+      "breadcrumbs": {
+        "type": "breadcrumbs",
+        "settings": {
+          "container": "container-fluid",
+          "image_overlay_opacity": 0,
+          "show_page_title": true,
+          "heading_size": "h1",
+          "show_breadcrumb_navigation": true,
+          "text_center": "center",
+          "padding_top": 60,
+          "padding_bottom": 60,
+          "mobile_padding_top": 40,
+          "mobile_padding_bottom": 40,
+          "color_scheme": "background-2",
+          "custom_colors": false,
+          "foreground": "#121212",
+          "background": "#f7f8fc"
+        }
+      },
+      "main": {
+        "type": "hooktheme-page",
+        "disabled": true,
+        "settings": {
+          "heading": true,
+          "container": "container-fluid",
+          "padding_top": 0,
+          "padding_bottom": 0,
+          "mobile_padding_top": 0,
+          "mobile_padding_bottom": 0,
+          "color_scheme": "background-1"
+        }
+      },
+      "1661515112aed97da9": {
+        "type": "contact-form",
+        "blocks": {
+          "1661515112c1890be1-0": {
+            "type": "contact_list",
+            "settings": {
+              "heading": "Phone",
+              "icon": "phone",
+              "text": "<p> <strong> (372) 587-2335 </strong> <br/> (372) 555-4665</p>"
+            }
+          },
+          "9616bdd2-2e00-4c58-93cc-b62f5a399c5f": {
+            "type": "contact_list",
+            "settings": {
+              "heading": "Email",
+              "icon": "email",
+              "text": "<p><strong> example@gmail.com</strong><br/> demoo@gmail.com</p>"
+            }
+          },
+          "2fbb877d-d7b6-4bc6-b148-36e1c70cb0b7": {
+            "type": "contact_list",
+            "settings": {
+              "heading": "Address",
+              "icon": "address",
+              "text": "<p>125 MOUNT STREET<br/>LONDON<br/>W1K 3NS</p>"
+            }
+          },
+          "1661515112c1890be1-1": {
+            "type": "scoial_media",
+            "settings": {
+              "heading": "Follow us"
+            }
+          }
+        },
+        "block_order": [
+          "1661515112c1890be1-0",
+          "9616bdd2-2e00-4c58-93cc-b62f5a399c5f",
+          "2fbb877d-d7b6-4bc6-b148-36e1c70cb0b7",
+          "1661515112c1890be1-1"
+        ],
+        "settings": {
+          "container": "container",
+          "subtitle": "",
+          "heading": "Get in touch",
+          "heading_position": "bottom",
+          "text_center": "center",
+          "color_scheme": "background-1",
+          "padding_top": 90,
+          "padding_bottom": 90,
+          "mobile_padding_top": 65,
+          "mobile_padding_bottom": 65
+        }
+      },
+      "166151521152fb0065": {
+        "type": "google-map",
+        "blocks": {
+          "dfc382df-a9ef-46ef-b3be-4ce165f9aab0": {
+            "type": "heading",
+            "settings": {
+              "heading": "Find Our Store",
+              "heading_size": "h4"
+            }
+          },
+          "4466e402-da0d-45e6-8359-122c7bd7366d": {
+            "type": "subheading",
+            "settings": {
+              "subheading": "Address",
+              "subheading_size": "h6",
+              "border_show": false
+            }
+          },
+          "ef727e9f-c2d9-4efa-bcb6-41be6c2528d3": {
+            "type": "text",
+            "settings": {
+              "text": "<p>South Street road,<br/>84457 Powlowski Stream Suite 332</p>"
+            }
+          },
+          "284aea1d-f396-4b91-bfdd-d89c4a0f4d4a": {
+            "type": "subheading",
+            "settings": {
+              "subheading": "Opening hours",
+              "subheading_size": "h6",
+              "border_show": true
+            }
+          },
+          "482058da-ffea-42c4-8373-72efa133f311": {
+            "type": "text",
+            "settings": {
+              "text": "<p>Mon - Fri, 7:30am - 04:30pm<br/>Saturday, 8:30am - 06:30pm<br/>Sunday, 10:30am - 10:30pm</p>"
+            }
+          },
+          "6bae387f-33e7-4adb-b60e-c426232d210c": {
+            "type": "button",
+            "settings": {
+              "button_label": "GET DIRECTION",
+              "button_link": "https://www.google.com/maps/dir//1+Grafton+Street+Dublin+Ireland/@53.3432434,-6.2593362,14z/data=!4m8!4m7!1m0!1m5!1m1!1s0x48670e9b76719607:0x9d13471d963893a7!2m2!1d-6.2593362!2d53.3432434"
+            }
+          }
+        },
+        "block_order": [
+          "dfc382df-a9ef-46ef-b3be-4ce165f9aab0",
+          "4466e402-da0d-45e6-8359-122c7bd7366d",
+          "ef727e9f-c2d9-4efa-bcb6-41be6c2528d3",
+          "284aea1d-f396-4b91-bfdd-d89c4a0f4d4a",
+          "482058da-ffea-42c4-8373-72efa133f311",
+          "6bae387f-33e7-4adb-b60e-c426232d210c"
+        ],
+        "settings": {
+          "container": "container",
+          "show_offset": true,
+          "image_height": "adapt",
+          "map": "<div style=\"width: 100%\"><iframe width=\"100%\" height=\"600\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"https://maps.google.com/maps?width=100%25&height=600&hl=en&q=1%20Grafton%20Street,%20Dublin,%20Ireland+(My%20Business%20Name)&t=&z=14&ie=UTF8&iwloc=B&output=embed\"><a href=\"https://www.maps.ie/distance-area-calculator.html\">measure area map</a></iframe></div>",
+          "map_height": "medium",
+          "padding_top": 0,
+          "padding_bottom": 90,
+          "mobile_padding_top": 0,
+          "mobile_padding_bottom": 65,
+          "color_scheme": ""
+        }
+      }
+    },
+    "order": [
+      "breadcrumbs",
+      "main",
+      "1661515112aed97da9",
+      "166151521152fb0065"
+    ]
+  }
+  

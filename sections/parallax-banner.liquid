@@ -1,0 +1,465 @@
+{{ 'parallax-banner.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'parallax-banner.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign container = ''
+  assign page_offset = false
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+    unless section.settings.show_offset
+      assign page_offset = true
+    endunless
+  else
+    assign container = 'container-fluid px-0'
+  endif
+-%}
+
+{%- style -%}
+  /* Override section padding for seamless parallax effect */
+   .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+     --padding-top: {{ section.settings.mobile_padding_top }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      --padding-top: {{ section.settings.padding_top }}px;
+    }
+  }
+
+ 
+{%- endstyle -%}
+  
+<div class="parallax-banner-section section-{{ section.id }}-padding">
+  <div class="parallax-banner-wrapper">
+    <div class="{{ container }} {% if page_offset %}p-0{% endif %}">
+    {% for block in section.blocks %}
+          <div class="parallax__banner color-{{ block.settings.color_scheme }}"
+               data-parallax-item
+               data-parallax-speed="{{ block.settings.parallax_speed }}">
+
+              <div
+                class="parallax__banner-media media parallax-media-{{ section.settings.image_ratio }} {% if block.settings.image == blank %} placeholder{% endif %} {% if block.settings.image2 != blank %} d-sm-none {% endif %}"
+                {% if section.settings.image_ratio == 'adapt' and block.settings.image != blank %}
+                  style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                {% endif %}
+              >
+                {% liquid
+                  assign height = block.settings.image.width | divided_by: block.settings.image.aspect_ratio | round
+                %}
+                {%- if block.settings.image -%}
+
+                  {{
+                    block.settings.image
+                    | image_url: width: 3840
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: sizes,
+                      height: height,
+                      widths: '275, 550, 710, 1420, 3840',
+                      class: 'parallax_desktop_image_class'
+                  }}
+                {%- else -%}
+                  {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              {%- if block.settings.image2 != blank -%}
+                <div class="parallax__banner-media parallax-media-{{ section.settings.image_ratio }} media d-sm-only-visible"
+                  {% if section.settings.image_ratio == 'adapt' and block.settings.image2 != blank %}
+                    style="padding-bottom: {{ 1 | divided_by: block.settings.image2.aspect_ratio | times: 100 }}%;"
+                  {% endif %}
+                >
+                  <img
+                    srcset="
+                      {%- if block.settings.image2.width >= 375 -%}{{ block.settings.image2 | image_url: width: 375 }} 375w,{%- endif -%}
+                      {%- if block.settings.image2.width >= 550 -%}{{ block.settings.image2 | image_url: width: 550 }} 550w,{%- endif -%}
+                      {%- if block.settings.image2.width >= 750 -%}{{ block.settings.image2 | image_url: width: 750 }} 750w,{%- endif -%}
+                      {%- if block.settings.image2.width >= 1100 -%}{{ block.settings.image2 | image_url: width: 1100 }} 1100w,{%- endif -%}
+                      {%- if block.settings.image2.width >= 1500 -%}{{ block.settings.image2 | image_url: width: 1500 }} 1500w,{%- endif -%}
+                      {{ block.settings.image2 | image_url }} {{ block.settings.image2.width }}w
+                    "
+                    sizes="100vw"
+                    src="{{ block.settings.image2 | image_url: width: 1500 }}"
+                    loading="lazy"
+                    alt="{{ block.settings.image2.alt | escape }}"
+                    width="{{ block.settings.image2.width }}"
+                    height="{{ block.settings.image2.width | divided_by: block.settings.image2.aspect_ratio | round }}"
+                  >
+                </div>
+              {%- endif -%}
+            
+            <div class="parallax__banner--content">
+              <div class="d-flex parallax-flex h-100 {{ block.settings.horizontal_alignment }} {{ block.settings.vertical_alignment }}">
+                <div class="parallax__banner--content-inner">
+                  {% if block.settings.subheading != blank %}
+                      <div class="parallax__banner--content-subheading">
+                        {{ block.settings.subheading }}
+                      </div>
+                    {% endif %}
+                  {%- if block.settings.heading != blank -%}
+                      <h3 class="parallax__banner--content-heading mb-0 {{ block.settings.heading_size }}">
+                        {{
+                          block.settings.heading
+                          | replace: 'p>', 'span>'
+                          | replace: 'h1>', 'span>'
+                          | replace: 'h2>', 'span>'
+                          | replace: 'h3>', 'span>'
+                          | replace: 'h4>', 'span>'
+                          | replace: 'h5>', 'span>'
+                          | replace: 'h6>', 'span>'
+                        }}
+                      </h3>
+                    {%- endif -%}
+                    {%- if block.settings.text != blank -%}
+                      <div class="rte parallax__banner--content-text">
+                        {{
+                          block.settings.text
+                          | replace: 'p>', 'span>'
+                          | replace: 'h1>', 'span>'
+                          | replace: 'h2>', 'span>'
+                          | replace: 'h3>', 'span>'
+                          | replace: 'h4>', 'span>'
+                          | replace: 'h5>', 'span>'
+                          | replace: 'h6>', 'span>'
+                        }}
+                      </div>
+                    {%- endif -%}
+                    {% liquid
+                      case block.settings.button_type
+                        when 'primary'
+                          assign button_class = 'button button--primary'
+                        when 'secondary'
+                          assign button_class = 'button button--secondary'
+                        when 'icon'
+                          assign button_class = 'link with--icon'
+                        else
+                          assign button_class = 'link'
+                      endcase
+                    %}
+                     {%- if block.settings.button_label != blank -%}
+                        <a
+                          {% if block.settings.button_link %}
+                            href="{{ block.settings.button_link }}"
+                          {% else %}
+                            role="link" aria-disabled="true"
+                          {% endif %}
+                          class="button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon"
+                        >
+
+                          {{- block.settings.button_label | escape -}}
+                          {% if block.settings.button_icon %}
+                            <span class="button--icon button--icon-right"> {% render 'hooktheme-icon-chevron-right' %} </span>
+                          {% endif %}
+                        </a>
+                    {%- endif -%}
+                  </div>
+              </div>
+            </div>
+          </div>
+
+    {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Parallax banner",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "info": "It will affect on the larger screen",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_offset",
+      "label": "Enable Offset (left & right)",
+      "info": "It will work if you select the \"Full width\" of the page",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to first image"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "adapt",
+      "label": "Image height"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "banner",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image on desktop",
+          "info": "1920 x 800px recommended"
+        },
+        {
+          "type": "image_picker",
+          "id": "image2",
+          "label": "Image on mobile",
+          "info": "750 x 480px recommended"
+        },
+        {
+          "type": "textarea",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "richtext",
+          "id": "heading",
+          "label": "Heading",
+          "default": "<p>Banner title</p>"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h1",
+              "label": "Heading 1"
+            },
+            {
+              "value": "h2",
+              "label": "Heading 2"
+            },
+            {
+              "value": "h3",
+              "label": "Heading 3"
+            },
+            {
+              "value": "h4",
+              "label": "Heading 4"
+            },
+            {
+              "value": "h5",
+              "label": "Heading 5"
+            },
+            {
+              "value": "h6",
+              "label": "Heading 6"
+            }
+          ],
+          "default": "h3",
+          "label": "Heading size"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an icon to focus on your store's features</p>",
+          "label": "Text"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop now"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_icon",
+          "label": "Use arrow icon",
+          "default": true
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button url"
+        },
+        {
+          "type": "select",
+          "id": "button_size",
+          "label": "Button size",
+          "default": "medium",
+          "options": [
+            {
+              "value": "large",
+              "label": "Large"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "small",
+              "label": "Small"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "button_type",
+          "label": "Button type",
+          "default": "secondary",
+          "options": [
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "value": "primary",
+              "label": "Primary"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "horizontal_alignment",
+          "label": "Horizontal Alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "vertical_alignment",
+          "label": "Vertical Alignment",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "middle",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "bottom"
+        },
+        {
+          "type": "header",
+          "content": "Section color"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "t:sections.all.colors.label",
+          "default": "background-1"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Parallax banner",
+      "category": "Banners",
+      "blocks": [
+        {
+          "type": "banner"
+        },
+        {
+          "type": "banner"
+        },
+        {
+          "type": "banner"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

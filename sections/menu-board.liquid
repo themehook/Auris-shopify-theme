@@ -1,0 +1,789 @@
+{{ 'menu-board.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+  }
+
+  .container-{{ section.id }}-padding {
+    padding-top: {{ section.settings.container_padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.container_padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .container-{{ section.id }}-padding {
+      padding-top: {{ section.settings.container_padding_top }}px;
+      padding-bottom: {{ section.settings.container_padding_top }}px;
+    }
+  }
+{%- endstyle -%}
+
+{% capture background_image %}
+{%- if section.settings.image != blank -%}
+    <div class="menu-board-background-media media">
+      <img
+        srcset="
+          {%- if section.settings.image.width >= 375 -%}{{ section.settings.image | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if section.settings.image.width >= 550 -%}{{ section.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if section.settings.image.width >= 750 -%}{{ section.settings.image | image_url: width: 750 }} 750w,{%- endif -%}
+          {%- if section.settings.image.width >= 1100 -%}{{ section.settings.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+          {%- if section.settings.image.width >= 1500 -%}{{ section.settings.image | image_url: width: 1500 }} 1500w,{%- endif -%}
+          {%- if section.settings.image.width >= 1780 -%}{{ section.settings.image | image_url: width: 1780 }} 1780w,{%- endif -%}
+          {%- if section.settings.image.width >= 2000 -%}{{ section.settings.image | image_url: width: 2000 }} 2000w,{%- endif -%}
+          {%- if section.settings.image.width >= 3000 -%}{{ section.settings.image | image_url: width: 3000 }} 3000w,{%- endif -%}
+          {%- if section.settings.image.width >= 3840 -%}{{ section.settings.image | image_url: width: 3840 }} 3840w,{%- endif -%}
+          {{ section.settings.image | image_url }} {{ section.settings.image.width }}w
+        "
+        sizes="100vw"
+        src="{{ section.settings.image | image_url: width: 2000 }}"
+        loading="lazy"
+        alt="{{ section.settings.image.alt | escape }}"
+        width="{{ section.settings.image.width }}"
+        height="{{ section.settings.image.width | divided_by: section.settings.image.aspect_ratio }}"
+      >
+    </div>
+  {%- endif -%}
+{% endcapture %}
+
+<div class="menu-board relative menu-board--{{ section.settings.style }} section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  {% if section.settings.full_width %}
+    {{ background_image }}
+  {% endif %}
+  <div class="container"> 
+    <div class="menu-board__container relative {% if section.settings.full_width == false or section.settings.image == blank %}color-{{ section.settings.secondary_color_scheme }}{% endif %} container-{{ section.id }}-padding {% if section.settings.show_border %}border--line{% endif %} {% if section.settings.round_corner %}round--corner-radius{% endif %} {% if section.settings.container_padded %}menu-board__container-padded{% endif %}">
+      {% unless section.settings.full_width %}
+        {{ background_image }}
+      {% endunless %}
+      <div class="menu--board-inner relative">
+        {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+          <div class="section-heading text-{{ section.settings.text_center }} mb-50">
+            {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
+              <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+            {% endif %}
+            <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank and section.settings.border_line %}heading__space--bottom{% endif %} ">
+              {{- section.settings.heading -}}
+            </h2>
+            {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+              <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+
+
+        <div class="menu-board--grid">
+          {%- for block in section.blocks -%}
+            {% case block.type %}
+              {% when 'category' %}
+
+                <div class="menu-board__category {% if section.settings.menu_style == 'style-3' %} color-{{ block.settings.color_scheme3 }} menu-board__specials-style {% endif %}" {{ block.shopify_attributes }}> 
+                  <div class="menu-board__category-header {% if block.settings.use_title_color %} color-{{ block.settings.title_color_scheme }}{% endif %} {% if section.settings.round_corner %}round--corner-radius-half{% endif %} {% if block.settings.icon_image != blank or block.settings.icon_svg != blank %} icon-position-{{ block.settings.icon_position}} {% endif %} {% if block.settings.icon_position == 'top' or block.settings.icon_position == 'bottom' %} {{ block.settings.hading_alignment }} {% endif %}">
+                    {%- if block.settings.icon_image != blank or block.settings.icon_svg != blank -%}
+                      <div
+                        class="menu-board__category-icon {% if block.settings.icon_solid_btn and block.settings.icon_svg != blank and block.settings.icon_image == blank %} menu_category_solid_icon {% endif %}"
+                        {% if block.settings.icon_color != blank %}
+                          style="color: {{ block.settings.icon_color }};"
+                        {% endif %}
+                      >
+                        {%- if block.settings.icon_image != blank -%}
+                          {{ block.settings.icon_image | image_url: width: 50 | image_tag: loading: 'lazy' }}
+                        {%- else -%}
+                          {{ block.settings.icon_svg }}
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                    <div class="menu-board__category--wrapper">
+                      <h3 class="menu-board__category-title {{ block.settings.heading_size }}">
+                        {{ block.settings.category_name }}
+                      </h3>
+                      {% if block.settings.category_subtitle != blank %}
+                        <span class="menu-board__category-subtitle">
+                          {{ block.settings.category_subtitle }}
+                        </span>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="menu-board__items">
+                    {%- assign category_products = blank -%}
+                    {%- assign show_placeholders = false -%}
+                    {%- if block.settings.source_type == 'collection' -%}
+                      {%- if block.settings.collection != blank -%}
+                        {%- assign block_collection = block.settings.collection -%}
+
+                        {%- case block.settings.sort_by -%}
+                          {%- when 'best-selling' -%}
+                            {%- assign category_products = block_collection.products | sort: 'best_selling' -%}
+                          {%- when 'price-ascending' -%}
+                            {%- assign category_products = block_collection.products | sort: 'price' -%}
+                          {%- when 'price-descending' -%}
+                            {%- assign category_products = block_collection.products | sort: 'price' | reverse -%}
+                          {%- when 'title-ascending' -%}
+                            {%- assign category_products = block_collection.products | sort: 'title' -%}
+                          {%- when 'title-descending' -%}
+                            {%- assign category_products = block_collection.products | sort: 'title' | reverse -%}
+                          {%- when 'created-ascending' -%}
+                            {%- assign category_products = block_collection.products | sort: 'created_at' -%}
+                          {%- when 'created-descending' -%}
+                            {%- assign category_products = block_collection.products | sort: 'created_at' | reverse -%}
+                          {%- else -%}
+                            {%- assign category_products = block_collection.products -%}
+                        {%- endcase -%}
+                      {%- else -%}
+                        {%- assign show_placeholders = true -%}
+                      {%- endif -%}
+                    {%- else -%}
+                      {%- if block.settings.product_list != blank and block.settings.product_list.size > 0 -%}
+                        {%- assign category_products = block.settings.product_list -%}
+                      {%- else -%}
+                        {%- assign show_placeholders = true -%}
+                      {%- endif -%}
+                    {%- endif -%}
+
+                    {%- if show_placeholders -%}
+                      {%- for i in (1..block.settings.products_to_show) -%}
+                        <div class="menu-board__item menu--board-{{ section.settings.menu_style }} {% if section.settings.show_border_on_card and section.settings.menu_style == "style-1" %}menu--itme-border{% endif %}">
+                          {%- if section.settings.show_product_image -%}
+                            <div class="menu-board__item-image menu-board__placeholder-image">
+                              {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                            </div>
+                          {%- endif -%}
+
+                          <div class="menu-board__item-content">
+                            <div class="menu-board__item-header">
+                              {% if section.settings.menu_style == 'style-2' %}
+                                <div class="menu-board-column">
+                              {% endif %}
+                              <div class="menu-board__item-title h6">
+                                Product title
+                              </div>
+                              {% if section.settings.menu_style == 'style-2' %}
+                                </div>
+                              {% endif %}
+                              {% if section.settings.menu_style == 'style-1' %}
+                                <div class="menu-board-item-dashed--line"></div>
+                              {% endif %}
+                              <div class="menu-board__item-price">
+                                <strong>{{ 0 | money }}</strong>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {%- endfor -%}
+                    {%- endif -%}
+
+                    {%- for product in category_products limit: block.settings.products_to_show -%}
+                      <div class="menu-board__item menu--board-{{ section.settings.menu_style }} {% if section.settings.show_border_on_card and section.settings.menu_style == "style-1" %}menu--itme-border{% endif %}">
+                        <a href="{{ product.url }}" class="menu--item-product-link">
+                          <span class="visually-hidden">{{ product.title }}</span>
+                        </a>
+                        {%- if section.settings.show_product_image and product.featured_media -%}
+                          <div class="menu-board__item-image">
+                            {{
+                              product.featured_media
+                              | image_url: width: 160
+                              | image_tag:
+                                loading: 'lazy',
+                                widths: '80, 160',
+                                height: section.settings.image_ratio,
+                                sizes: '80px'
+                            }}
+                          </div>
+                        {%- endif -%}
+
+                        <div class="menu-board__item-content">
+                          {%- if section.settings.show_vendor and product.vendor != blank -%}
+                            <div class="menu-board__item-vendor">
+                              {{ product.vendor }}
+                            </div>
+                          {%- endif -%}
+                          <div class="menu-board__item-header">
+                            {% if section.settings.menu_style == 'style-2' %}
+                              <div class="menu-board-column">
+                            {% endif %}
+                            <div class="menu-board__item-title h6">
+                              {{ product.title | truncatewords: block.settings.title_word_limit }}
+                            </div>
+                            {% if section.settings.menu_style == 'style-2' %}
+                              {%- if section.settings.show_variant -%}
+                                {%- unless product.has_only_default_variant -%}
+                                  <div class="menu-board__item-variant">
+                                    {%- for option in product.options_with_values -%}
+                                      <strong> {{ option.name }}</strong>:
+                                      {% for value in option.values -%}
+                                        {{- value -}}
+                                        {%- unless forloop.last %}, {% endunless -%}
+                                      {%- endfor %}
+                                    {%- endfor -%}
+                                  </div>
+                                {%- endunless -%}
+                              {%- endif -%}
+                              {%- if section.settings.show_description and product.description != blank -%}
+                                <div class="menu-board__item-description">
+                                  {{ product.description | strip_html | truncatewords: section.settings.description_word_limit }}
+                                </div>
+                              {%- endif -%}
+                            {% endif %}
+                            {% if section.settings.menu_style == 'style-2' %}
+                              </div>
+                            {% endif %}
+                            {% if section.settings.menu_style == 'style-1' %}
+                              <div class="menu-board-item-dashed--line"></div>
+                            {% endif %}
+                            <div class="menu-board__item-price">
+                              <strong> {{ product.price | money }}</strong>
+                              {%- if section.settings.compare_price and product.compare_at_price > product.price -%}
+                                <s class="menu-board__item-compare-price {% if section.settings.menu_style == 'style-2' %}position--inherit{% endif %}">
+                                  {{- product.compare_at_price | money -}}
+                                </s>
+                              {%- endif -%}
+                            </div>
+                          </div>
+
+                          {% if section.settings.menu_style == 'style-1' or section.settings.menu_style == 'style-3'  %}
+                            {%- if section.settings.show_variant -%}
+                              {%- unless product.has_only_default_variant -%}
+                                <div class="menu-board__item-variant">
+                                  {%- for option in product.options_with_values -%}
+                                    <strong> {{ option.name }}</strong>:
+                                    {% for value in option.values -%}
+                                      {{- value -}}
+                                      {%- unless forloop.last %}, {% endunless -%}
+                                    {%- endfor %}
+                                  {%- endfor -%}
+                                </div>
+                              {%- endunless -%}
+                            {%- endif -%}
+                            {%- if section.settings.show_description and product.description != blank -%}
+                              <div class="menu-board__item-description">
+                                {{ product.description | strip_html | truncatewords: section.settings.description_word_limit }}
+                              </div>
+                            {%- endif -%}
+                          {% endif %}
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                </div>
+            {% endcase %}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Menu board",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "snow_fall",
+      "label": "Enable snow fall",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_offset",
+      "label": "Enable Offset (left & right)",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "secondary_color_scheme",
+      "label": "Secondary color scheme",
+      "default": "background-2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Show background image in full width of section",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Menu board",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "top",
+      "label": "Heading position"
+    },
+    {
+      "type": "select",
+      "id": "text_center",
+      "options": [
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center",
+      "label": "Alignment"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "menu_style",
+      "label": "Layout Style",
+      "options": [
+        {
+          "value": "style-1",
+          "label": "Modern menu"
+        },
+        {
+          "value": "style-2",
+          "label": "Classic menu"
+        },
+        {
+          "value": "style-3",
+          "label": "Special menu"
+        }
+      ],
+      "default": "style-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "round_corner",
+      "label": "Enable round corner",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "container_padded",
+      "label": "Show padded",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_image",
+      "label": "Show product images",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show brand name",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_variant",
+      "label": "Show color and size",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "description_word_limit",
+      "min": 4,
+      "max": 50,
+      "step": 2,
+      "default": 8,
+      "label": "Description word limit",
+      "visible_if": "{{ section.settings.show_description }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "compare_price",
+      "label": "Show product compare price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_on_card",
+      "label": "Show border",
+      "info": "It works when you enable the Layout Style: \"Modern menu\"",
+      "default": true,
+      "visible_if": "{{ section.settings.menu_style == 'style-1' }}"
+    },
+    {
+      "type": "header",
+      "content": "Container padding"
+    },
+    {
+      "type": "range",
+      "id": "container_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "container_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile padding top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile padding bottom",
+      "default": 20
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Menu Category",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "category_name",
+          "label": "Category Name",
+          "default": "Category"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h1",
+              "label": "Heading 1"
+            },
+            {
+              "value": "h2",
+              "label": "Heading 2"
+            },
+            {
+              "value": "h3",
+              "label": "Heading 3"
+            },
+            {
+              "value": "h4",
+              "label": "Heading 4"
+            },
+            {
+              "value": "h5",
+              "label": "Heading 5"
+            },
+            {
+              "value": "h6",
+              "label": "Heading 6"
+            }
+          ],
+          "default": "h3",
+          "label": "Heading size"
+        },
+        {
+          "type": "text",
+          "id": "category_subtitle",
+          "label": "Subheading"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon image"
+        },
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "Icon SVG",
+          "info": "Paste SVG code here. Will be ignored if icon image is uploaded."
+        },
+        {
+          "type": "checkbox",
+          "id": "icon_solid_btn",
+          "label": "Icon as a solid button",
+          "default": false,
+          "visible_if": "{{ block.settings.icon_svg != blank and block.settings.icon_image == blank }}"
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "left",
+          "label": "Icon position",
+          "visible_if": "{{ block.settings.icon_image != blank or block.settings.icon_svg != blank }}"
+        },
+        {
+          "type": "text_alignment",
+          "id": "hading_alignment",
+          "label": "Desktop content alignment",
+          "info": "It works when you select the \"Icon position\" Top or Bottom",
+          "default": "left",
+          "visible_if": "{{ block.settings.icon_position == 'top' or block.settings.icon_position == 'bottom' }}"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_title_color",
+          "label": "Use menu color scheme",
+          "default": true
+        },
+        {
+          "type": "color_scheme",
+          "id": "title_color_scheme",
+          "label": "Title color scheme",
+          "info": "It works, when you enable the \"Use menu color scheme\"",
+          "default": "background-2",
+          "visible_if": "{{ block.settings.use_title_color }}"
+        },
+        {
+          "type": "header",
+          "content": "Product settings"
+        },
+        {
+          "type": "select",
+          "id": "source_type",
+          "options": [
+            {
+              "value": "collection",
+              "label": "Collection"
+            },
+            {
+              "value": "manual",
+              "label": "Manual selection"
+            }
+          ],
+          "default": "collection",
+          "label": "Select products from"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "range",
+          "id": "products_to_show",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "default": 4,
+          "label": "Maximum products to show"
+        },
+        {
+          "type": "select",
+          "id": "sort_by",
+          "options": [
+            {
+              "value": "best-selling",
+              "label": "Best selling"
+            },
+            {
+              "value": "title-ascending",
+              "label": "Alphabetically, A-Z"
+            },
+            {
+              "value": "title-descending",
+              "label": "Alphabetically, Z-A"
+            },
+            {
+              "value": "price-ascending",
+              "label": "Price, low to high"
+            },
+            {
+              "value": "price-descending",
+              "label": "Price, high to low"
+            },
+            {
+              "value": "created-ascending",
+              "label": "Date, old to new"
+            },
+            {
+              "value": "created-descending",
+              "label": "Date, new to old"
+            }
+          ],
+          "default": "best-selling",
+          "label": "Sort Products By"
+        },
+        {
+          "type": "product_list",
+          "id": "product_list",
+          "label": "Products",
+          "info": "If using manual selection"
+        },
+        {
+          "type": "range",
+          "id": "title_word_limit",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "default": 4,
+          "label": "Product title word limit"
+        },
+        {
+          "type": "header",
+          "content": "Colors",
+          "visible_if": "{{ section.settings.menu_style == 'style-3' }}"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme3",
+          "label": "Color scheme",
+          "default": "background-1",
+          "visible_if": "{{ section.settings.menu_style == 'style-3' }}"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu board",
+      "category": "Products",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Burgers"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Pizza"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

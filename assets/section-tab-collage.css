@@ -1,0 +1,175 @@
+.tab--collage-media-container {
+  height: 100%;
+}
+.single--tab-collage-wrapper:not(.is--open),
+.single--tab-collage-content:not(.is--open) {
+  display: none;
+}
+.tab--collage-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tab--collage-list-item svg {
+  width: 2.8rem;
+}
+.tab--collage-list-item > * {
+  pointer-events: none;
+}
+.tab--collage-content-description {
+  margin-top: 3rem;
+}
+.tab-collage-description + .button,
+.tab-collage-description + .link {
+  margin-top: 3rem;
+}
+.tab--collage-item-icon {
+  line-height: 1;
+}
+.tab--collage-item-icon.button {
+  padding: 0.5rem;
+  background-color: rgba(var(--color-foreground), 0.1);
+  color: rgba(var(--color-foreground));
+}
+.is--open > .tab--collage-item-icon.button {
+  background-color: rgba(var(--color-button), var(--alpha-button-background));
+  color: rgb(var(--color-button-text));
+}
+.collage-tab--highlight--badge {
+  background: rgba(var(--color-foreground), 0.15);
+  padding: 0.8rem 1.5rem 0.8rem 1rem;
+  display: inline-flex;
+  border-radius: 0.3rem;
+  position: relative;
+  align-items: center;
+}
+.highlight--badge-dot {
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 0.1rem solid rgba(var(--color-foreground));
+  border-radius: 100%;
+  position: relative;
+  display: inline-block;
+  margin-right: 1rem;
+}
+.highlight--badge-dot:before {
+  width: 0.6rem;
+  height: 0.6rem;
+  position: absolute;
+  content: "";
+  background-color: rgba(var(--color-foreground));
+  left: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+}
+.collage-tab--highlight--badge + .tab--collage-list {
+  margin-top: 3rem;
+}
+.is--open .tab--collage-item-label {
+  color: rgba(var(--text-link-active-color));
+}
+.tab--collage-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  margin: 0;
+  padding: 1.5rem 0;
+  cursor: pointer;
+  transition: var(--transition);
+  background-color: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  width: 100%;
+  text-align: left;
+}
+.tab--collage-container.rounded--image {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+@media only screen and (min-width: 750px) {
+  .rounded--image .single-tab--collage-media {
+    border-radius: 0 1rem 1rem 0;
+  }
+  .tab--collage-content:not(.tab--collage-text-second) {
+    padding: 5rem 0 5rem 5rem;
+  }
+  .tab--collage-content:is(.tab--collage-text-second) {
+    padding: 5rem 5rem 5rem 0;
+  }
+  .tab--collage-media-container:not(.tab--collage-media-first) {
+    padding-left: 3.5rem;
+  }
+  .tab--collage-media-container:is(.tab--collage-media-first) {
+    padding-right: 3.5rem;
+  }
+  .tab--collage-content-wrapper:is(.align-self-start) {
+    align-self: flex-start;
+  }
+  .tab--collage-content-wrapper:is(.align-self-center) {
+    align-self: center;
+  }
+  .tab--collage-content-wrapper:is(.align-self-end) {
+    align-self: flex-end;
+  }
+  .tab--collage-content-wrapper:is(.content-alignment-left) {
+    text-align: left;
+  }
+  .tab--collage-content-wrapper:is(.content-alignment-right) {
+    text-align: right;
+  }
+  .content-alignment-right .tab--collage-list-item svg {
+    transform: rotate(-110deg);
+  }
+  .tab--collage-media-adapt.placeholder {
+    height: 56rem;
+  }
+  .single-tab--collage-media.tab--collage-media-large {
+    height: 65rem;
+  }
+  .single-tab--collage-media.tab--collage-media-medium {
+    height: 56rem;
+  }
+  .single-tab--collage-media.tab--collage-media-small {
+    height: 45rem;
+  }
+  .content-alignment-right .tab--collage-list-item {
+    flex-direction: row-reverse;
+  }
+}
+@media only screen and (max-width: 749px) {
+  .rounded--image .single-tab--collage-media {
+    border-radius: 1rem;
+  }
+  .tab--collage-content {
+    padding: 3rem;
+  }
+  .tab--collage-media-adapt.placeholder {
+    height: 35rem;
+  }
+  .single-tab--collage-media.tab--collage-media-large {
+    height: 40rem;
+  }
+  .single-tab--collage-media.tab--collage-media-medium {
+    height: 35rem;
+  }
+  .single-tab--collage-media.tab--collage-media-small {
+    height: 30rem;
+  }
+}
+@media only screen and (min-width: 750px) {
+  .desktop-row-reverse {
+    flex-direction: row-reverse;
+  }
+}
+.tab-collage-description {
+  min-height: 7rem;
+}
+.rounded--image .single-tab--collage-media {
+  border-radius: 1rem;
+  overflow: hidden;
+}

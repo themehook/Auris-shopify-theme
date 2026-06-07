@@ -1,0 +1,31 @@
+{% liquid
+  assign button_class = ''
+  case section.settings.button_type
+    when 'primary'
+      assign button_class = 'button button--primary'
+    when 'secondary'
+      assign button_class = 'button button--secondary'
+    when 'icon'
+      assign button_class = 'link with--icon'
+    else
+      assign button_class = 'link'
+  endcase
+%}
+
+{% if section.settings.button_label != blank %}
+  <div class="button__wrapper">
+    <a
+      {% if section.settings.button_link == blank %}
+        role="link" aria-disabled="true"
+      {% else %}
+        href="{{ section.settings.button_link }}"
+      {% endif %}
+      class="{{ button_class }} {% unless section.settings.button_type == 'icon' %}button--{{ section.settings.button_size }}{% endunless %} {% if section.settings.button_icon %} button--with-icon{% endif %}"
+    >
+      {{- section.settings.button_label | escape }}
+      {% if section.settings.button_icon %}
+        <span class="button--icon button--icon-right">{% render 'hooktheme-icon-chevron-right' %}</span>
+      {% endif %}
+    </a>
+  </div>
+{% endif %}

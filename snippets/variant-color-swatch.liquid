@@ -1,0 +1,164 @@
+{%- liquid
+  # Get the configured color option name (supports multiple: Color,Colour,Farbe)
+  assign choose_option = block.settings.choose_options_name | downcase
+  assign choose_option_list = choose_option | split: ','
+
+  # Support update_url parameter (default: true for product page, false for featured product)
+  assign should_update_url = true
+  if update_url == false
+    assign should_update_url = false
+  endif
+
+  # Detect native swatches and determine color swatch option
+  assign has_native_swatches = false
+  assign color_swatch_option = ''
+
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+
+    # Check if option name matches any of the configured color option names
+    assign is_color_option = false
+    for opt in choose_option_list
+      assign opt_trimmed = opt | strip | downcase
+      if opt_trimmed == option_name
+        assign is_color_option = true
+        break
+      endif
+    endfor
+
+    if is_color_option
+      assign color_swatch_option = 'option' | append: option.position
+
+      # Check for native swatches in this option
+      assign native_swatch_count = option.values | map: 'swatch' | compact | size
+      if native_swatch_count > 0
+        assign has_native_swatches = true
+      endif
+    endif
+  endfor
+
+  # Determine swatches type (native or custom)
+  assign swatches_type = block.settings.swatches_type | default: 'custom'
+  assign use_native_swatches = false
+  if has_native_swatches and swatches_type == 'native'
+    assign use_native_swatches = true
+  endif
+
+  # Determine swatch shape
+  assign swatch_shape = block.settings.swatch_shape | default: 'circle'
+-%}
+
+<hooktheme-variant-picker
+  class="no-js-hidden"
+  data-section="{{ section.id }}"
+  data-origin="{{ request.origin }}"
+  data-url="{{ product.url }}"
+  data-update-url="{{ should_update_url }}"
+  data-color-swatch="{{ color_swatch_option }}"
+  data-color-swatch-style="{{ block.settings.color_option_style }}"
+  data-has-native-swatches="{{ has_native_swatches }}"
+  data-swatches-type="{{ swatches_type }}"
+  {{ block.shopify_attributes }}
+>
+  {%- for option in product.options_with_values -%}
+    {%- liquid
+      # Detect native swatches for this specific option
+      assign option_swatch_count = option.values | map: 'swatch' | compact | size
+      assign option_has_native_swatches = false
+      if option_swatch_count > 0
+        assign option_has_native_swatches = true
+      endif
+
+      # Determine picker type for this option
+      assign picker_type = block.settings.picker_type | default: 'button'
+
+      # Auto-upgrade to swatch picker if native swatches exist and user prefers native
+      if option_has_native_swatches and swatches_type == 'native'
+        if picker_type == 'dropdown'
+          assign picker_type = 'swatch_dropdown'
+        else
+          assign picker_type = 'swatch'
+        endif
+      endif
+
+      # Determine fieldset class based on picker type
+      assign fieldset_class = 'js product-form__input'
+      if picker_type == 'swatch'
+        assign fieldset_class = fieldset_class | append: ' product-form__input--swatch radio--swatch'
+      elsif picker_type == 'button'
+        assign fieldset_class = fieldset_class | append: ' radio--swatch'
+      endif
+      assign fieldset_class = fieldset_class | append: ' variant--swatch-option' | append: option.position
+    -%}
+
+    {%- if picker_type == 'dropdown' or picker_type == 'swatch_dropdown' -%}
+      <div class="product-form__input product-form__input--dropdown">
+        <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+          <strong>{{ option.name }}:</strong> <span>{{ option.selected_value }}</span>
+        </label>
+        <div class="select">
+          {%- if picker_type == 'swatch_dropdown' -%}
+            <span
+              data-selected-dropdown-swatch="options[{{ option.name | escape }}]"
+              class="dropdown-swatch"
+            >
+              {% render 'swatch', swatch: option.selected_value.swatch, shape: swatch_shape %}
+            </span>
+          {%- endif -%}
+          <select
+            id="Option-{{ section.id }}-{{ forloop.index0 }}"
+            class="select__select"
+            name="options[{{ option.name | escape }}]"
+            form="product-form-{{ section.id }}"
+          >
+            {% render 'product-variant-options',
+              product: product,
+              option: option,
+              block: block,
+              picker_type: picker_type,
+              choose_option: choose_option,
+              swatch_type: block.settings.color_option_style,
+              swatch_button_style: swatch_shape,
+              use_native_swatches: use_native_swatches,
+              swatch_shape: swatch_shape
+            %}
+          </select>
+          {% render 'hooktheme-icon-caret' %}
+        </div>
+      </div>
+    {%- else -%}
+      <fieldset class="{{ fieldset_class }}">
+        <legend class="form__label">
+          <strong>{{ option.name }}:</strong>
+          <span data-selected-swatch-value="{{ option.name }}">
+            {{- option.selected_value -}}
+          </span>
+        </legend>
+        {% render 'product-variant-options',
+          product: product,
+          option: option,
+          block: block,
+          picker_type: picker_type,
+          choose_option: choose_option,
+          swatch_type: block.settings.color_option_style,
+          swatch_button_style: swatch_shape,
+          use_native_swatches: use_native_swatches,
+          swatch_shape: swatch_shape
+        %}
+      </fieldset>
+    {%- endif -%}
+  {%- endfor -%}
+
+  <script type="application/json" data-variant>
+    {{ product.variants | json }}
+  </script>
+  <script type="application/json" data-preorder>
+    {%- assign firstBrackets = '{'  -%}
+    {%- assign secondBrackets = '}'  -%}
+    {{ firstBrackets }}
+    {%- for variant in product.variants -%}
+      "{{ variant.id }}": {"qty": {{ variant.inventory_quantity }}, "inventory_policy": "{{ variant.inventory_policy }}"}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+    {{ secondBrackets }}
+  </script>
+</hooktheme-variant-picker>

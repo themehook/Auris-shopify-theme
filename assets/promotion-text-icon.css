@@ -1,0 +1,123 @@
+.promotion--text--icons .promotion__inner--padded {
+  padding: 3rem 1.5rem;
+}
+@media only screen and (min-width: 768px) {
+  .promotion--text--icons .promotion__inner--padded {
+    padding: 3rem 2rem;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .promotion--text--icons .promotion__inner--padded {
+    padding: 4rem 3rem;
+  }
+}
+
+
+.promotion__text-flex--wrapper{
+    display: flex;
+    gap: 3rem;
+    @media only screen and (min-width: 750px){
+        gap: 4rem;
+    }
+    @media only screen and (min-width: 1366px){
+        gap: 5rem;
+    }
+    & .promotion__text-icons--grid{
+        width: 100%;
+        @media only screen and (min-width: 750px){
+            width: 60%;
+        }
+    }
+    @media only screen and (max-width: 749px){
+        flex-direction: column;
+    }
+    &.text_secound{
+        flex-direction: row-reverse;
+        @media only screen and (max-width: 749px){
+            flex-direction: column;
+        }
+    }
+}
+.promotion__text-icons--content {
+    width: 100%;
+    @media only screen and (min-width: 750px){
+        width: 40%;
+    }
+}
+
+.promo--banner-content-center{
+    text-align: center;
+}
+.promo--banner-content-left{
+    text-align: left;
+    @media only screen and (max-width: 749px){
+        text-align: center;
+    }
+}
+.promo--banner-content-right{
+    text-align: right;
+    @media only screen and (max-width: 749px){
+        text-align: center;
+    }
+}
+.promotion__text-icons--content{
+    &.d-flex{
+        gap: 2rem;
+        align-items: center;
+        @media only screen and (min-width: 750px){
+            gap: 2.5rem;
+        }
+        &.right{
+            flex-direction: row;
+            justify-content: left;
+            @media only screen and (max-width: 749px){
+                flex-direction: column;
+                justify-content: center;
+            }
+            &.promo--banner-content-center{
+                justify-content: center;
+            }
+            &.promo-banner-content-right{
+                justify-content: right;
+                @media only screen and (max-width: 749px){
+                    justify-content: center;
+                }
+            }
+        }
+        &.left{
+            flex-direction: row-reverse;
+            justify-content: left;
+            @media only screen and (max-width: 749px){
+                flex-direction: column;
+                justify-content: center;
+            }
+            &.promo--banner-content-center{
+                justify-content: center;
+            }
+            &.promo--banner-content-right{
+                justify-content: right;
+                @media only screen and (max-width: 749px){
+                    justify-content: center;
+                }
+            }
+        }
+        &.top{
+            flex-direction: column-reverse;
+            justify-content: center;
+        }
+        &.bottom{
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+    & .promo--banner-content--button{
+        min-width: 15rem;
+    }
+    & .promo--banner-content--heading{
+        & span{
+            display: block;
+        }
+    }
+}
+
+

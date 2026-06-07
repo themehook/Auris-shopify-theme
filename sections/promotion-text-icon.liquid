@@ -1,0 +1,1048 @@
+{% liquid
+  assign theme_rtl = false
+  if settings.enable_rtl and settings.langauges_rtl == blank
+    assign theme_rtl = true
+  endif
+
+  if settings.enable_rtl and settings.langauges_rtl != blank
+    assign rtl_languages = settings.langauges_rtl | split: ','
+    for language in rtl_languages
+      if language == request.locale.iso_code
+        assign theme_rtl = true
+      endif
+    endfor
+  endif
+%}
+
+
+{{ 'hooktheme-grid.css' | asset_url | stylesheet_tag }}
+{{ 'featured-promotion.css' | asset_url | stylesheet_tag }}
+{{ 'promotion-text-icon.css' | asset_url | stylesheet_tag }}
+{{ 'section-title.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  #MainContent > :first-child .section--top-space-{{ section.id }} {
+     margin-top: calc(var(--header-height) * var(--transparent-header-show));
+   }
+</style>
+
+{%- liquid
+  assign container = ''
+  if section.settings.container == 'container'
+    assign container = 'container'
+  elsif section.settings.container == 'container-fluid'
+    assign container = 'container-fluid'
+  else
+    assign container = 'container-fluid px-0'
+  endif
+-%}
+<div class="promotion--text--icons section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} section--top-space-{{ section.id }} gradient">
+  <div class="{{ container }}">
+   {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+      <div class="section-heading text-{{ section.settings.text_center }}  {% if section.settings.border_line %} mb-50 {% else %} mb-30{% endif %} {% if section.settings.image != blank %} relative  {% endif %}">
+        {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
+          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+        {% endif %}
+        <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank and section.settings.border_line %}heading__space--bottom{% endif %} ">
+          {% if section.settings.border_line %}<span>{% endif %}
+          {{- section.settings.heading -}}
+          {% if section.settings.border_line %}</span>{% endif %}
+        </h2>
+        {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+    <div class="promotion__text--inner color-{{ section.settings.color_inner_scheme }} {% if section.settings.inner_padded %}promotion__inner--padded{% endif %} {% if section.settings.inner_show_border %}promotion__show--border{% endif %} {% if section.settings.inner_rounded %}promotion__inner--rounded{% endif %}">
+      {% if section.settings.show_promotion_text %}
+          <div class="promotion__text-flex--wrapper {{ section.settings.text_position }}">
+      {% endif %}
+        {% if section.settings.show_promotion_text %}
+          <!-- Promo Banner Content -->
+          <div
+            class="promotion__text-icons--content {% if section.settings.link_label != blank %} d-flex{% endif %} {{ section.settings.button_position }} promo--banner-content-{{ section.settings.content_alignment }}"
+          >
+            {% if section.settings.link_label != blank %}
+              <div class="promotion__text-icons--content__top">
+            {% endif %}
+                <h2 class="promo--banner-content--heading {{ section.settings.promotion_heading_size }} mb-0">
+                  {{
+                    section.settings.promotion_heading
+                    | replace: 'p>', 'span>'
+                    | replace: 'h1>', 'span>'
+                    | replace: 'h2>', 'span>'
+                    | replace: 'h3>', 'span>'
+                    | replace: 'h4>', 'span>'
+                    | replace: 'h5>', 'span>'
+                    | replace: 'h6>', 'span>'
+                  }}
+                </h2>
+                {% if section.settings.promotion_text != blank %}
+                <div class="promo--banner-content-text mt-10 rte ">
+                    {{ section.settings.promotion_text }}
+                    </div>
+                {% endif %}
+            {% if section.settings.link_label != blank %}
+            </div>
+            {% endif %}
+            {% liquid
+              case section.settings.button_type
+                when 'primary'
+                  assign button_class = 'button button--primary'
+                when 'secondary'
+                  assign button_class = 'button button--secondary'
+                when 'icon'
+                  assign button_class = 'link with--icon'
+                else
+                  assign button_class = 'link'
+              endcase
+            %}
+            {% if section.settings.link_label != blank %}
+              <div class="promo--banner-content--button">
+                <a
+                  class="{{ button_class }} {% unless section.settings.button_type == "icon" %} button--{{ section.settings.button_size }} {% endunless %} {% if section.settings.button_icon %} button--with-icon{% endif %}"
+                  {% if section.settings.link == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ section.settings.link }}"
+                  {% endif %}
+                >
+                  {{- section.settings.link_label | escape }}
+                  {% if section.settings.button_icon %}
+                    <span class="button--icon button--icon-right"> {% render 'hooktheme-icon-chevron-right' %}</span>
+                  {% endif %}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+          <!-- Promo Banner Content ./ -->
+        {% endif %}
+        <div
+          class="promotion__text-icons--grid grid grid--{{  section.settings.desktop_column }}-col-desktop grid--{{ section.settings.mobile_column }}-col-tablet-down"
+          style="--icon-width: {{ section.settings.icon_width }}px;"
+        >
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'featured_promotion' -%}
+                <div
+                  class="grid__item promotion--card text-{{ section.settings.alignment }} promotion--card-icon--{{ section.settings.icon_position }} color-{{ section.settings.card_color_scheme }} {% if section.settings.feature_card_border %}promotion--card--border{% endif %} {% unless section.settings.card_padding == "none" %}promotion--card-padded-{{ section.settings.card_padding }} promotion--card-padded-mobile{% endunless %} {% if section.settings.feature_card_radius %}card-border-radius-true{% endif %} {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                  {{ block.shopify_attributes }}
+                  {% if settings.animations_reveal_on_scroll %}
+                    data-cascade
+                    style="--animation-order: {{ forloop.index }};"
+                  {% endif %}
+                >
+                  <div class="promotion--card-icon  {% if section.settings.card_solid_button_icon or block.settings.feature_image_icon != blank %}max-width-false{% endif %}">
+                    {%- if block.settings.feature_image_icon != blank -%}
+                      <span class="featured-promotion--icon image--icon icon--position-{{ section.settings.alignment }} {{ section.settings.icon_image_width }}">
+                        <img
+                          src="{{ block.settings.feature_image_icon | image_url: width: 320, height: 320 }}"
+                          alt="{{ block.settings.feature_image_icon.alt | escape }}"
+                          width="320"
+                          height="{{ 100 | divided_by: block.settings.feature_image_icon.aspect_ratio | ceil }}"
+                          loading="lazy"
+                        >
+                      </span>
+                    {% else %}
+                      {% if section.settings.card_solid_button_icon %}
+                        <span
+                          class="icon--solid-button icon--position-{{ section.settings.alignment }}"
+                        >
+                      {%- endif %}
+                      {%- render 'hooktheme-icon-featured-promotion',
+                        icon: block.settings.icon,
+                        icon_width: section.settings.icon_width
+                      -%}
+                      {% if section.settings.card_solid_button_icon %} </span>{% endif %}
+                    {%- endif -%}
+                  </div>
+                  <div class="promotion--card--content">
+                    <h3 class="shipping__items--title {{ section.settings.card_heading_size }}">
+                      {{ block.settings.heading }}
+                    </h3>
+                    <p class="shipping__items--desc">{{ block.settings.subheading }}</p>
+                  </div>
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      {% if section.settings.show_promotion_text %}
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Promotion text with icons",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "default": "container",
+      "info": "It will affect on the larger screen",
+      "options": [
+        {
+          "value": "container",
+          "label": "Boxed"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Promotion text ",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Heading position"
+    },
+    {
+      "type": "select",
+      "id": "text_center",
+      "options": [
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center",
+      "label": "Alignment"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_promotion_text",
+      "label": "Show promotion text",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "promotion_heading",
+      "default": "<p>Promotion title</p>",
+      "label": "Heading",
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "select",
+      "id": "promotion_heading_size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Heading 1"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h4",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h6",
+          "label": "Heading 6"
+        }
+      ],
+      "default": "h3",
+      "label": "Heading size",
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "richtext",
+      "id": "promotion_text",
+      "label": "Description",
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Button label",
+      "default": "Button label",
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "select",
+      "id": "button_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "right",
+      "label": "Button position",
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_icon",
+      "label": "Use arrow icon",
+      "default": true,
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "select",
+      "id": "button_type",
+      "label": "Button type",
+      "default": "primary",
+      "visible_if": "{{ section.settings.show_promotion_text}}",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Solid button"
+        },
+        {
+          "value": "secondary",
+          "label": "Outline button"
+        },
+        {
+          "value": "icon",
+          "label": "Link button"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Button size",
+      "default": "small",
+      "info": "Works on the solid/outline button",
+      "visible_if": "{{ section.settings.show_promotion_text}}",
+      "options": [
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        }
+      ]
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:sections.multicolumn.blocks.column.settings.link.label",
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.image-with-text.settings.mobile_content_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.image-with-text.settings.mobile_content_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.image-with-text.settings.mobile_content_alignment.options__3.label"
+        }
+      ],
+      "default": "center",
+      "label": "Desktop content alignment",
+      "visible_if": "{{ section.settings.show_promotion_text}}"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "options": [
+        {
+          "value": "text_first",
+          "label": "Text first"
+        },
+        {
+          "value": "text_secound",
+          "label": "Text secound"
+        }
+      ],
+      "default": "text_first",
+      "label": "Text position"
+    },
+    {
+      "type": "select",
+      "id": "desktop_column",
+      "label": "Card of columns on desktop",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "mobile_column",
+      "label": "Card of columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "inner_padded",
+      "label": "Inner padded",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "inner_show_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "inner_rounded",
+      "label": "Rounded corner",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Promotion card"
+    },
+    {
+      "type": "select",
+      "id": "card_heading_size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Heading 1"
+        },
+        {
+          "value": "h2",
+          "label": "Heading 2"
+        },
+        {
+          "value": "h3",
+          "label": "Heading 3"
+        },
+        {
+          "value": "h4",
+          "label": "Heading 4"
+        },
+        {
+          "value": "h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "h6",
+          "label": "Heading 6"
+        }
+      ],
+      "default": "h5",
+      "label": "Heading size"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_solid_button_icon",
+      "label": "Icon as a solid button",
+      "info": "It will work unless you upload an image for the icon.",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Desktop icon position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "icon_width",
+      "label": "Icon width on desktop",
+      "options": [
+        {
+          "value": "30",
+          "label": "Extra small"
+        },
+        {
+          "value": "40",
+          "label": "Small"
+        },
+        {
+          "value": "50",
+          "label": "Medium"
+        },
+        {
+          "value": "60",
+          "label": "Large"
+        },
+        {
+          "value": "70",
+          "label": "Extra large"
+        }
+      ],
+      "default": "40"
+    },
+    {
+      "type": "select",
+      "id": "icon_image_width",
+      "label": "Image width on desktop",
+      "options": [
+        {
+          "value": "extrasmall",
+          "label": "Extra small"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "extralarge",
+          "label": "Extra large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Desktop content alignment",
+      "info": "It works when you select the \"Icon position\" Top or Bottom",
+      "default": "left",
+      "visible_if": "{{ section.settings.icon_position == 'top' or section.settings.icon_position == 'bottom' }}"
+    },
+    {
+      "type": "select",
+      "id": "card_padding",
+      "label": "Desktop card padded",
+      "info": "The padding is automatically optimized for mobile",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_card_radius",
+      "label": "Round corner",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_card_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "card_color_scheme",
+      "label": "Card color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_inner_scheme",
+      "label": "Color scheme for container",
+      "default": "background-2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "featured_promotion",
+      "name": "Text with icon",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Heading",
+          "label": "Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "subheading",
+          "default": "Pair text with an icon to focus on your store's features.",
+          "label": "Subheading"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "options": [
+            {
+              "value": "box_tic",
+              "label": "Box tic"
+            },
+            {
+              "value": "music_play",
+              "label": "Music play"
+            },
+            {
+              "value": "shield_tic",
+              "label": "Shield tic"
+            },
+            {
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "value": "return",
+              "label": "Return"
+            },
+            {
+              "value": "payment",
+              "label": "Payment"
+            },
+            {
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "value": "chat",
+              "label": "Chat"
+            },
+            {
+              "value": "computer",
+              "label": "Computer"
+            },
+            {
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "value": "headphone",
+              "label": "Headphone"
+            },
+            {
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "value": "battery",
+              "label": "Battery"
+            },
+            {
+              "value": "battery_charge",
+              "label": "Battery charge"
+            },
+            {
+              "value": "wirless",
+              "label": "Wirless"
+            },
+            {
+              "value": "bluetooth",
+              "label": "Bluetooth"
+            },
+            {
+              "value": "radio_outline",
+              "label": "Radio outline"
+            },
+            {
+              "value": "printers",
+              "label": "Printers"
+            },
+            {
+              "value": "apple",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__2.label"
+            },
+            {
+              "value": "banana",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__3.label"
+            },
+            {
+              "value": "bottle",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__4.label"
+            },
+            {
+              "value": "box",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__5.label"
+            },
+            {
+              "value": "carrot",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__6.label"
+            },
+            {
+              "value": "chat_bubble",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__7.label"
+            },
+            {
+              "value": "check_mark",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__8.label"
+            },
+            {
+              "value": "clipboard",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__9.label"
+            },
+            {
+              "value": "dairy",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__10.label"
+            },
+            {
+              "value": "dairy_free",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__11.label"
+            },
+            {
+              "value": "dryer",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__12.label"
+            },
+            {
+              "value": "eye",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__13.label"
+            },
+            {
+              "value": "fire",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__14.label"
+            },
+            {
+              "value": "gluten_free",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__15.label"
+            },
+            {
+              "value": "heart",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__16.label"
+            },
+            {
+              "value": "iron",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__17.label"
+            },
+            {
+              "value": "leaf",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__18.label"
+            },
+            {
+              "value": "leather",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__19.label"
+            },
+            {
+              "value": "lightning_bolt",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__20.label"
+            },
+            {
+              "value": "lipstick",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__21.label"
+            },
+            {
+              "value": "lock",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__22.label"
+            },
+            {
+              "value": "map_pin",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__23.label"
+            },
+            {
+              "value": "nut_free",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__24.label"
+            },
+            {
+              "value": "pants",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__25.label"
+            },
+            {
+              "value": "paw_print",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__26.label"
+            },
+            {
+              "value": "pepper",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__27.label"
+            },
+            {
+              "value": "perfume",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__28.label"
+            },
+            {
+              "value": "plane",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__29.label"
+            },
+            {
+              "value": "plant",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__30.label"
+            },
+            {
+              "value": "price_tag",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__31.label"
+            },
+            {
+              "value": "question_mark",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__32.label"
+            },
+            {
+              "value": "recycle",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__33.label"
+            },
+            {
+              "value": "ruler",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__35.label"
+            },
+            {
+              "value": "serving_dish",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__36.label"
+            },
+            {
+              "value": "shirt",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__37.label"
+            },
+            {
+              "value": "shoe",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__38.label"
+            },
+            {
+              "value": "silhouette",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__39.label"
+            },
+            {
+              "value": "snowflake",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__40.label"
+            },
+            {
+              "value": "star",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__41.label"
+            },
+            {
+              "value": "stopwatch",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__42.label"
+            },
+            {
+              "value": "washing",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__44.label"
+            }
+          ],
+          "default": "truck",
+          "label": "Icon"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_image_icon",
+          "label": "Image icon"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promotion text with icons",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "featured_promotion",
+          "settings": {
+            "heading": "Heading",
+            "subheading": "Pair text with an icon to focus on your store's features.",
+            "icon": "box_tic"
+          }
+        },
+        {
+          "type": "featured_promotion",
+          "settings": {
+            "heading": "Heading",
+            "subheading": "Pair text with an icon to focus on your store's features.",
+            "icon": "music_play"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  }
+}
+{% endschema %}

@@ -1,0 +1,506 @@
+{% stylesheet %}
+  .contact-form-block {
+    width: var(--contact-width, 100%);
+    padding-top: var(--contact-pad-top, 0);
+    padding-bottom: var(--contact-pad-bottom, 0);
+    padding-left: var(--contact-pad-left, 0);
+    padding-right: var(--contact-pad-right, 0);
+  }
+
+  .contact-form-block__fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .contact-form-block__field {
+    min-width: 0;
+  }
+
+  .contact-form-block__field--full {
+    width: 100%;
+  }
+
+  .contact-form-block__field--half {
+    width: calc(50% - 0.75rem);
+  }
+
+  .contact-form-block .cf-input,
+  .contact-form-block .cf-textarea,
+  .contact-form-block .cf-select {
+    width: 100%;
+    height: 5rem;
+    padding: 0 1.5rem;
+    font-size: 1.4rem;
+    color: rgba(var(--color-foreground));
+    background-color: transparent;
+    margin-bottom: 0;
+  }
+
+  .contact-form-block .cf-textarea {
+    height: auto;
+    padding: 1.5rem;
+    min-height: 12rem;
+    resize: vertical;
+  }
+
+  .contact-form-block .cf-select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 4rem;
+  }
+
+  .contact-form-block__select-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .contact-form-block__select-arrow {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    color: rgba(var(--color-foreground), 0.55);
+  }
+
+  .contact-form-block__select-arrow svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .contact-form-block .cf-input::placeholder,
+  .contact-form-block .cf-textarea::placeholder {
+    color: rgba(var(--color-foreground), 0.55);
+  }
+
+  .contact-form-block .cf-input:focus,
+  .contact-form-block .cf-textarea:focus,
+  .contact-form-block .cf-select:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: rgba(var(--color-foreground));
+  }
+
+  /* Border styles — parent class controls child field borders */
+  .contact-form-block--border-box .cf-input,
+  .contact-form-block--border-box .cf-textarea,
+  .contact-form-block--border-box .cf-select {
+    border: 1px solid rgba(var(--color-foreground), 0.15);
+    border-radius: var(--contact-field-radius, 0);
+  }
+
+  .contact-form-block--border-underline .cf-input,
+  .contact-form-block--border-underline .cf-textarea,
+  .contact-form-block--border-underline .cf-select {
+    border: none;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.15);
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .contact-form-block--border-none .cf-input,
+  .contact-form-block--border-none .cf-textarea,
+  .contact-form-block--border-none .cf-select {
+    border: none;
+    border-radius: 0.8rem;
+    background-color: var(--contact-field-bg, #F5F5F5);
+    color: var(--contact-field-text, inherit);
+  }
+
+  .contact-form-block--border-none .cf-input::placeholder,
+  .contact-form-block--border-none .cf-textarea::placeholder {
+    color: var(--contact-field-text, inherit);
+    opacity: 0.55;
+  }
+
+  .contact-form-block__label {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: rgba(var(--color-foreground), 0.7);
+  }
+
+  .contact-form-block__label--required::after {
+    content: " *";
+    color: rgba(var(--color-foreground), 0.5);
+  }
+
+  .contact-form-block__option-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 0.5rem;
+  }
+
+  .contact-form-block__option-group--vertical {
+    flex-direction: column;
+  }
+
+  .contact-form-block__option-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+
+  .contact-form-block__option-item input[type="radio"],
+  .contact-form-block__option-item input[type="checkbox"] {
+    width: 1.6rem;
+    height: 1.6rem;
+    accent-color: rgb(var(--color-foreground));
+    cursor: pointer;
+  }
+
+  .contact-form-block__submit {
+    margin-top: 2rem;
+  }
+
+  .contact-form-block__submit button {
+    min-width: 12rem;
+  }
+
+  .contact-form-block__submit--full button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .contact-form-block .cf-message {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .contact-form-block {
+      width: var(--contact-width-mobile, var(--contact-width, 100%));
+      padding-top: calc(var(--contact-pad-top, 0) * var(--contact-mobile-scale, 1));
+      padding-bottom: calc(var(--contact-pad-bottom, 0) * var(--contact-mobile-scale, 1));
+      padding-left: calc(var(--contact-pad-left, 0) * var(--contact-mobile-scale, 1));
+      padding-right: calc(var(--contact-pad-right, 0) * var(--contact-mobile-scale, 1));
+    }
+
+    .contact-form-block__field--half {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{%- liquid
+  assign s = block.settings
+
+  case s.width
+    when 'custom'
+      assign width_value = s.custom_width | append: '%'
+    else
+      assign width_value = '100%'
+  endcase
+
+  case s.width_mobile
+    when 'custom'
+      assign width_mobile_value = s.custom_width_mobile | append: '%'
+    else
+      assign width_mobile_value = '100%'
+  endcase
+
+  case s.button_style
+    when 'primary'
+      assign button_class = 'button button--primary'
+    when 'secondary'
+      assign button_class = 'button button--secondary'
+    else
+      assign button_class = 'link'
+  endcase
+-%}
+
+{%- capture fields -%}
+  {% content_for 'blocks' %}
+{%- endcapture -%}
+
+<div
+  class="contact-form-block contact-form-block--border-{{ s.field_border_style }}"
+  style="
+    --contact-width: {{ width_value }};
+    --contact-width-mobile: {{ width_mobile_value }};
+    --contact-pad-top: {{ s.padding_top }}px;
+    --contact-pad-bottom: {{ s.padding_bottom }}px;
+    --contact-pad-left: {{ s.padding_left }}px;
+    --contact-pad-right: {{ s.padding_right }}px;
+    --contact-mobile-scale: {{ s.mobile_scale | divided_by: 100.0 }};
+    --contact-field-radius: {{ s.field_border_radius }}px;
+    --contact-field-bg: {{ s.field_background_color }};
+    --contact-field-text: {{ s.field_text_color }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- form 'contact', id: 'ContactFormBlock--{{ block.id }}', class: 'contact-form-block__form' -%}
+
+    {%- if form.posted_successfully? -%}
+      <div class="cf-message cf-message--success" tabindex="-1" autofocus>
+        {{ 'templates.contact.form.post_success' | t }}
+      </div>
+    {%- elsif form.errors -%}
+      <div class="cf-message cf-message--error" role="alert" tabindex="-1" autofocus>
+        {{ 'templates.contact.form.error_heading' | t }}
+      </div>
+    {%- endif -%}
+
+    <div class="contact-form-block__fields">
+      {{ fields }}
+    </div>
+
+    <div class="contact-form-block__submit{% if s.button_width == 'full' %} contact-form-block__submit--full{% endif %}">
+      <button type="submit" class="{{ button_class }}">
+        {{ s.button_label }}
+      </button>
+    </div>
+
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": null,
+  "blocks": [
+    { "type": "_contact-field" }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Submit button"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "text", "label": "Text" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Label",
+      "default": "Send"
+    },
+    {
+      "type": "select",
+      "id": "button_width",
+      "label": "Button width",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "full", "label": "Full width" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "header",
+      "content": "Field style"
+    },
+    {
+      "type": "select",
+      "id": "field_border_style",
+      "label": "Border style",
+      "options": [
+        { "value": "box", "label": "Box (all sides)" },
+        { "value": "underline", "label": "Underline" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "range",
+      "id": "field_border_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.field_border_style == 'box' }}"
+    },
+    {
+      "type": "color",
+      "id": "field_background_color",
+      "label": "Field background",
+      "default": "#F5F5F5",
+      "alpha": true,
+      "visible_if": "{{ block.settings.field_border_style == 'none' }}"
+    },
+    {
+      "type": "color",
+      "id": "field_text_color",
+      "label": "Field text color",
+      "default": "#000000",
+      "alpha": true,
+      "visible_if": "{{ block.settings.field_border_style == 'none' }}"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width (desktop)",
+      "options": [
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "Width (mobile)",
+      "options": [
+        { "value": "fill", "label": "Fill" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Custom width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_scale",
+      "label": "Mobile scale",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form",
+      "category": "Forms",
+      "settings": {
+        "field_border_style": "box",
+        "field_border_radius": 8
+      },
+      "blocks": [
+        {
+          "type": "_contact-field",
+          "settings": {
+            "field_type": "text",
+            "label": "Name",
+            "placeholder": "Your name",
+            "show_label": false,
+            "required": false,
+            "full_width": false
+          }
+        },
+        {
+          "type": "_contact-field",
+          "settings": {
+            "field_type": "email",
+            "label": "Email",
+            "placeholder": "Your email",
+            "show_label": false,
+            "required": true,
+            "full_width": false
+          }
+        },
+        {
+          "type": "_contact-field",
+          "settings": {
+            "field_type": "phone",
+            "label": "Phone",
+            "placeholder": "Your phone",
+            "show_label": false,
+            "required": false,
+            "full_width": true
+          }
+        },
+        {
+          "type": "_contact-field",
+          "settings": {
+            "field_type": "textarea",
+            "label": "Message",
+            "placeholder": "Your message",
+            "show_label": false,
+            "required": false,
+            "full_width": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

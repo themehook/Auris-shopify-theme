@@ -1,0 +1,43 @@
+{%- liquid
+  # Support update_url parameter (default: true for product page, false for quick view)
+  assign should_update_url = true
+  if update_url == false
+    assign should_update_url = false
+  endif
+-%}
+
+<hooktheme-variant-picker
+  class="no-js-hidden"
+  data-section="{{ section.id }}"
+  data-origin="{{ request.origin }}"
+  data-url="{{ product.url }}"
+  data-update-url="{{ should_update_url }}"
+  {{ block.shopify_attributes }}
+>
+  {%- for option in product.options_with_values -%}
+    <fieldset class="js product-form__input radio--swatch">
+      <legend class="form__label">
+        <strong>{{ option.name }}:</strong>
+        <span data-selected-swatch-value="{{ option.name }}">{{ option.selected_value }}</span>
+      </legend>
+      {% render 'product-variant-options',
+        product: product,
+        option: option,
+        block: block,
+        picker_type: block.settings.picker_type
+      %}
+    </fieldset>
+  {%- endfor -%}
+  <script type="application/json" data-variant>
+    {{ product.variants | json }}
+  </script>
+  <script type="application/json" data-preorder>
+    {%- assign firstBrackets = '{'  -%}
+    {%- assign secondBrackets = '}'  -%}
+    {{ firstBrackets }}
+    {%- for variant in product.variants -%}
+      "{{ variant.id }}": {"qty": {{ variant.inventory_quantity }}, "inventory_policy": "{{ variant.inventory_policy }}"}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+    {{ secondBrackets }}
+  </script>
+</hooktheme-variant-picker>

@@ -1,0 +1,176 @@
+{% comment %}
+  Renders an article card for a given blog with settings to either show the image or not.
+
+  Accepts:
+  - blog: {Object} Blog object
+  - article: {Object} Article object
+  - show_image: {String} The setting either show the article image or not. If it's not included it will show the image by default
+  - show_date: {String} The setting either show the article date or not. If it's not included it will not show the image by default
+  - show_author: {String} The setting either show the article author or not. If it's not included it will not show the author by default
+
+  Usage:
+  {% render 'article-card' blog: blog, article: article, show_image: section.settings.show_image %}
+{% endcomment %}
+
+<article
+  class="article--card article--{{ layout }} {% if color_scheme != blank %}color-{{ color_scheme }}{% endif %} {{ className }}  {% if corner_radius %}article--card-radius{% endif %} {% if spacing %}article--card-spacing-true{% endif %}"
+  aria-labelledby="Article-{{ article.id }}"
+>
+  {%- if show_image and article.image -%}
+    <div class="blog__items--thumbnail card--client-height">
+      <a class="blog__items--link" href="{{ article.url }}">
+        <div
+          class="article-card__image {% unless layout == 'collage' %}media media--{{ image_ratio }}{% endunless %}"
+          {% if image_ratio == 'adapt' and layout != 'collage' %}
+            style="padding-bottom: {{ 1 | divided_by: article.image.aspect_ratio | times: 100 }}%;"
+          {% endif %}
+        >
+          {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+
+          {%- unless sizes -%}
+            {% if layout == 'collage' %}
+              {% if article_index == 1 or articles_count == 1 %}
+                {%- capture sizes -%}calc(100vw - 30px){%- endcapture -%}
+              {% else %}
+                {%- capture sizes -%}(min-width: 992px) calc((100vw - 50px) / 3), (min-width: 750px) calc((100vw - 50px) / 2), calc(100vw - 30px){%- endcapture -%}
+              {% endif %}
+            {% elsif layout == 'masonry' %}
+              {% if article_index <= 3 %}
+                {%- capture sizes -%}(min-width: 750px) calc((100vw - 50px) / 2), calc(100vw - 30px){%- endcapture -%}
+              {% else %}
+                {%- capture sizes -%}(min-width: 992px) calc((100vw - 50px) / 3), (min-width: 750px) calc((100vw - 50px) / 2), calc(100vw - 30px){%- endcapture -%}
+              {% endif %}
+            {% else %}
+              {%- capture sizes -%}(min-width: {{ settings.page_layout_width }}px) {{ settings.page_layout_width | minus: 100 | divided_by: grid_column }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / {{ mobile_grid_column }}){%- endcapture -%}
+            {% endif %}
+          {%- endunless -%}
+          {%- unless image_width_src -%}
+            {%- assign image_width_src = 533 -%}
+          {%- endunless -%}
+
+          <img
+            srcset="
+              {%- if article.image.src.width >= 165 -%}{{ article.image.src | image_url: width: 165 }} 165w,{%- endif -%}
+              {%- if article.image.src.width >= 360 -%}{{ article.image.src | image_url: width: 360 }} 360w,{%- endif -%}
+              {%- if article.image.src.width >= 533 -%}{{ article.image.src | image_url: width: 533 }} 533w,{%- endif -%}
+              {%- if article.image.src.width >= 720 -%}{{ article.image.src | image_url: width: 720 }} 720w,{%- endif -%}
+              {%- if article.image.src.width >= 1000 -%}{{ article.image.src | image_url: width: 1000 }} 1000w,{%- endif -%}
+              {%- if article.image.src.width >= 1500 -%}{{ article.image.src | image_url: width: 1500 }} 1500w,{%- endif -%}
+              {{ article.image.src | image_url }} {{ article.image.src.width }}w
+            "
+            src="{{ article.image.src | image_url: width: image_width_src }}"
+            sizes="{{ sizes }}"
+            alt="{{ article.image.src.alt | escape }}"
+            class="motion-reduce"
+            {% unless lazy_load == false %}
+              loading="lazy"
+            {% endunless %}
+            width="{{ article.image.width }}"
+            height="{{ article.image.height }}"
+          >
+          {% comment %}theme-check-enable ImgLazyLoading{% endcomment %}
+        </div>
+      </a>
+    </div>
+  {%- endif -%}
+
+  <div class="blog__items--content">
+    {% liquid
+      assign comment_display = false
+      if article.comments_count > 0 and blog.comments_enabled? and show_comment
+        assign comment_display = true
+      endif
+    %}
+    {%- if show_date or show_author or comment_display -%}
+      <div class="blog__items--meta">
+        <ul class="d-flex">
+          {%- if show_date -%}
+            <li class="article--meta-list">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="blog__items--meta__icon"
+              >
+                <path d="M8 2V5" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 2V5" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3.5 9.08997H20.5" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15.6947 13.7H15.7037" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15.6947 16.7H15.7037" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11.9955 13.7H12.0045" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11.9955 16.7H12.0045" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.29431 13.7H8.30329" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.29431 16.7H8.30329" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="article--meta-text">
+                {{ article.published_at | time_tag: format: 'date' -}}
+              </span>
+            </li>
+          {%- endif -%}
+          {%- if article.comments_count > 0 and blog.comments_enabled? and show_comment -%}
+            <li class="article--meta-list">
+              <svg
+                class="blog__items--meta__icon"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M8.5 19H8C4 19 2 18 2 13V8C2 4 4 2 8 2H16C20 2 22 4 22 8V13C22 17 20 19 16 19H15.5C15.19 19 14.89 19.15 14.7 19.4L13.2 21.4C12.54 22.28 11.46 22.28 10.8 21.4L9.3 19.4C9.14 19.18 8.77 19 8.5 19Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 8H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 13H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              <span class="article--meta-text">
+                {{- 'blogs.article.comments' | t: count: article.comments_count -}}
+              </span>
+            </li>
+          {%- endif -%}
+          {%- if show_author -%}
+            <li class="article--meta-list">
+              <span class="article--author-title">{{ 'blogs.article.author' | t }}</span>
+              <span class="article--meta-text">{{ article.author }}</span>
+            </li>
+          {%- endif -%}
+        </ul>
+      </div>
+    {% endif %}
+    <h3 class="article-card__title {{ article_heading_size }} mb-0" id="Article-{{ article.id }}">
+      <a class="article--items__link" href="{{ article.url }}">
+        {{ article.title | escape }}
+      </a>
+    </h3>
+    {%- if show_content -%}
+      {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
+        <p class="blog__items--desc">
+          {%- if article.excerpt.size > 0 -%}
+            {{ article.excerpt | strip_html | truncatewords: content_limit }}
+          {%- else -%}
+            {{ article.content | strip_html | truncatewords: content_limit }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- assign _button_label = button_label | default: section.settings.button_label -%}
+    {%- assign _button_icon = button_icon | default: section.settings.button_icon -%}
+    {% if _button_label != blank %}
+      <div class="article__button">
+        <a
+          class="{% unless button_type == "link" %} button button--extra-small button--{{ button_type }} {% endunless %} {% if button_type == "link" %} link {% endif %} button--with-icon"
+          href="{{ article.url }}"
+        >
+          {{- _button_label -}}
+
+          {% if _button_icon %}
+            <span class="button--icon button--icon-right"> {% render 'hooktheme-icon-chevron-right' %}</span>
+          {% endif %}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</article>

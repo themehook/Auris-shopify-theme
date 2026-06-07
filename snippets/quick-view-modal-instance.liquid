@@ -1,0 +1,43 @@
+{%- comment -%}
+  Quick View Modal Instance
+  Renders a unique modal instance for each product
+  Uses the existing modal-opener pattern from theme.js
+
+  Required parameters:
+  - product_card_product: The product object
+  - section_id: The section ID for unique identification
+
+  Usage:
+  {% render 'quick-view-modal-instance',
+    product_card_product: product,
+    section_id: section.id
+  %}
+{%- endcomment -%}
+
+<hooktheme-quick-view
+  id="QuickView-{{ product_card_product.id }}-{{ section_id }}"
+  class="{% if settings.quick_shop_type == 'drawer' %}hooktheme-quick-view--drawer{% endif %}"
+>
+  <div
+    role="dialog"
+    aria-label="{{ 'products.product.choose_product_options' | t: product_name: product_card_product.title | escape }}"
+    aria-modal="true"
+    class="hooktheme-quick-view__content {% if settings.quick_view_border_radius %}quick_view_border_radius{% endif %}"
+    tabindex="-1"
+  >
+    <button
+      data-modal-close
+      type="button"
+      class="hooktheme-quick-view__toggle"
+      aria-label="{{ 'accessibility.close' | t }}"
+    >
+      {% render 'hooktheme-icon-close' %}
+    </button>
+    <div
+      id="QuickViewInfo-{{ product_card_product.id }}-{{ section_id }}"
+      class="hooktheme-quick-view__content-info"
+    >
+      {%- comment -%} Content loaded via AJAX {%- endcomment -%}
+    </div>
+  </div>
+</hooktheme-quick-view>
