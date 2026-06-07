@@ -493,8 +493,8 @@
 .slider__subtitle--badge-label {
   display: inline-flex;
   align-items: center;
-  background: rgba(var(--color-base-accent-1));
-  color: rgb(var(--color-button-text));
+  background: rgba(var(--primary-button-hover-background));
+  color: rgb(var(--primary-button-hover-text));
   border-radius: 10rem;
   padding: 0.4rem 1rem;
   font-size: 1.1rem;
