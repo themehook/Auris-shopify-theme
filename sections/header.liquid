@@ -118,8 +118,11 @@
                                 }
                               }
                                 @media only screen and (min-width: 992px){
+                                  .header_bottom.header__centered.color-inverse.sticky{
+                                    padding: 0.5rem 0;
+                                  }
                                     .header_bottom:not(.logo__left--menu-center) {
-                                        padding: 15px 0;
+                                        padding: 10px 0;
                                       }
                                 }
                                  @keyframes smoothScroll {
@@ -137,7 +140,7 @@
                                   -o-transition: position 1s;
                                   transition: all 0.3s ease;
                                 }
-                                .header__sticky:not(.not--sticky-on-desktop).sticky {
+                                .header__sticky:not(.not--sticky-on-desktop):not(.header__centered).sticky {
                                     position: fixed;
                                     width: 100%;
                                     top: 0;
@@ -743,11 +746,13 @@
                       .transparent_header_color{
                           --color-foreground: {{ section.settings.transparent_color_foreground.red }}, {{ section.settings.transparent_color_foreground.green }}, {{ section.settings.transparent_color_foreground.blue }};
                         }
+                        {%- unless header_type == 'header__centered' -%}
                         .transparent--header:hover {
                             --color-foreground: {{ section.settings.transparent_text_color.red }}, {{ section.settings.transparent_text_color.green }}, {{ section.settings.transparent_text_color.blue }};
                             --color-background: {{ section.settings.transparent_color_background.red }}, {{ section.settings.transparent_color_background.green }}, {{ section.settings.transparent_color_background.blue }};
                             background: rgba(var(--color-background));
                         }
+                        {%- endunless -%}
                       .header__logo_link + .transparent__header--hover-logo {
                         display: none;
                     }
@@ -895,11 +900,58 @@
 {%- if header_type == 'header__centered' -%}
   <script>
     (function () {
-      var el = document.querySelector('.header__centered');
-      if (!el) return;
-      window.addEventListener('scroll', function () {
-        el.classList.toggle('sticky', window.scrollY > 10);
-      }, { passive: true });
+      function setup() {
+        var el = document.querySelector('.header__centered');
+        if (!el) return;
+
+        var THRESHOLD = 1;
+        var naturalOffset = 0;
+        var spacer = null;
+
+        function init() {
+          el.classList.remove('header__sticky');
+
+          var parent = el.parentElement;
+          naturalOffset = parent ? Math.max(0, Math.round(parent.getBoundingClientRect().top)) : 0;
+
+          if (!spacer) {
+            spacer = document.createElement('div');
+            spacer.setAttribute('aria-hidden', 'true');
+            spacer.style.cssText = 'visibility:hidden;pointer-events:none;';
+            el.parentElement.insertBefore(spacer, el.nextSibling);
+          }
+          spacer.style.height = el.offsetHeight + 'px';
+
+          if (!el.classList.contains('sticky')) {
+            el.style.transform = 'translateY(' + naturalOffset + 'px)';
+          }
+        }
+
+        init();
+        window.addEventListener('resize', init, { passive: true });
+
+        window.addEventListener('scroll', function () {
+          var y = window.scrollY;
+
+          if (y > THRESHOLD) {
+            if (!el.classList.contains('sticky')) {
+              el.classList.add('sticky');
+              el.style.transform = 'translateY(0)';
+            }
+          } else {
+            if (el.classList.contains('sticky')) {
+              el.classList.remove('sticky');
+              el.style.transform = 'translateY(' + naturalOffset + 'px)';
+            }
+          }
+        }, { passive: true });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setup);
+      } else {
+        setup();
+      }
     })();
   </script>
 {%- endif -%}
@@ -965,7 +1017,7 @@
       class="transparent--header {% if transparent_hover_logo %} transparent--header-hover-logo{% endif %} {% if color_enable %} transparent_header_color {% endif %} "
     >
   {% endif %}
-  <div class="header_bottom {% if transparent_header %} transparent--header-bottom {% endif %}  {{ sticky }} {{ desktop_sticky_disable }}  {{ header_type }} {% unless color_enable %} color-{{ section.settings.color_scheme }} gradient {% endunless %} ">
+  <div class="header_bottom {% if transparent_header %} transparent--header-bottom {% endif %}  {{ sticky }} {{ desktop_sticky_disable }}  {{ header_type }} {% unless color_enable %} color-{{ section.settings.color_scheme }} gradient {% endunless %}{% if color_enable and header_type == 'header__centered' %} color-{{ section.settings.color_scheme }} gradient{% endif %} ">
     <div class="{{ container }} {% if page_offset %}padding--narrow-header{% endif%}">
       <div class="header__inner row">
         {%- case header_type -%}

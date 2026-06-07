@@ -382,7 +382,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 0.8rem;
+  gap: 1rem;
 }
 
 .slideshow__feature-item--icon-below {
@@ -442,6 +442,9 @@
 /* Only text style */
 .slideshow__feature-list--only_text {
   gap: 0 2.8rem;
+  @media only screen and (min-width: 750px){
+    padding-top: 1rem;
+  }
 }
 .slideshow__feature-list--only_text .slideshow__feature-item {
   padding: 0.4rem 0;
@@ -455,10 +458,12 @@
   }
   .slideshow__feature-list--box,
   .slideshow__feature-list--border {
-    gap: 0.6rem;
+    gap: 1rem;
+    justify-content: center;
   }
   .slideshow__feature-list--only_text {
-    gap: 0 1.8rem;
+    gap: 1rem 1.8rem;
+    justify-content: center;
   }
   .slideshow__feature-icon svg {
     width: 2.2rem;
@@ -466,5 +471,50 @@
   }
   .slideshow__feature-text {
     font-size: 1.2rem;
+  }
+}
+
+/* ============================================
+   Subtitle Badge Style
+   ============================================ */
+.slider__subtitle--badge-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgb(var(--color-background));
+  border: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  border-radius: 10rem;
+  padding: 0.45rem 1.4rem 0.45rem 0.5rem;
+  box-shadow: 0 2px 14px rgba(var(--color-foreground), 0.08);
+  margin-bottom: 1.6rem;
+  line-height: 1;
+}
+
+.slider__subtitle--badge-label {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(var(--color-base-accent-1));
+  color: rgb(var(--color-button-text));
+  border-radius: 10rem;
+  padding: 0.4rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.slider__subtitle--badge-text {
+  color: rgba(var(--color-foreground));
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media only screen and (min-width: 750px) {
+  .slider__subtitle--badge-text {
+    font-size: 1.5rem;
   }
 }

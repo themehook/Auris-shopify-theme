@@ -177,32 +177,46 @@ predictive-search.search-modal__form {
 
 /* ============================================
    Header Centered (header-design-6)
-   Default: pill/card centered on page
-   Sticky: standard full-width layout
+   Always position: fixed — JS drives all motion via transform so
+   there is never a discrete position-change snap in any direction.
+   .header__centered--spacer (added by JS) holds the in-flow height.
    ============================================ */
+
 .header__centered--pill {
   display: flex;
   align-items: center;
-  transition: background 0.35s ease, border-radius 0.35s ease,
-    padding 0.35s ease, box-shadow 0.35s ease;
+  transition: background 0.45s ease, border-radius 0.45s ease,
+    padding 0.45s ease, box-shadow 0.45s ease, margin 0.45s ease;
+}
+
+.header__centered {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 98;
+  /* transform is managed entirely by JS — CSS only provides the easing */
+  transition: background 0.45s ease, box-shadow 0.45s ease,
+    transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pill state: outer wrapper is transparent, inner pill carries the visual */
+.header__centered:not(.sticky) {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Sticky state: outer wrapper becomes the full-width bar */
+.header__centered.sticky {
+  background: rgb(var(--color-background)) !important;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.12);
 }
 
 @media only screen and (min-width: 992px) {
-  /* Default state — container is transparent, pill carries the background */
-  .header__centered:not(.sticky) {
-    background: transparent !important;
-    box-shadow: none !important;
-  }
-
   .header__centered:not(.sticky) .header__inner {
     justify-content: center !important;
   }
 
-  /*
-   * Bootstrap's .row > * sets width: 100% on every direct child.
-   * Override with width: auto so the pill shrinks to its content and
-   * can be centred by the parent's justify-content: center.
-   */
   .header__centered:not(.sticky) .header__centered--pill {
     width: auto !important;
     max-width: none !important;
@@ -210,8 +224,9 @@ predictive-search.search-modal__form {
     align-items: center;
     gap: 0.4rem;
     background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
     border-radius: 10rem;
-    padding: 0.8rem 2.4rem;
+    padding: 0 2.5rem;
     box-shadow: 0 4px 24px rgba(var(--color-foreground), 0.09);
     margin: 1.2rem 0;
   }
@@ -227,7 +242,6 @@ predictive-search.search-modal__form {
     padding: 1rem 0;
   }
 
-  /* Sticky state — full-width traditional layout */
   .header__centered.sticky .header__centered--pill {
     width: 100% !important;
     background: transparent;
@@ -256,10 +270,14 @@ predictive-search.search-modal__form {
   }
 }
 
-/* Mobile: pill collapses to a standard full-width row */
 @media only screen and (max-width: 991px) {
   .header__centered .header__centered--pill {
     width: 100% !important;
     justify-content: space-between;
   }
+}
+
+
+.header_bottom.transparent--header-bottom.header__centered.color-background-1.gradient.sticky {
+  padding: 0.5rem 0;
 }

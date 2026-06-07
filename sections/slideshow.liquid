@@ -264,9 +264,18 @@
                       <div class="col-md-7">
                         <div class="slider__content slider__content--padding__left">
                           {%- if block.settings.subheading != blank -%}
-                            <span class="slider__content--subtitle {{ block.settings.subheading_color }}">
-                              {{- block.settings.subheading -}}
-                            </span>
+                            {%- if block.settings.subheading_style == 'badge' -%}
+                              <div class="slider__subtitle--badge-wrap">
+                                {%- if block.settings.subheading_badge_label != blank -%}
+                                  <span class="slider__subtitle--badge-label">{{ block.settings.subheading_badge_label }}</span>
+                                {%- endif -%}
+                                <span class="slider__subtitle--badge-text">{{- block.settings.subheading -}}</span>
+                              </div>
+                            {%- else -%}
+                              <span class="slider__content--subtitle {{ block.settings.subheading_color }}">
+                                {{- block.settings.subheading -}}
+                              </span>
+                            {%- endif -%}
                           {%- endif -%}
 
                           {%- if block.settings.heading != blank -%}
@@ -424,9 +433,18 @@
                         <div class="col-md-7">
                           <div class="slider__content slider__content--padding__left">
                             {%- if block.settings.subheading != blank -%}
-                              <span class="slider__content--subtitle {{ block.settings.subheading_color }}">
-                                {{- block.settings.subheading -}}
-                              </span>
+                              {%- if block.settings.subheading_style == 'badge' -%}
+                                <div class="slider__subtitle--badge-wrap">
+                                  {%- if block.settings.subheading_badge_label != blank -%}
+                                    <span class="slider__subtitle--badge-label">{{ block.settings.subheading_badge_label }}</span>
+                                  {%- endif -%}
+                                  <span class="slider__subtitle--badge-text">{{- block.settings.subheading -}}</span>
+                                </div>
+                              {%- else -%}
+                                <span class="slider__content--subtitle {{ block.settings.subheading_color }}">
+                                  {{- block.settings.subheading -}}
+                                </span>
+                              {%- endif -%}
                             {%- endif -%}
 
                             {%- if block.settings.heading != blank -%}
@@ -803,6 +821,24 @@
           "label": "Subheading"
         },
         {
+          "type": "select",
+          "id": "subheading_style",
+          "label": "Style",
+          "options": [
+            { "value": "text", "label": "Only Text" },
+            { "value": "badge", "label": "Badge" }
+          ],
+          "default": "text"
+        },
+        {
+          "type": "text",
+          "id": "subheading_badge_label",
+          "label": "Badge label",
+          "default": "NEW",
+          "info": "Short accent label shown inside the badge (e.g. NEW). Leave blank to hide.",
+          "visible_if": "{{ block.settings.subheading_style == 'badge' }}"
+        },
+        {
           "type": "header",
           "content": "Text"
         },
@@ -955,32 +991,7 @@
             }
           ]
         },
-        {
-          "type": "header",
-          "content": "Color"
-        },
-        {
-          "type": "color_scheme",
-          "id": "color_scheme",
-          "label": "t:sections.all.colors.label",
-          "default": "background-1"
-        },
-        {
-          "type": "header",
-          "content": "Mobile settings"
-        },
-        {
-          "type": "checkbox",
-          "id": "color_scheme_enable",
-          "default": false,
-          "label": "Color scheme enable on mobile"
-        },
-        {
-          "type": "color_scheme",
-          "id": "color_scheme_2",
-          "label": "t:sections.all.colors.label",
-          "default": "background-1"
-        },
+        
         {
           "type": "header",
           "content": "Feature list"
@@ -1001,7 +1012,7 @@
             { "value": "3", "label": "3" },
             { "value": "4", "label": "4" }
           ],
-          "default": "2",
+          "default": "1",
           "visible_if": "{{ block.settings.show_feature_list }}"
         },
         {
@@ -1013,7 +1024,7 @@
             { "value": "border", "label": "Border" },
             { "value": "only_text", "label": "Only text" }
           ],
-          "default": "box",
+          "default": "only_text",
           "visible_if": "{{ block.settings.show_feature_list }}"
         },
         {
@@ -1025,7 +1036,8 @@
         },
         {
           "type": "paragraph",
-          "content": "Feature 1"
+          "content": "Feature 1",
+          "visible_if": "{{ block.settings.show_feature_list }}"
         },
         {
           "type": "text",
@@ -1039,8 +1051,8 @@
           "id": "feature_1_icon_position",
           "label": "Icon position",
           "options": [
-            { "value": "above", "label": "Above text" },
-            { "value": "below", "label": "Below text" }
+            { "value": "above", "label": "Top" },
+            { "value": "below", "label": "Bottom" }
           ],
           "default": "above",
           "visible_if": "{{ block.settings.show_feature_list }}"
@@ -1054,7 +1066,8 @@
         },
         {
           "type": "paragraph",
-          "content": "Feature 2"
+          "content": "Feature 2",
+          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns != '1' }}"
         },
         {
           "type": "text",
@@ -1083,7 +1096,8 @@
         },
         {
           "type": "paragraph",
-          "content": "Feature 3"
+          "content": "Feature 3",
+          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '3' or block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
         },
         {
           "type": "text",
@@ -1112,7 +1126,8 @@
         },
         {
           "type": "paragraph",
-          "content": "Feature 4"
+          "content": "Feature 4",
+          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
         },
         {
           "type": "text",
@@ -1138,6 +1153,32 @@
           "label": "SVG icon code",
           "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/></svg>",
           "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
+        },
+        {
+          "type": "header",
+          "content": "Color"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "t:sections.all.colors.label",
+          "default": "background-1"
+        },
+        {
+          "type": "header",
+          "content": "Mobile settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_scheme_enable",
+          "default": false,
+          "label": "Color scheme enable on mobile"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme_2",
+          "label": "t:sections.all.colors.label",
+          "default": "background-1"
         }
       ]
     }
