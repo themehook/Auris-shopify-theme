@@ -1,0 +1,288 @@
+/* ============================================================
+   Interactive Feature Showcase
+   ============================================================ */
+
+/* ---- Header ---- */
+.ifs-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4rem;
+  margin-bottom: 9rem;
+}
+
+.ifs-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.ifs-eyebrow {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(var(--color-base-accent-1));
+  margin-bottom: 2.4rem;
+}
+
+.ifs-heading {
+  margin: 0;
+  font-size: clamp(4.8rem, 7.5vw, 9.6rem);
+  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgb(var(--color-foreground));
+}
+
+.ifs-heading span {
+  display: block;
+}
+
+.ifs-heading span + span {
+  color: rgba(var(--color-foreground), 0.38);
+}
+
+.ifs-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.9rem;
+  flex-shrink: 0;
+  padding-top: 0.5rem;
+}
+
+.ifs-badge {
+  display: inline-block;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.28);
+  border-radius: 10rem;
+  padding: 0.6rem 1.6rem;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: rgba(var(--color-foreground), 0.6);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* ---- Feature rows ---- */
+.ifs-list {
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.1);
+}
+
+.ifs-item {
+  display: flex;
+  align-items: center;
+  padding: 3.2rem 0;
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+/* Vertical accent indicator line */
+.ifs-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0.2rem;
+  background: rgba(var(--color-base-accent-1));
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ifs-item.is--active .ifs-indicator,
+.ifs-item:hover .ifs-indicator {
+  transform: scaleY(1);
+}
+
+/* Number */
+.ifs-num-wrap {
+  flex-shrink: 0;
+  width: 9rem;
+  padding-left: 2.4rem;
+}
+
+.ifs-num {
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: rgba(var(--color-foreground), 0.3);
+  transition: color 0.25s ease;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.ifs-item.is--active .ifs-num,
+.ifs-item:hover .ifs-num {
+  color: rgba(var(--color-base-accent-1));
+}
+
+/* Title */
+.ifs-title {
+  flex-shrink: 0;
+  font-size: clamp(2.2rem, 2.6vw, 3.2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: rgb(var(--color-foreground));
+  white-space: nowrap;
+  transition: color 0.25s ease;
+  letter-spacing: -0.01em;
+}
+
+.ifs-item.is--active .ifs-title,
+.ifs-item:hover .ifs-title {
+  color: rgba(var(--color-base-accent-1));
+}
+
+/* Horizontal divider */
+.ifs-divider {
+  flex: 1;
+  height: 0.1rem;
+  background: rgba(var(--color-foreground), 0.1);
+  margin: 0 3rem;
+  min-width: 4rem;
+  align-self: center;
+}
+
+/* Stat block */
+.ifs-stat {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 26rem;
+  text-align: right;
+  margin-right: 2.4rem;
+}
+
+.ifs-stat-value {
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: rgb(var(--color-foreground));
+  line-height: 1.3;
+}
+
+.ifs-stat-desc {
+  display: block;
+  font-size: 1.25rem;
+  color: rgba(var(--color-foreground), 0.35);
+  line-height: 1.45;
+}
+
+/* Arrow circle button */
+.ifs-arrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.22);
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.ifs-arrow svg {
+  width: 1.8rem;
+  height: 1.8rem;
+  flex-shrink: 0;
+}
+
+.ifs-item.is--active .ifs-arrow,
+.ifs-item:hover .ifs-arrow {
+  background: rgb(var(--color-foreground));
+  border-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+/* ---- Footer CTA ---- */
+.ifs-footer {
+  margin-top: 3.6rem;
+}
+
+.ifs-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: rgba(var(--color-base-accent-1));
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.ifs-footer-link:hover {
+  opacity: 0.7;
+}
+
+.ifs-footer-link svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* ---- Responsive: tablet ---- */
+@media only screen and (max-width: 991px) {
+  .ifs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 6rem;
+  }
+
+  .ifs-badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .ifs-stat {
+    width: 18rem;
+  }
+}
+
+/* ---- Responsive: mobile ---- */
+@media only screen and (max-width: 749px) {
+  .ifs-header {
+    margin-bottom: 4rem;
+  }
+
+  .ifs-item {
+    flex-wrap: wrap;
+    row-gap: 1.2rem;
+    padding: 2.4rem 0;
+  }
+
+  .ifs-num-wrap {
+    width: 5.6rem;
+    padding-left: 1.6rem;
+  }
+
+  .ifs-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    white-space: normal;
+  }
+
+  .ifs-divider {
+    display: none;
+  }
+
+  .ifs-stat {
+    width: auto;
+    text-align: left;
+    order: 4;
+    flex-basis: 100%;
+    margin-right: 0;
+    padding-left: 7.2rem;
+  }
+
+  .ifs-arrow {
+    order: 3;
+    margin-left: auto;
+  }
+}

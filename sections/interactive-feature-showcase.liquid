@@ -1,0 +1,321 @@
+{{ 'interactive-feature-showcase.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .ifs-section--{{ section.id }} {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .ifs-section--{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<script src="{{ 'interactive-feature-showcase.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign container_class = 'container'
+  if section.settings.container == 'full'
+    assign container_class = 'container-fluid'
+  endif
+-%}
+
+<div class="ifs-section ifs-section--{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="{{ container_class }}">
+
+    {%- comment -%} Section header {%- endcomment -%}
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.badge_1 != blank or section.settings.badge_2 != blank or section.settings.badge_3 != blank -%}
+      <div class="ifs-header">
+        <div class="ifs-header-left">
+          {%- if section.settings.eyebrow != blank -%}
+            <span class="ifs-eyebrow">{{ section.settings.eyebrow }}</span>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="ifs-heading">
+              {{-
+                section.settings.heading
+                | replace: 'p>', 'span>'
+                | replace: 'h1>', 'span>'
+                | replace: 'h2>', 'span>'
+                | replace: 'h3>', 'span>'
+                | replace: 'h4>', 'span>'
+                | replace: 'h5>', 'span>'
+                | replace: 'h6>', 'span>'
+              -}}
+            </h2>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.badge_1 != blank or section.settings.badge_2 != blank or section.settings.badge_3 != blank -%}
+          <div class="ifs-badges">
+            {%- if section.settings.badge_1 != blank -%}
+              <span class="ifs-badge">{{ section.settings.badge_1 }}</span>
+            {%- endif -%}
+            {%- if section.settings.badge_2 != blank -%}
+              <span class="ifs-badge">{{ section.settings.badge_2 }}</span>
+            {%- endif -%}
+            {%- if section.settings.badge_3 != blank -%}
+              <span class="ifs-badge">{{ section.settings.badge_3 }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Feature rows {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="ifs-list" data-display="{{ section.settings.tab_display }}">
+        {%- assign item_idx = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign item_idx = item_idx | plus: 1 -%}
+          {%- assign col = block.settings.collection -%}
+          {%- if block.settings.title_override != blank -%}
+            {%- assign item_title = block.settings.title_override -%}
+          {%- elsif col != blank -%}
+            {%- assign item_title = col.title -%}
+          {%- else -%}
+            {%- assign item_title = 'Collection' -%}
+          {%- endif -%}
+          {%- if col != blank -%}
+            {%- assign item_url = col.url -%}
+          {%- else -%}
+            {%- assign item_url = '#' -%}
+          {%- endif -%}
+          <div
+            class="ifs-item{% if item_idx == 1 %} is--active{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            <span class="ifs-indicator" aria-hidden="true"></span>
+            <div class="ifs-num-wrap">
+              <span class="ifs-num">
+                {%- if item_idx < 10 -%}0{{ item_idx }}{%- else -%}{{ item_idx }}{%- endif -%}
+              </span>
+            </div>
+            <span class="ifs-title">{{ item_title }}</span>
+            <span class="ifs-divider" aria-hidden="true"></span>
+            <div class="ifs-stat">
+              {%- if block.settings.stat_value != blank -%}
+                <span class="ifs-stat-value">{{ block.settings.stat_value }}</span>
+              {%- endif -%}
+              {%- if block.settings.stat_desc != blank -%}
+                <span class="ifs-stat-desc">{{ block.settings.stat_desc }}</span>
+              {%- endif -%}
+            </div>
+            <a href="{{ item_url }}" class="ifs-arrow" aria-label="{{ item_title | escape }}">
+              {%- render 'arrow-up-right' -%}
+            </a>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Footer CTA {%- endcomment -%}
+    {%- if section.settings.cta_label != blank -%}
+      <div class="ifs-footer">
+        <a
+          class="ifs-footer-link"
+          {% if section.settings.cta_url != blank %}href="{{ section.settings.cta_url }}"{% else %}role="link" aria-disabled="true"{% endif %}
+        >
+          {{ section.settings.cta_label }}
+          {%- render 'arrow-up-right' -%}
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Interactive feature tab",
+  "tag": "section",
+  "class": "interactive-feature-showcase",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Page width",
+      "options": [
+        { "value": "boxed", "label": "Boxed" },
+        { "value": "full", "label": "Full width" }
+      ],
+      "default": "boxed"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "subheading",
+      "default": "Why our brand"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Feature title"
+    },
+    {
+      "type": "header",
+      "content": "Feature badges"
+    },
+    {
+      "type": "text",
+      "id": "badge_1",
+      "label": "Badge 1",
+      "default": "Feature one"
+    },
+    {
+      "type": "text",
+      "id": "badge_2",
+      "label": "Badge 2",
+      "default": "Feature two"
+    },
+    {
+      "type": "text",
+      "id": "badge_3",
+      "label": "Badge 3",
+      "default": "Feature three"
+    },
+    {
+      "type": "header",
+      "content": "Footer link"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Link label",
+      "default": "Explore the full range"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Interaction"
+    },
+    {
+      "type": "select",
+      "id": "tab_display",
+      "label": "Activate items on",
+      "options": [
+        { "value": "hover", "label": "Hover" },
+        { "value": "click", "label": "Click" }
+      ],
+      "default": "hover"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 60
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Feature item",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Collection title is used as the item label"
+        },
+        {
+          "type": "text",
+          "id": "title_override",
+          "label": "Title override",
+          "info": "Optional. Replaces the collection name."
+        },
+        {
+          "type": "text",
+          "id": "stat_value",
+          "label": "Stat / value",
+          "placeholder": "e.g. −42 dB",
+          "default": "Stat value"
+        },
+        {
+          "type": "text",
+          "id": "stat_desc",
+          "label": "Stat description",
+          "placeholder": "e.g. Nulls the room before you notice.",
+          "default": "Short description text."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Interactive feature tab",
+      "category": "Collection",
+      "blocks": [
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

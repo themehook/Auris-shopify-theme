@@ -15,7 +15,6 @@ if (!customElements.get("tab-collage")) {
       });
     }
 
-    //  Setup Event Listener
     setupEventListeners(event) {
       const target = event.target;
       this.pauseAllMedia();

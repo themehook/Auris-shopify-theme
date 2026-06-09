@@ -1,0 +1,270 @@
+/* ============================================================
+   Scroll Reveal Media Section
+   ============================================================ */
+
+.srm-section {
+  position: relative;
+}
+
+/* Sticky viewport that stays pinned while user scrolls */
+.srm-sticky {
+  position: sticky;
+  top: 80px; /* fallback; overridden per-section via inline style (header_offset setting) */
+  height: calc(100vh - 80px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Background ---- */
+.srm-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.srm-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Floating Images ---- */
+.srm-images {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.srm-img {
+  position: absolute;
+  border-radius: 1.4rem;
+  overflow: hidden;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+.srm-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+  Final spread positions — where images land after animating outward.
+  JS measures the offset from each image center to the sticky center, then
+  at scroll=0 translates every image to the center. As the user scrolls,
+  the translation approaches 0 and images settle at these CSS positions.
+*/
+.srm-img--1 {
+  width: clamp(13rem, 15vw, 22rem);
+  aspect-ratio: 3 / 4;
+  top: 5%;
+  left: 3%;
+}
+.srm-img--2 {
+  width: clamp(9rem, 9vw, 14rem);
+  aspect-ratio: 1 / 1;
+  top: 7%;
+  left: 41%;
+}
+.srm-img--3 {
+  width: clamp(14rem, 17vw, 25rem);
+  aspect-ratio: 2 / 3;
+  top: 3%;
+  right: 3%;
+}
+.srm-img--4 {
+  width: clamp(12rem, 14vw, 20rem);
+  aspect-ratio: 1 / 1;
+  bottom: 6%;
+  left: 3%;
+}
+.srm-img--5 {
+  width: clamp(11rem, 13vw, 19rem);
+  aspect-ratio: 4 / 3;
+  bottom: 8%;
+  left: 35%;
+}
+.srm-img--6 {
+  width: clamp(13rem, 15vw, 22rem);
+  aspect-ratio: 2 / 3;
+  bottom: 4%;
+  right: 2%;
+}
+
+/* Colored placeholder cards — shown when no image is uploaded to a block */
+.srm-img--no-image { overflow: hidden; }
+
+.srm-img--no-image .placeholder-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Each slot gets a distinct gradient, matching modern Shopify theme aesthetics */
+.srm-img--1.srm-img--no-image { background: linear-gradient(145deg, #d4c5b2 0%, #b8a898 100%); }
+.srm-img--2.srm-img--no-image { background: linear-gradient(145deg, #b8ccd8 0%, #94afc0 100%); }
+.srm-img--3.srm-img--no-image { background: linear-gradient(145deg, #b8d4c4 0%, #94b8a8 100%); }
+.srm-img--4.srm-img--no-image { background: linear-gradient(145deg, #d4b8c4 0%, #b89aaa 100%); }
+.srm-img--5.srm-img--no-image { background: linear-gradient(145deg, #d4c8a8 0%, #b8ac88 100%); }
+.srm-img--6.srm-img--no-image { background: linear-gradient(145deg, #c4b8d4 0%, #a89abc 100%); }
+
+/* SVG icon shown as a white semi-transparent overlay on the colored background */
+.srm-img--no-image .placeholder-svg path,
+.srm-img--no-image .placeholder-svg circle,
+.srm-img--no-image .placeholder-svg rect,
+.srm-img--no-image .placeholder-svg ellipse,
+.srm-img--no-image .placeholder-svg polyline,
+.srm-img--no-image .placeholder-svg polygon,
+.srm-img--no-image .placeholder-svg line {
+  fill: rgba(255, 255, 255, 0.45) !important;
+  stroke: none !important;
+}
+
+/* ---- Stage 1: Subtitle + Title ---- */
+.srm-stage1-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(16px);
+  will-change: opacity, transform;
+  pointer-events: none;
+  max-width: 80rem;
+  padding: 0 2rem;
+}
+
+.srm-stage1-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgb(var(--color-background));
+  border: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  border-radius: 10rem;
+  padding: 0.8rem 1.8rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(var(--color-base-accent-1));
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(var(--color-foreground), 0.07);
+  line-height: 1;
+}
+
+.srm-stage1-title {
+  color: rgba(var(--color-foreground));
+  margin: 0;
+  line-height: 1.08;
+}
+
+/* ---- Stage 2: Media Reveal ---- */
+.srm-stage2 {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.srm-video-wrapper {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(0.12);
+  border-radius: 50%;
+  overflow: hidden;
+  will-change: transform, opacity, border-radius;
+  transform-origin: center center;
+}
+
+.srm-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.srm-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, var(--srm-overlay-opacity, 0.45));
+  z-index: 1;
+}
+
+.srm-stage2-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+
+.srm-stage2-badge {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.45);
+  border-radius: 10rem;
+  padding: 0.8rem 1.8rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(var(--color-foreground), 0.92);
+  margin-bottom: 2.4rem;
+  line-height: 1;
+}
+
+.srm-stage2-title {
+  color: rgb(var(--color-foreground));
+  margin: 0 0 1.6rem;
+  max-width: 80rem;
+  line-height: 1.05;
+}
+
+.srm-stage2-desc {
+  color: rgba(var(--color-foreground), 0.78);
+  font-size: 1.6rem;
+  line-height: 1.75;
+  max-width: 54rem;
+  margin: 0 0 3.2rem;
+}
+
+.srm-stage2-content .button {
+  border-radius: 10rem;
+  pointer-events: auto;
+}
+
+/* ---- Responsive ---- */
+@media only screen and (max-width: 991px) {
+  .srm-img--1 { width: clamp(12rem, 20vw, 18rem); top: 4%; left: 2%; }
+  .srm-img--2 { width: clamp(8rem, 12vw, 12rem); top: 5%; left: 40%; }
+  .srm-img--3 { width: clamp(13rem, 22vw, 20rem); top: 3%; right: 2%; }
+  .srm-img--4 { width: clamp(12rem, 20vw, 17rem); bottom: 5%; left: 2%; }
+  .srm-img--5 { width: clamp(10rem, 16vw, 15rem); bottom: 7%; left: 34%; }
+  .srm-img--6 { width: clamp(12rem, 20vw, 17rem); bottom: 4%; right: 2%; }
+  .srm-stage2-desc { font-size: 1.5rem; }
+}
+
+@media only screen and (max-width: 749px) {
+  .srm-img--2,
+  .srm-img--5 {
+    display: none;
+  }
+  .srm-img--1 { width: 28vw; top: 5%; left: 2%; }
+  .srm-img--3 { width: 28vw; top: 4%; right: 2%; }
+  .srm-img--4 { width: 28vw; bottom: 5%; left: 2%; }
+  .srm-img--6 { width: 28vw; bottom: 4%; right: 2%; }
+  .srm-stage1-badge,
+  .srm-stage2-badge { font-size: 1.1rem; padding: 0.5rem 1.4rem; }
+  .srm-stage2-desc { font-size: 1.4rem; max-width: 90%; }
+}

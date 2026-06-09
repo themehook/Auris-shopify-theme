@@ -75,6 +75,17 @@
     "
   >
     <div class="product__categories--content__left">
+      {%- if show_product_items and product_items_position == 'above' -%}
+        {%- if product_items_style == 'badge' -%}
+          <span class="product__categories--content__subtitle product__categories--subtitle--badge">
+            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+          </span>
+        {%- else -%}
+          <span class="product__categories--content__subtitle">
+            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+          </span>
+        {%- endif -%}
+      {%- endif -%}
       {%- if collection != blank -%}
         <h3 class="collection-card--title {{ title_size | default: 'h5' }} mb-0">{{ collection.title }}</h3>
       {%- else -%}
@@ -82,11 +93,16 @@
           {{ 'sections.collection_list.default_title' | t }}
         </h3>
       {%- endif -%}
-      {%- if show_product_items -%}
-        <span class="product__categories--content__subtitle">
-          {{- collection.products_count }}
-          {{ 'sections.collection_list.items' | t -}}
-        </span>
+      {%- if show_product_items and product_items_position != 'above' -%}
+        {%- if product_items_style == 'badge' -%}
+          <span class="product__categories--content__subtitle product__categories--subtitle--badge">
+            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+          </span>
+        {%- else -%}
+          <span class="product__categories--content__subtitle">
+            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+          </span>
+        {%- endif -%}
       {%- endif -%}
     </div>
 

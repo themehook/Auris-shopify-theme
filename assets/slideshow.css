@@ -498,10 +498,9 @@
   border-radius: 10rem;
   padding: 0.4rem 1rem;
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 

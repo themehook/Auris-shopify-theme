@@ -399,3 +399,30 @@ a.collection__card {
   border-radius: 100%;
   overflow: hidden;
 }
+
+/* ============================================
+   Product Items Badge Style
+   ============================================ */
+.product__categories--subtitle--badge {
+  display: inline-flex;
+  align-items: center;
+  color: rgba(var(--color-foreground), .70);
+  background-color: rgba(var(--color-foreground), .10);
+  border-radius: 10rem;
+  padding: 0.45rem 1.1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.product__categories--content__left .product__categories--subtitle--badge {
+  margin-bottom: 0.6rem;
+}
+
+.collection-card-content-on-container .product__categories--subtitle--badge {
+  margin-bottom: 0.8rem;
+}

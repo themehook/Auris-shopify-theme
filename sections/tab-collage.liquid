@@ -55,6 +55,7 @@
 
 <div class="tab--collage section-{{ section.id }}-padding section--top-space-{{ section.id }} ">
   <div class="{{ container }} {% if page_offset %}p-0{% endif %}">
+
     {% comment %} section header {% endcomment %}
 
     <div class="section-heading text-{{ section.settings.text_center }} mobile--text-{{ section.settings.mobile_text_center }}  {% if section.settings.heading != blank or section.settings.subtitle != blank %} {% unless section.settings.button_position == 'top' or section.settings.timer %}  {% if section.settings.border_line %} mb-70 {% else %} mb-50{% endif %} {% endunless %} {% endif %} {% if section.settings.button_position == 'top' and section.settings.button_label == blank and section.settings.timer == false %} mb-50{% endif %}">

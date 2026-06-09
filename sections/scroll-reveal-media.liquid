@@ -1,0 +1,388 @@
+{{ 'scroll-reveal-media.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign scroll_multiplier = section.settings.scroll_multiplier | default: 4
+-%}
+
+{%- style -%}
+  #srm--{{ section.id }} {
+    height: calc(100vh * {{ scroll_multiplier }});
+  }
+  #srm--{{ section.id }} .srm-sticky {
+    --srm-overlay-opacity: {{ section.settings.video_overlay_opacity | divided_by: 100.0 }};
+    top: {{ section.settings.header_offset | default: 80 }}px;
+    height: calc(100vh - {{ section.settings.header_offset | default: 80 }}px);
+  }
+{%- endstyle -%}
+
+<div
+  class="srm-section color-{{ section.settings.color_scheme }} gradient"
+  id="srm--{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="scroll-reveal-media"
+>
+  <div class="srm-sticky">
+
+    {%- comment -%} Background image {%- endcomment -%}
+    {%- if section.settings.bg_image != blank -%}
+      <div class="srm-background">
+        {{
+          section.settings.bg_image
+          | image_url: width: 2000
+          | image_tag: class: 'srm-bg-image', loading: 'lazy', alt: section.settings.bg_image.alt
+        }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Floating image blocks {%- endcomment -%}
+    {%- assign img_block_count = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'image' -%}
+        {%- assign img_block_count = img_block_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if img_block_count > 0 -%}
+      <div class="srm-images" aria-hidden="true">
+        {%- assign slot = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'image' -%}
+            {%- assign slot = slot | plus: 1 -%}
+            <div class="srm-img srm-img--{{ slot }}{% unless block.settings.image %} srm-img--no-image{% endunless %}" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    alt: block.settings.image.alt,
+                    widths: '200, 400, 600'
+                }}
+              {%- else -%}
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg-new' }}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Stage 1 content (appears as images spread outward) {%- endcomment -%}
+    {%- if section.settings.stage1_title != blank or section.settings.stage1_subtitle != blank -%}
+      <div class="srm-stage1-content">
+        {%- if section.settings.stage1_subtitle != blank -%}
+          <div class="srm-stage1-badge">{{ section.settings.stage1_subtitle }}</div>
+        {%- endif -%}
+        {%- if section.settings.stage1_title != blank -%}
+          <h2 class="srm-stage1-title {{ section.settings.stage1_title_size }}">
+            {{ section.settings.stage1_title }}
+          </h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Stage 2: media expands from center {%- endcomment -%}
+    <div class="srm-stage2" aria-hidden="true">
+      <div class="srm-video-wrapper color-{{ section.settings.stage2_color_scheme }} gradient">
+
+        {%- if section.settings.video != blank -%}
+          {{
+            section.settings.video
+            | video_tag:
+              autoplay: false,
+              loop: true,
+              controls: false,
+              muted: true,
+              playsinline: true,
+              class: 'srm-video'
+          }}
+        {%- elsif section.settings.video_url != blank -%}
+          <video
+            class="srm-video"
+            src="{{ section.settings.video_url }}"
+            loop
+            muted
+            playsinline
+          ></video>
+        {%- elsif section.settings.stage2_image != blank -%}
+          {{
+            section.settings.stage2_image
+            | image_url: width: 2000
+            | image_tag:
+              class: 'srm-video',
+              loading: 'lazy',
+              alt: section.settings.stage2_image.alt
+          }}
+        {%- else -%}
+          <div class="srm-video"></div>
+        {%- endif -%}
+
+        {%- if section.settings.video != blank or section.settings.video_url != blank or section.settings.stage2_image != blank -%}
+          <div class="srm-video-overlay"></div>
+        {%- endif -%}
+
+        <div class="srm-stage2-content" aria-hidden="false">
+          {%- if section.settings.stage2_subtitle != blank -%}
+            <div class="srm-stage2-badge">{{ section.settings.stage2_subtitle }}</div>
+          {%- endif -%}
+          {%- if section.settings.stage2_title != blank -%}
+            <h2 class="srm-stage2-title {{ section.settings.stage2_title_size }}">
+              {{ section.settings.stage2_title }}
+            </h2>
+          {%- endif -%}
+          {%- if section.settings.stage2_description != blank -%}
+            <p class="srm-stage2-desc">{{ section.settings.stage2_description }}</p>
+          {%- endif -%}
+          {%- if section.settings.button_label != blank -%}
+            <a
+              class="button button--{{ section.settings.button_style | default: 'primary' }}{% if section.settings.button_size == 'small' %} button--small{% elsif section.settings.button_size == 'large' %} button--large{% endif %} button--with-icon"
+              {% if section.settings.button_link != blank %}
+                href="{{ section.settings.button_link }}"
+              {% else %}
+                role="link" aria-disabled="true"
+              {% endif %}
+            >
+              {{ section.settings.button_label | escape }}
+              {%- if section.settings.button_icon -%}
+                <span class="button--icon button--icon-right">
+                  {%- render 'hooktheme-icon-chevron-right' -%}
+                </span>
+              {%- endif -%}
+            </a>
+          {%- endif -%}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="{{ 'scroll-reveal-media.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Scroll reveal media",
+  "tag": "section",
+  "class": "scroll-reveal-media-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image",
+      "info": "Optional. Displays behind the floating images and content."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-2",
+      "info": "Sets the section background color and text colors."
+    },
+    {
+      "type": "header",
+      "content": "Stage 1"
+    },
+    {
+      "type": "text",
+      "id": "stage1_subtitle",
+      "label": "Subtitle",
+      "default": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "stage1_title",
+      "label": "Title",
+      "default": "Scroll title"
+    },
+    {
+      "type": "select",
+      "id": "stage1_title_size",
+      "label": "Title size",
+      "options": [
+        { "value": "hxl2", "label": "Heading 3XL" },
+        { "value": "hxl",  "label": "Heading 2XL" },
+        { "value": "h0",   "label": "Heading XL"  },
+        { "value": "h1",   "label": "Heading 1"   },
+        { "value": "h2",   "label": "Heading 2"   }
+      ],
+      "default": "hxl"
+    },
+    {
+      "type": "header",
+      "content": "Stage 2"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video (Shopify-hosted)"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL (.mp4)",
+      "info": "Used only if no Shopify-hosted video is selected above."
+    },
+    {
+      "type": "image_picker",
+      "id": "stage2_image",
+      "label": "Background image",
+      "info": "Shown if no video is provided."
+    },
+    {
+      "type": "range",
+      "id": "video_overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Media overlay opacity",
+      "default": 45
+    },
+    {
+      "type": "color_scheme",
+      "id": "stage2_color_scheme",
+      "label": "Stage 2 color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "text",
+      "id": "stage2_subtitle",
+      "label": "Subtitle",
+      "default": "Premium Release · 2026"
+    },
+    {
+      "type": "text",
+      "id": "stage2_title",
+      "label": "Title",
+      "default": "Scroll video title"
+    },
+    {
+      "type": "select",
+      "id": "stage2_title_size",
+      "label": "Title size",
+      "options": [
+        { "value": "hxl2", "label": "Heading 3XL" },
+        { "value": "hxl",  "label": "Heading 2XL" },
+        { "value": "h0",   "label": "Heading XL"  },
+        { "value": "h1",   "label": "Heading 1"   },
+        { "value": "h2",   "label": "Heading 2"   }
+      ],
+      "default": "hxl"
+    },
+    {
+      "type": "textarea",
+      "id": "stage2_description",
+      "label": "Description",
+      "default": "Deep bass tuning, custom drivers, and forty hours of playback. Engineered for the road, the studio, the room."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_icon",
+      "label": "Show arrow icon on button",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Button size",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "header",
+      "content": "Scroll Settings"
+    },
+    {
+      "type": "select",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance",
+      "info": "How many viewport heights the animation spans. More = slower, more deliberate feel.",
+      "options": [
+        { "value": "3", "label": "3× viewport (faster)" },
+        { "value": "4", "label": "4× viewport (default)" },
+        { "value": "5", "label": "5× viewport (slower)" },
+        { "value": "6", "label": "6× viewport (cinematic)" }
+      ],
+      "default": "5"
+    },
+    {
+      "type": "range",
+      "id": "header_offset",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Header offset",
+      "info": "Set to match your header height so the sticky section sits below it.",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scroll reveal media",
+      "category": "Video",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

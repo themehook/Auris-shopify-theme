@@ -193,12 +193,14 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
                 media_aspect_ratio: section.settings.image_ratio,
                 show_icon: section.settings.show_icon,
                 show_product_items: section.settings.show_product_items,
+                product_items_style: section.settings.product_items_style,
+                product_items_position: section.settings.product_items_position,
                 image_width: section.settings.image_width,
                 transparent_media: section.settings.transparent_media,
                 title_size: section.settings.collection_title_size,
                 content_on_container: section.settings.content_on_container,
                 inner_padded: section.settings.card_padding_type,
-                image_as_icon: section.settings.image_as_icon 
+                image_as_icon: section.settings.image_as_icon
               -%}
             </div>
           </div>
@@ -530,6 +532,28 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
       "id": "show_product_items",
       "default": true,
       "label": "Show product items"
+    },
+    {
+      "type": "select",
+      "id": "product_items_style",
+      "label": "Product items style",
+      "options": [
+        { "value": "text", "label": "Text" },
+        { "value": "badge", "label": "Badge" }
+      ],
+      "default": "text",
+      "visible_if": "{{ section.settings.show_product_items }}"
+    },
+    {
+      "type": "select",
+      "id": "product_items_position",
+      "label": "Product items position",
+      "options": [
+        { "value": "below", "label": "Bottom" },
+        { "value": "above", "label": "Top" }
+      ],
+      "default": "below",
+      "visible_if": "{{ section.settings.show_product_items }}"
     },
     {
       "type": "checkbox",
