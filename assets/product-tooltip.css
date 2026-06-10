@@ -97,3 +97,127 @@
     display: none;
   }
 }
+
+/* ============================================================
+   Product Card Spec Tooltip (pct)
+   ============================================================ */
+.pct-wrap {
+  position: absolute;
+  z-index: 5;
+  top: 1.2rem;
+}
+.pct-wrap--right { right: 1.2rem; }
+.pct-wrap--left  { left: 1.2rem; }
+
+.pct-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  background: rgba(var(--color-background), 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.pct-trigger:hover,
+.pct-trigger[aria-expanded="true"] {
+  border-color: rgba(var(--color-foreground), 0.35);
+  background: rgb(var(--color-background));
+}
+.pct-trigger svg {
+  flex-shrink: 0;
+}
+
+.pct-panel {
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  background: rgb(var(--color-background));
+  border: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  border-radius: 1.2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.11);
+  padding: 1.8rem 1.6rem 1.6rem;
+  width: 22rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.6rem);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+  pointer-events: none;
+}
+.pct-wrap--right .pct-panel { right: 0; }
+.pct-wrap--left  .pct-panel { left: 0; }
+
+.pct-panel.is--open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: auto;
+}
+
+.pct-close {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  border: none;
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.18s ease;
+}
+.pct-close:hover {
+  background: rgba(var(--color-foreground), 0.75);
+}
+
+.pct-panel__label {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.45);
+  margin: 2.4rem 0 1.2rem;
+  padding-right: 0;
+}
+
+.pct-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.pct-table tr + tr td {
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.07);
+}
+.pct-table td {
+  padding: 0.7rem 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  vertical-align: top;
+}
+.pct-table__key {
+  color: rgba(var(--color-foreground), 0.5);
+  padding-right: 0.8rem;
+  white-space: nowrap;
+  width: 42%;
+}
+.pct-table__val {
+  color: rgb(var(--color-foreground));
+  font-weight: 600;
+  text-align: right;
+}
+.pct-table__empty {
+  color: rgba(var(--color-foreground), 0.4);
+  font-size: 1.2rem;
+  padding: 0.8rem 0;
+  text-align: center;
+}

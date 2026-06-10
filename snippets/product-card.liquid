@@ -189,6 +189,49 @@
       {%- endif -%}
     </div>
     {% comment %} Product action button style 2 {% endcomment %}
+
+    {%- comment -%} Spec tooltip — enabled per section via show_spec_tooltip param {%- endcomment -%}
+    {%- if show_spec_tooltip -%}
+      {%- assign pct_pos = spec_tooltip_position | default: 'right' -%}
+      {%- assign pct_specs = product_card_product.metafields.custom.specifications.value -%}
+      <div class="pct-wrap pct-wrap--{{ pct_pos }}">
+        <button class="pct-trigger" type="button" aria-label="Specifications" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="pct-panel" aria-hidden="true">
+          <button class="pct-close" type="button" aria-label="Close specifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+          <p class="pct-panel__label">Specifications</p>
+          <table class="pct-table">
+            {%- if pct_specs != blank -%}
+              {%- assign pct_lines = pct_specs | newline_to_br | split: '<br />' -%}
+              {%- for pct_line in pct_lines -%}
+                {%- assign pct_trimmed = pct_line | strip | strip_html -%}
+                {%- if pct_trimmed != blank -%}
+                  {%- assign pct_parts = pct_trimmed | split: ':' -%}
+                  {%- if pct_parts.size >= 2 -%}
+                    <tr>
+                      <td class="pct-table__key">{{ pct_parts[0] | strip }}</td>
+                      <td class="pct-table__val">{{ pct_parts | shift | join: ':' | strip }}</td>
+                    </tr>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              <tr><td class="pct-table__empty" colspan="2">No specifications available</td></tr>
+            {%- endif -%}
+          </table>
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 
   {% comment %} Product action buttons for mobile  {% endcomment %}

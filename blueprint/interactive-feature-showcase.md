@@ -89,7 +89,9 @@ A standalone dark-background section that displays a list of collection-linked f
 | `container` | select | Page width | boxed |
 | `color_scheme` | color_scheme | Color scheme | background-1 |
 | `eyebrow` | text | subheading | Why our brand |
-| `heading` | richtext | Heading | — |
+| `heading` | richtext | Heading | `<p>Built different.</p><p>Sounds different.</p>` |
+| `heading_size` | select | Heading size | hxl (theme class) |
+| `title_size` | range (16–48 px, step 2) | Item title size | 28px |
 | `badge_1` | text | Badge 1 | Feature one |
 | `badge_2` | text | Badge 2 | Feature two |
 | `badge_3` | text | Badge 3 | Feature three |
@@ -232,6 +234,17 @@ The row wraps to two lines:
 4. **`tab_display` default = `hover`** — matches the screenshot design intent where hovering highlights rows. Merchants can switch to `click` for touch-heavier stores.
 
 5. **Why a separate section instead of Tab Collage Style 2** — multiple attempts to embed this layout inside Tab Collage as a second layout style failed to satisfy the design requirements because the existing Tab Collage DOM structure (two-column image + content) was incompatible with the full-width numbered row layout. The decision was made to build it as a standalone section.
+
+7. **`heading_size` select** — four options (Small / Medium / Large / Extra large) map to `clamp()` values via a `case/when` in the liquid block. The selected font-size is written into the `{%- style -%}` block as a section-scoped override: `.ifs-section--{id} .ifs-heading { font-size: … }`. This wins over the base CSS rule without needing `!important`. Default is `large` = `clamp(4.8rem, 7.5vw, 9.6rem)`.
+
+| Value | clamp output |
+|-------|-------------|
+| small | `clamp(2.8rem, 4vw, 5.6rem)` |
+| medium | `clamp(3.6rem, 5.5vw, 7.2rem)` |
+| large | `clamp(4.8rem, 7.5vw, 9.6rem)` |
+| x-large | `clamp(6rem, 9.5vw, 12rem)` |
+
+8. **Richtext `default` must be HTML** — `"default": "Feature title"` (plain text) is silently treated as blank by Shopify. The `heading != blank` condition then skips the entire heading block and nothing renders. Current default is `"<p>Built different.</p><p>Sounds different.</p>"` — two paragraphs to immediately demonstrate the faded second-line effect. Always use `<p>` wrapped HTML for richtext defaults.
 
 ---
 

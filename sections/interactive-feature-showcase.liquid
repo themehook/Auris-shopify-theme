@@ -1,5 +1,12 @@
 {{ 'interactive-feature-showcase.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign container_class = 'container'
+  if section.settings.container == 'full'
+    assign container_class = 'container-fluid'
+  endif
+-%}
+
 {%- style -%}
   .ifs-section--{{ section.id }} {
     padding-top: {{ section.settings.mobile_padding_top }}px;
@@ -10,17 +17,13 @@
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
+    .ifs-section--{{ section.id }} .ifs-title {
+      font-size: {{ section.settings.title_size }}px;
+    }
   }
 {%- endstyle -%}
 
 <script src="{{ 'interactive-feature-showcase.js' | asset_url }}" defer></script>
-
-{%- liquid
-  assign container_class = 'container'
-  if section.settings.container == 'full'
-    assign container_class = 'container-fluid'
-  endif
--%}
 
 <div class="ifs-section ifs-section--{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
   <div class="{{ container_class }}">
@@ -33,7 +36,7 @@
             <span class="ifs-eyebrow">{{ section.settings.eyebrow }}</span>
           {%- endif -%}
           {%- if section.settings.heading != blank -%}
-            <h2 class="ifs-heading">
+            <h2 class="ifs-heading {{ section.settings.heading_size }}">
               {{-
                 section.settings.heading
                 | replace: 'p>', 'span>'
@@ -143,12 +146,7 @@
       ],
       "default": "boxed"
     },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "background-1"
-    },
+    
     {
       "type": "header",
       "content": "Section heading"
@@ -156,36 +154,64 @@
     {
       "type": "text",
       "id": "eyebrow",
-      "label": "subheading",
+      "label": "Subheading",
       "default": "Why our brand"
     },
     {
       "type": "richtext",
       "id": "heading",
       "label": "Heading",
-      "default": "Feature title"
+      "default": "<p>Built different.</p><p>Sounds different.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "hxl2", "label": "Heading 3XL" },
+        { "value": "hxl",  "label": "Heading 2XL" },
+        { "value": "h0",   "label": "Heading XL"  },
+        { "value": "h1",   "label": "Heading 1"   },
+        { "value": "h2",   "label": "Heading 2"   },
+        { "value": "h3",   "label": "Heading 3"   }
+      ],
+      "default": "hxl"
     },
     {
       "type": "header",
-      "content": "Feature badges"
+      "content": "Heading feature"
     },
     {
       "type": "text",
       "id": "badge_1",
-      "label": "Badge 1",
+      "label": "Feature 1",
       "default": "Feature one"
     },
     {
       "type": "text",
       "id": "badge_2",
-      "label": "Badge 2",
+      "label": "Feature 2",
       "default": "Feature two"
     },
     {
       "type": "text",
       "id": "badge_3",
-      "label": "Badge 3",
+      "label": "Feature 3",
       "default": "Feature three"
+    },
+    {
+      "type": "header",
+      "content": "Feature items"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Item title size",
+      "default": 28
     },
     {
       "type": "header",
@@ -267,6 +293,16 @@
       "unit": "px",
       "label": "Padding bottom",
       "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
     }
   ],
   "blocks": [

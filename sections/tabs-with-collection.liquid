@@ -30,6 +30,7 @@
 
 
 <script src="{{ 'tabs-with-collection.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'product-tooltip.js' | asset_url }}" defer="defer"></script>
 
 {%- comment -%} Quick View Assets - Conditional Loading {%- endcomment -%}
 {%- if section.settings.show_quick_view_button -%}
@@ -181,7 +182,7 @@
             </div>
           {% endif %}
 
-          <ul class="product__tab--one product__tab--btn d-flex {{ flex_align }} {% if section.settings.show_buttons_border %} product__tab--btn__border {% endif %} mb-35">
+          <ul class="product__tab--one product__tab--btn d-flex {{ flex_align }} {% if section.settings.tab_style == 'style_2' %}product__tab--style2 color-{{ section.settings.tab_color_scheme }}{% if section.settings.show_buttons_border %} product__tab--btn__border{% endif %}{% endif %} mb-35">
             {% for block in section.blocks %}
               <li class="collection__tab--btn__list">
               <button
@@ -285,7 +286,9 @@
                             in_stock_color: section.settings.in_stock,
                             out_of_stock_color: section.settings.out_of_stock,
                             low_stock_color: section.settings.low_stock,
-                            continue_selling_color: section.settings.continue_selling
+                            continue_selling_color: section.settings.continue_selling,
+                            show_spec_tooltip: section.settings.show_spec_tooltip,
+                            spec_tooltip_position: section.settings.spec_tooltip_position
                           %}
                       </div>
                   {%- else -%}
@@ -447,11 +450,30 @@
       "default": "vertical",
       "label": "Tab buttons position"
     },
+    
+    {
+      "type": "select",
+      "id": "tab_style",
+      "label": "Tab button style",
+      "options": [
+        { "value": "style_1", "label": "Style 1" },
+        { "value": "style_2", "label": "Style 2 " }
+      ],
+      "default": "style_1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "tab_color_scheme",
+      "label": "Tab color scheme",
+      "default": "background-1",
+      "visible_if": "{{ section.settings.tab_style == 'style_2' }}"
+    },
     {
       "type": "checkbox",
       "id": "show_buttons_border",
       "default": false,
-      "label": "Show border"
+      "label": "Show border",
+      "visible_if": "{{ section.settings.tab_style == 'style_2' }}"
     },
     {
       "type": "header",
@@ -736,6 +758,27 @@
       "id": "product_card_color_scheme",
       "label": "Product card color scheme",
       "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Spec tooltip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_spec_tooltip",
+      "label": "Enable spec tooltip",
+      "default": false,
+      "info": "Shows a menu icon on each card. Clicking it reveals a specifications panel. Add specs via a Shopify metafield: namespace 'custom', key 'specifications', type 'Multi-line text'. Each line: Key: Value."
+    },
+    {
+      "type": "select",
+      "id": "spec_tooltip_position",
+      "label": "Icon position",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left",  "label": "Left"  }
+      ],
+      "default": "right"
     },
     {
       "type": "header",

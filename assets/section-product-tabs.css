@@ -91,5 +91,5 @@
   }
 }
 .product__tab--btn__border {
-  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  border: 0.1rem solid rgba(var(--color-foreground), 0.15);
 }
