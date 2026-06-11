@@ -312,6 +312,48 @@ spec_tooltip_position: section.settings.spec_tooltip_position
 
 ---
 
+## Session 10 — Tabs with Collection: Tab Style 2 Color Scheme + Spec Tooltip Fixes
+
+**Date:** 2026-06-11
+
+### Requests
+1. **Tab Style 2 Color Scheme** — When "Style 2 — Pill" is active, expose a Color Scheme picker and Show Border toggle. These settings should be hidden (via `visible_if`) when Style 1 is selected. Show Border must only affect Style 2.
+2. **Spec tooltip close button redesign** — Match screenshot: solid dark filled circle (black background, white X) at top-left of panel. Previously it was an accent-colored border ring at top-right.
+3. **Spec tooltip icon not appearing** — Even with "Enable spec tooltip" toggled on, no icon appeared on any card.
+
+### Root causes
+- **Color scheme / border hidden when Style 1:** Previously `show_buttons_border` was unconditional in both the `<ul>` class logic and the schema — Style 1 cards got the border class too.
+- **Spec icon never rendering:** The entire trigger button HTML was nested inside `{%- if pct_specs != blank -%}`. On a dev store (or any store without the `custom.specifications` metafield populated), this always evaluated false, so no icon appeared at all.
+
+### What was done
+
+**`sections/tabs-with-collection.liquid`:**
+- `<ul>` class: wrapped `product__tab--style2`, `color-{scheme}`, and `product__tab--btn__border` inside `{% if tab_style == 'style_2' %}` — Style 1 is completely unchanged
+- Schema: added `tab_color_scheme` (color_scheme) and `show_buttons_border` (checkbox) both with `"visible_if": "{{ section.settings.tab_style == 'style_2' }}"` — they only appear in the editor when Style 2 is active
+- Style 2 option label updated to "Style 2 — Pill"
+
+**`assets/tabs-with-collection.css`:**
+- Added `background: rgba(var(--color-foreground), 0.06)` to `.product__tab--btn.product__tab--style2` — the pill container gets a subtle tinted background that respects whichever color scheme is applied via the `color-{scheme}` class
+
+**`assets/product-tooltip.css`:**
+- `.pct-close`: `right: 1rem` → `left: 1rem`; `border: accent ring` → `border: none`; `background: transparent` → `background: rgb(var(--color-foreground))`; `color: foreground` → `color: rgb(var(--color-background))` (white X)
+- `.pct-panel__label`: removed `padding-right: 2.4rem`; added `margin-top: 2.4rem` to push label below the close button
+- Added `.pct-table__empty` (muted centered text for products without spec data)
+
+**`snippets/product-card.liquid`:**
+- Moved `{%- if pct_specs != blank -%}` inside the panel, wrapping only the table rows — the trigger button and panel wrapper now always render when `show_spec_tooltip: true`
+- Products without specs show a "No specifications available" row instead of nothing
+
+### Key decisions
+- **`visible_if` hides settings in the editor** — Shopify's `visible_if` with Liquid condition `{{ section.settings.tab_style == 'style_2' }}` cleanly hides Style 2-only settings without affecting stored values.
+- **`color-{scheme}` without `gradient`** — The pill container uses `background: rgba(var(--color-foreground), 0.06)` explicitly. Applying `gradient` would add the full section background, which is too heavy for a small tab bar. Using just `color-{scheme}` scopes the CSS variables without adding a background.
+- **Always show trigger icon** — The icon should appear whenever the merchant enables the feature, regardless of whether a specific product has spec data. The empty state panel gracefully handles missing data.
+
+### Blueprint-first rule added
+The client instructed: always check Blueprint files before doing any research or implementation. Only do new investigation when the Blueprint doesn't already cover the request.
+
+---
+
 ## Session 7 — Interactive Feature Showcase: Heading size setting
 
 **Date:** 2026-06-10
@@ -329,3 +371,36 @@ Add a "Heading Size" option to the heading settings so the heading text size can
 
 ### Key decision
 Used a `select` with four named sizes rather than a raw range/number input. Named sizes are more intuitive for merchants and prevent arbitrary values that could break the layout. The font-size is applied via section-scoped `{%- style -%}` block to avoid `!important` while still overriding the base CSS rule. Plain text defaults are silently treated as blank by Shopify. Always use `"default": "<p>text</p>"`. A two-paragraph default also immediately demonstrates the two-line faded heading feature to merchants.
+
+---
+
+## Session 11 — Product Card: Content Alignment + Swatches Position (per-section)
+
+**Date:** 2026-06-11
+
+### Request
+Add two per-section product card settings globally across all product sections:
+1. **Content Alignment** (Left / Center / Right) — override global theme alignment per section
+2. **Color Swatches Position** (Below content / Above content) — move swatches above the title/price block or keep below (default)
+
+### What was done
+
+**`snippets/product-card.liquid`:**
+- Added `assign content_align = card_content_alignment | default: settings.product_content_alignment | default: 'center'` before the alignment `case` block (replaces direct use of `settings.product_content_alignment`)
+- Changed the `case` statement to use `content_align` instead of `settings.product_content_alignment`
+- Changed `product__card__content` div class from `text-{{ settings.product_content_alignment }}` to `text-{{ content_align }}`
+- Added conditional swatch rendering at the top of `product__card__content` when `swatches_position == 'above'`
+- Wrapped existing swatches block (below price) with `{%- unless swatches_position == 'above' -%}` so swatches only render in one position
+
+**`sections/tabs-with-collection.liquid`:**
+- Render call: added `card_content_alignment: section.settings.card_content_alignment` and `swatches_position: section.settings.swatches_position`
+- Schema: Added both select settings after `product_card_color_scheme`, before the "Specifications panel" header
+
+**`sections/featured-collection.liquid`:**
+- Render call: added `card_content_alignment` and `swatches_position` params
+- Schema: Added both select settings after `product_card_color_scheme`, before the "Inventory status" header
+
+### Key decisions
+- **Per-section param with global fallback** — `card_content_alignment | default: settings.product_content_alignment` means existing sections without the new setting continue to respect the global theme setting. No backward-compatibility breakage.
+- **Swatches position — conditional dual render** — The swatch snippet is rendered at the top of the content div when `swatches_position == 'above'`, and the existing position (after price) is gated by `unless swatches_position == 'above'`. This ensures swatches never render twice.
+- **Schema placement** — Both settings live under the "Product card" section header in schema, logically grouped with other card appearance settings.

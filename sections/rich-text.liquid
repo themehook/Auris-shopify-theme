@@ -71,7 +71,7 @@
           {%- for block in section.blocks -%}
             {%- case block.type -%}
               {%- when 'heading' -%}
-                <h2 class="rich-text-heading-title {{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
+                <h2 class="rich-text-heading-title gradient--text {{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
                   {{ block.settings.heading | replace: 'p>', 'span>' }}
                 </h2>
               {%- when 'sub_heading' -%}
@@ -249,7 +249,7 @@
               {%- when 'text_feature' -%}
                   <div class="rich__text--feature" {{ block.shopify_attributes }}>
                     <div class="rich__text--feature__list">
-                      <h2 class="rich__text--feature-title {{ block.settings.feature_heading_size }}" >
+                      <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
                         {{ block.settings.feature_heading | replace: 'p>', 'span>' }}
                       </h2>
                       {% if block.settings.feature_subtitle != blank %}
@@ -258,7 +258,7 @@
                     </div>
                     {% if block.settings.desktop_columns == '2' or block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' %}
                       <div class="rich__text--feature__list">
-                        <h2 class="rich__text--feature-title {{ block.settings.feature_heading_size }}" >
+                        <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
                           {{ block.settings.feature_heading_2 | replace: 'p>', 'span>' }}
                         </h2>
                         {% if block.settings.feature_subtitle_2 != blank %}
@@ -268,7 +268,7 @@
                     {% endif %}
                     {% if block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' %}
                       <div class="rich__text--feature__list">
-                        <h2 class="rich__text--feature-title {{ block.settings.feature_heading_size }}" >
+                        <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
                           {{ block.settings.feature_heading_3 | replace: 'p>', 'span>' }}
                         </h2>
                         {% if block.settings.feature_subtitle_3 != blank %}
@@ -278,7 +278,7 @@
                     {% endif %}
                     {% if block.settings.desktop_columns == '4' %}
                       <div class="rich__text--feature__list">
-                        <h2 class="rich__text--feature-title {{ block.settings.feature_heading_size }}" >
+                        <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
                           {{ block.settings.feature_heading_4 | replace: 'p>', 'span>' }}
                         </h2>
                         {% if block.settings.feature_subtitle_4 != blank %}
@@ -1025,36 +1025,14 @@
           "info": "Number of feature to display on desktop"
         },
         {
-          "type": "select",
-          "id": "feature_heading_size",
-          "options": [
-            {
-              "value": "h1",
-              "label": "Heading 1"
-            },
-            {
-              "value": "h2",
-              "label": "Heading 2"
-            },
-            {
-              "value": "h3",
-              "label": "Heading 3"
-            },
-            {
-              "value": "h4",
-              "label": "Heading 4"
-            },
-            {
-              "value": "h5",
-              "label": "Heading 5"
-            },
-            {
-              "value": "h6",
-              "label": "Heading 6"
-            }
-          ],
-          "default": "h4",
-          "label": "Heading size"
+          "type": "range",
+          "id": "feature_heading_font_size",
+          "min": 12,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "label": "Heading font size",
+          "default": 28
         },
         {
           "type": "header",

@@ -76,7 +76,7 @@
               {{ block.shopify_attributes }}
             >
               {%- render 'hooktheme-icon-scrolling-text', icon: block.settings.icon -%}
-              <span class="scrolling--text__content {% if block.settings.text_stroke  %} scrolling--item__text--stroke {% endif %}">
+              <span class="scrolling--text__content gradient--text {% if block.settings.text_stroke  %} scrolling--item__text--stroke {% endif %}">
                 {{- block.settings.text -}}
               </span>
               {% if section.settings.hover_image %} 

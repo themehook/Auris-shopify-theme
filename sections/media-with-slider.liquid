@@ -165,6 +165,41 @@
       }
     }
   {%- endif -%}
+
+  {%- assign p_align = section.settings.pagination_alignment | default: 'right' -%}
+  {%- if section.settings.pagination_style == 'style_2' -%}
+    @media only screen and (min-width: 750px) {
+      #media-slider__{{ section.id }} .media-slider__pagination-wrapper {
+        width: fit-content;
+        {%- if p_align == 'left' -%}
+          margin-left: 0; margin-right: auto;
+        {%- elsif p_align == 'center' -%}
+          margin: 0 auto;
+        {%- else -%}
+          margin-left: auto; margin-right: 0;
+        {%- endif -%}
+      }
+    }
+    #media-slider__{{ section.id }} {
+      --pagination-s2-bg: {{ section.settings.pagination_s2_bg }};
+      --pagination-s2-text: {{ section.settings.pagination_s2_text }};
+      --pagination-s2-active-bg: {{ section.settings.pagination_s2_active_bg }};
+      --pagination-s2-active-text: {{ section.settings.pagination_s2_active_text }};
+      --pagination-s2-hover-text: {{ section.settings.pagination_s2_hover_text }};
+    }
+  {%- else -%}
+    @media only screen and (min-width: 750px) {
+      #media-slider__{{ section.id }} .media-slider__pagination-wrapper {
+        {%- if p_align == 'left' -%}
+          justify-content: flex-start;
+        {%- elsif p_align == 'center' -%}
+          justify-content: center;
+        {%- else -%}
+          justify-content: flex-end;
+        {%- endif -%}
+      }
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 <div
@@ -388,7 +423,7 @@
     
     <!-- Custom Pagination -->
     {%- if section.settings.show_pagination -%}
-      <div class="media-slider__pagination {% if section.settings.content_on_container %} pagination_mobile  {% endif %}">
+      <div class="media-slider__pagination {% if section.settings.content_on_container %} pagination_mobile  {% endif %} media-slider__pagination--{{ section.settings.pagination_style | default: 'style_1' }}">
         <div class="{{ container }}">
           <div class="media-slider__pagination-wrapper">
             {%- for block in section.blocks -%}
@@ -622,12 +657,7 @@
       "default": "adapt_image",
       "label": "Slider height"
     },
-    {
-      "type": "checkbox",
-      "id": "show_pagination",
-      "label": "Show custom pagination",
-      "default": true
-    },
+    
     {
       "type": "checkbox",
       "id": "enable_loop",
@@ -669,6 +699,74 @@
       "unit": "%",
       "label": "Overlay opacity",
       "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Custom pagination"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Show pagination",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "pagination_alignment",
+      "label": "Pagination alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right",
+      "visible_if": "{{ section.settings.show_pagination }}"
+    },
+    {
+      "type": "select",
+      "id": "pagination_style",
+      "label": "Pagination style",
+      "options": [
+        { "value": "style_1", "label": "Style 1" },
+        { "value": "style_2", "label": "Style 2" }
+      ],
+      "default": "style_1",
+      "visible_if": "{{ section.settings.show_pagination }}"
+    },
+    {
+      "type": "color",
+      "id": "pagination_s2_bg",
+      "label": "Background color",
+      "default": "#1a1a1a",
+      "visible_if": "{{ section.settings.show_pagination and section.settings.pagination_style == 'style_2' }}"
+    },
+    {
+      "type": "color",
+      "id": "pagination_s2_text",
+      "label": "Text color",
+      "default": "#ffffff",
+      "visible_if": "{{ section.settings.show_pagination and section.settings.pagination_style == 'style_2' }}"
+    },
+    {
+      "type": "color",
+      "id": "pagination_s2_active_bg",
+      "label": "Active button color",
+      "default": "#ffffff",
+      "visible_if": "{{ section.settings.show_pagination and section.settings.pagination_style == 'style_2' }}"
+    },
+    {
+      "type": "color",
+      "id": "pagination_s2_active_text",
+      "label": "Active text color",
+      "default": "#1a1a1a",
+      "visible_if": "{{ section.settings.show_pagination and section.settings.pagination_style == 'style_2' }}"
+    },
+    {
+      "type": "color",
+      "id": "pagination_s2_hover_text",
+      "label": "Hover text color",
+      "default": "#ffffff",
+      "visible_if": "{{ section.settings.show_pagination and section.settings.pagination_style == 'style_2' }}"
     },
     {
       "type": "header",
@@ -887,8 +985,7 @@
             }
           ],
           "default": "align-items-center",
-          "label": "Vertical position",
-          "visible_if": "{{ section.settings.content_on_container}}"
+          "label": "Vertical alignment"
         },
         {
           "type": "header",

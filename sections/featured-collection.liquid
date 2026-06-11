@@ -18,6 +18,7 @@
 {{ 'countdown-timer.css' | asset_url | stylesheet_tag }}
 {{ 'stock-countdwon.css' | asset_url | stylesheet_tag }}
 {{ 'product-tooltip.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-tooltip.js' | asset_url }}" defer="defer"></script>
 {{ 'section-title.css' | asset_url | stylesheet_tag }}
 {{ 'product-card.css' | asset_url | stylesheet_tag }}
 {{ 'scrolling-text.css' | asset_url | stylesheet_tag }}
@@ -374,7 +375,11 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
                 in_stock_color: section.settings.in_stock,
                 out_of_stock_color: section.settings.out_of_stock,
                 low_stock_color: section.settings.low_stock,
-                continue_selling_color: section.settings.continue_selling
+                continue_selling_color: section.settings.continue_selling,
+                card_content_alignment: section.settings.card_content_alignment,
+                swatches_position: section.settings.swatches_position,
+                show_spec_tooltip: section.settings.show_spec_tooltip,
+                spec_tooltip_position: section.settings.spec_tooltip_position
               %}
             </div>
           {%- else -%}
@@ -1292,6 +1297,10 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
       "label": "Number of columns on desktop",
       "options": [
         {
+          "value": "2",
+          "label": "2"
+        },
+        {
           "value": "3",
           "label": "3"
         },
@@ -1577,11 +1586,54 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
         }
       ]
     },
+    
+    {
+      "type": "select",
+      "id": "card_content_alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left",   "label": "Left"   },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right"  }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "swatches_position",
+      "label": "Color swatches position",
+      "options": [
+        { "value": "below", "label": "Bottom" },
+        { "value": "above", "label": "Top"  }
+      ],
+      "default": "below"
+    },
     {
       "type": "color_scheme",
       "id": "product_card_color_scheme",
       "label": "Product card color scheme",
       "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Specifications panel"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_spec_tooltip",
+      "label": "Enable specifications",
+      "default": false,
+      "info": "Shows a menu icon on each card. Clicking it reveals a specifications panel. Add specs via a Shopify metafield: namespace 'custom', key 'specifications', type 'Multi-line text'. Each line: Key: Value."
+    },
+    {
+      "type": "select",
+      "id": "spec_tooltip_position",
+      "label": "Icon position",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left",  "label": "Left"  }
+      ],
+      "default": "right"
     },
     {
       "type": "header",

@@ -59,16 +59,20 @@
     assign tooltip_position = 'tooltip--left'
   endunless
 
-  case settings.product_content_alignment
+  assign content_align = card_content_alignment | default: settings.product_content_alignment | default: 'center'
+  case content_align
     when 'left'
       assign price_class = 'product__card__price justify-content-start'
       assign inventory_align_class = 'justify-content-start'
+      assign swatch_justify_class = 'justify-content-start'
     when 'right'
       assign price_class = 'product__card__price justify-content-end'
       assign inventory_align_class = 'justify-content-end'
+      assign swatch_justify_class = 'justify-content-end'
     else
       assign price_class = 'product__card__price justify-content-center'
       assign inventory_align_class = 'justify-content-center'
+      assign swatch_justify_class = 'justify-content-center'
   endcase
 -%}
 
@@ -264,7 +268,12 @@
   {% endif %}
   {% comment %} Product action buttons for mobile {% endcomment %}
 
-  <div class="product__card__content text-{{ settings.product_content_alignment }} {% if spacing %} product--card-spacing-true{% endif %}">
+  <div class="product__card__content text-{{ content_align }} {% if spacing %} product--card-spacing-true{% endif %}">
+    {%- if swatches_position == 'above' -%}
+      {%- if settings.color_swatches and color_swatches -%}
+        {%- render 'product-card-color-swatch', product: product_card_product, current_variant: variant, swatch_align_class: swatch_justify_class, swatch_position: 'above' -%}
+      {%- endif -%}
+    {%- endif -%}
     {%- if show_vendor -%}
       <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
       <div class="product__vendor">{{ product_card_product.vendor }}</div>
@@ -282,11 +291,13 @@
       {% render 'price', product: product_card_product, price_class: price_class %}
     {%- endif -%}
 
-    {% if settings.color_swatches %}
-      {% if color_swatches %}
-        {% render 'product-card-color-swatch', product: product_card_product, current_variant: variant %}
+    {%- unless swatches_position == 'above' -%}
+      {% if settings.color_swatches %}
+        {% if color_swatches %}
+          {% render 'product-card-color-swatch', product: product_card_product, current_variant: variant, swatch_align_class: swatch_justify_class, swatch_position: 'below' %}
+        {% endif %}
       {% endif %}
-    {% endif %}
+    {%- endunless -%}
 
     {%- if show_rating and product_card_product.metafields.reviews.rating.value != blank -%}
       <div class="product-card--rating">

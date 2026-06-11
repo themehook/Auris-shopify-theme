@@ -383,9 +383,63 @@
   
   
   /* --------------------------------------------
-     5. SLIDE ANIMATIONS
+     5. PAGINATION STYLE 2
      -------------------------------------------- */
-  
+
+  .media-slider__pagination--style_2 .media-slider__pagination-wrapper {
+    background-color: var(--pagination-s2-bg, rgba(30, 30, 30, 0.9));
+    border-radius: 99px;
+    padding: 0.4rem;
+    gap: 0.4rem;
+    width: fit-content;
+  }
+
+  .media-slider__pagination--style_2 .media-slider__pagination-btn {
+    opacity: 1;
+    border-radius: 99px;
+    padding: 0.6rem 1.6rem;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+  }
+
+  .media-slider__pagination--style_2 .media-slider__pagination-btn:hover {
+    opacity: 1;
+  }
+
+  .media-slider__pagination--style_2 .media-slider__pagination-btn.active {
+    background-color: var(--pagination-s2-active-bg, #ffffff);
+  }
+
+  .media-slider__pagination--style_2 .pagination-btn__text {
+    color: var(--pagination-s2-text, #ffffff);
+    transition: color 0.3s ease;
+  }
+
+  .media-slider__pagination--style_2 .media-slider__pagination-btn.active .pagination-btn__text {
+    color: var(--pagination-s2-active-text, #1a1a1a);
+  }
+
+  .media-slider__pagination--style_2 .media-slider__pagination-btn:hover .pagination-btn__text {
+    color: var(--pagination-s2-hover-text, rgba(255, 255, 255, 0.7));
+  }
+
+  .media-slider__pagination--style_2 .pagination-btn__icon {
+    color: var(--pagination-s2-text, #ffffff);
+  }
+
+  .media-slider__pagination--style_2 .media-slider__pagination-btn.active .pagination-btn__icon {
+    color: var(--pagination-s2-active-text, #1a1a1a);
+  }
+
+  .media-slider__pagination--style_2 .media-slider__pagination-btn:hover .pagination-btn__icon {
+    color: var(--pagination-s2-hover-text, rgba(255, 255, 255, 0.7));
+  }
+
+
+  /* --------------------------------------------
+     6. SLIDE ANIMATIONS
+     -------------------------------------------- */
+
   /* Fade in content on slide change */
   .swiper-slide-active .media-slider__text > * {
     animation: slideInUp 0.8s ease forwards;

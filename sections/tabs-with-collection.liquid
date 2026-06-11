@@ -288,7 +288,9 @@
                             low_stock_color: section.settings.low_stock,
                             continue_selling_color: section.settings.continue_selling,
                             show_spec_tooltip: section.settings.show_spec_tooltip,
-                            spec_tooltip_position: section.settings.spec_tooltip_position
+                            spec_tooltip_position: section.settings.spec_tooltip_position,
+                            card_content_alignment: section.settings.card_content_alignment,
+                            swatches_position: section.settings.swatches_position
                           %}
                       </div>
                   {%- else -%}
@@ -465,13 +467,13 @@
       "type": "color_scheme",
       "id": "tab_color_scheme",
       "label": "Tab color scheme",
-      "default": "background-1",
+      "default": "background-2",
       "visible_if": "{{ section.settings.tab_style == 'style_2' }}"
     },
     {
       "type": "checkbox",
       "id": "show_buttons_border",
-      "default": false,
+      "default": true,
       "label": "Show border",
       "visible_if": "{{ section.settings.tab_style == 'style_2' }}"
     },
@@ -753,6 +755,28 @@
         }
       ]
     },
+    
+    {
+      "type": "select",
+      "id": "card_content_alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left",   "label": "Left"   },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right"  }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "swatches_position",
+      "label": "Color swatches position",
+      "options": [
+        { "value": "below", "label": "Bottom" },
+        { "value": "above", "label": "Top"  }
+      ],
+      "default": "below"
+    },
     {
       "type": "color_scheme",
       "id": "product_card_color_scheme",
@@ -761,12 +785,12 @@
     },
     {
       "type": "header",
-      "content": "Spec tooltip"
+      "content": "Specifications panel"
     },
     {
       "type": "checkbox",
       "id": "show_spec_tooltip",
-      "label": "Enable spec tooltip",
+      "label": "Enable specifications",
       "default": false,
       "info": "Shows a menu icon on each card. Clicking it reveals a specifications panel. Add specs via a Shopify metafield: namespace 'custom', key 'specifications', type 'Multi-line text'. Each line: Key: Value."
     },

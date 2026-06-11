@@ -152,8 +152,10 @@ collection-tab-item[aria-hidden="false"] {
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  display: inline-flex !important;
-  padding: 0.5rem 1rem;
+  display: flex !important;
+  width: fit-content;
+  margin-inline: auto;
+  padding: .6rem 0.8rem;
 }
 .product__tab--style2::-webkit-scrollbar { display: none; }
 
@@ -162,7 +164,10 @@ collection-tab-item[aria-hidden="false"] {
   margin: 0 !important;
   flex-shrink: 0;
 }
-
+.product-tabs--horizontal .product__tab--btn.product__tab--style2{
+  width: auto;
+  margin-inline: 0;
+}
 .product__tab--style2 .collection-tab-links__link {
   border-radius: 10rem;
   padding: 0.5rem 1.2rem;

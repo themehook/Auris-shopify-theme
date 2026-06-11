@@ -18,14 +18,16 @@
   assign swatch_type = settings.color_swatch_type
   assign swatch_shape = settings.product_card_swatch_shape | default: 'circle'
 
-  # Determine product content alignment
-  assign product_content_align = 'justify-content-start'
-  case settings.product_content_alignment
-    when 'center'
-      assign product_content_align = 'justify-content-center'
-    when 'right'
-      assign product_content_align = 'justify-content-end'
-  endcase
+  assign product_content_align = swatch_align_class
+  if product_content_align == blank
+    assign product_content_align = 'justify-content-start'
+    case settings.product_content_alignment
+      when 'center'
+        assign product_content_align = 'justify-content-center'
+      when 'right'
+        assign product_content_align = 'justify-content-end'
+    endcase
+  endif
 
   # Get the configured color option names (supports comma-separated for multi-language)
   assign choose_option = settings.color_swatch_activation | downcase
@@ -72,7 +74,7 @@
 
 {%- if color_option -%}
   <product-card-swatches
-    class="no-js-hidden product--color-swatch-wrapper {{ product_content_align }}"
+    class="no-js-hidden product--color-swatch-wrapper {{ product_content_align }}{% if swatch_position == 'above' %} product--swatches-above{% else %} product--swatches-below{% endif %}"
     data-product-handle="{{ product.handle }}"
     data-color-option="{{ color_swatch_option_position }}"
     data-swatches-type="{{ swatches_type }}"
