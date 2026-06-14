@@ -6,7 +6,9 @@
       "Bash(git commit *)",
       "Bash(git remote *)",
       "Bash(git branch *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git -C \"e:/themeforest-Shopify-project-1/luno-new-project/luno-new-project\" status --short)",
+      "Bash(node -e ' *)"
     ]
   }
 }

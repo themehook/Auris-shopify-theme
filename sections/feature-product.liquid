@@ -193,7 +193,7 @@
     <div class="product featured-product row row-cols-md-2 row-cols-1 product--{{ section.settings.media_size }} product--{{ section.settings.gallery_layout }}">
       {% if product != blank %}
         <div class="{{ media_column }}">
-          <div class="product__media_container {% if section.settings.enable_sticky_info %} product__info-container--sticky{% endif %}">
+          <div class="product__media_container thumbnail-position--{{ section.settings.thumbnail_position }} gallery-layout--{{ section.settings.gallery_layout }}{% if section.settings.enable_sticky_info %} product__info-container--sticky{% endif %}">
             <a class="skip-to-content-link button visually-hidden" href="#ProductInfo-{{ section.id }}">
               {{ 'accessibility.skip_to_product_info' | t }}
             </a>
@@ -1125,6 +1125,63 @@
   <script src="{{ 'media-gallery.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 
+{%- if section.settings.thumbnail_position == 'left' or section.settings.thumbnail_position == 'right' -%}
+<script>
+(function () {
+  function patchVerticalThumbnailSliders() {
+    document.querySelectorAll('.thumbnail-position--left, .thumbnail-position--right').forEach(function (container) {
+      var thumbnailSlider = container.querySelector('[id^="GalleryThumbnails"]');
+      if (!thumbnailSlider) return;
+
+      var list = thumbnailSlider.querySelector('[id^="Slider-Thumbnails"]');
+      var prevBtn = thumbnailSlider.querySelector('button[name="previous"]');
+      var nextBtn = thumbnailSlider.querySelector('button[name="next"]');
+      if (!list || !prevBtn || !nextBtn) return;
+
+      // Clone buttons to detach the horizontal slider JS event listeners
+      var newPrev = prevBtn.cloneNode(true);
+      var newNext = nextBtn.cloneNode(true);
+      prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+      nextBtn.parentNode.replaceChild(newNext, nextBtn);
+
+      function getScrollStep() {
+        var item = list.querySelector('.thumbnail-list__item');
+        return item ? item.offsetHeight + 6 : 86;
+      }
+
+      function syncButtons() {
+        newPrev.disabled = list.scrollTop <= 0;
+        newNext.disabled = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
+      }
+
+      newPrev.addEventListener('click', function (e) {
+        e.preventDefault();
+        var step = parseInt(newPrev.dataset.step || 1, 10);
+        list.scrollBy({ top: -step * getScrollStep(), behavior: 'smooth' });
+        setTimeout(syncButtons, 350);
+      });
+
+      newNext.addEventListener('click', function (e) {
+        e.preventDefault();
+        var step = parseInt(newNext.dataset.step || 1, 10);
+        list.scrollBy({ top: step * getScrollStep(), behavior: 'smooth' });
+        setTimeout(syncButtons, 350);
+      });
+
+      list.addEventListener('scroll', syncButtons);
+      syncButtons();
+    });
+  }
+
+  if (customElements.get('slider-component')) {
+    patchVerticalThumbnailSliders();
+  } else {
+    customElements.whenDefined('slider-component').then(patchVerticalThumbnailSliders);
+  }
+})();
+</script>
+{%- endif -%}
+
 {%- if first_3d_model -%}
   <script type="application/json" id="ProductJSON-{{ product.id }}">
     {{ product.media | where: 'media_type', 'model' | json }}
@@ -1258,8 +1315,33 @@
         {
           "value": "thumbnail_slider",
           "label": "Thumbnails carousel"
+        },
+        {
+          "value": "only_thumbnails",
+          "label": "Only Thumbnails"
         }
       ]
+    },
+    {
+      "type": "select",
+      "id": "thumbnail_position",
+      "label": "Thumbnail position",
+      "default": "bottom",
+      "options": [
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "visible_if": "{{ section.settings.gallery_layout contains 'thumbnail' }}"
     },
     {
       "type": "select",

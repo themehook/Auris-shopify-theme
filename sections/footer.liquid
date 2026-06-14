@@ -345,23 +345,23 @@
       <div class="footer__logo">
         <div class="{{ container }}">
           <div class="footer-logo-wrapper">
-            <div
-              class="footer-logo-media media--{{ section.settings.image_ratio }} media"
-              {% if section.settings.image_ratio == 'adapt' %}
-                style="padding-bottom: {{ 1 | divided_by: section.settings.footer_logo.aspect_ratio | times: 100 }}%;"
-              {% endif %}
-            >
-              {%- if section.settings.footer_logo != blank -%}
-                {%- assign image_size = section.settings.logo_width | append: 'x' -%}
-                {{
-                  section.settings.footer_logo
-                  | image_url: width: 1530
-                  | image_tag: loading: 'lazy', sizes: sizes, widths: '275, 550, 710, 1420, 1530'
-                }}
-              {%- else -%}
-                <span class="h2">{{ shop.name }}</span>
-              {%- endif -%}
-            </div>
+            {%- if section.settings.footer_logo != blank -%}
+              <img
+                src="{{ section.settings.footer_logo | image_url: width: 1530 }}"
+                srcset="
+                  {{ section.settings.footer_logo | image_url: width: 550 }} 550w,
+                  {{ section.settings.footer_logo | image_url: width: 1060 }} 1060w,
+                  {{ section.settings.footer_logo | image_url: width: 1530 }} 1530w
+                "
+                loading="lazy"
+                alt="{{ section.settings.footer_logo.alt | escape | default: shop.name }}"
+                width="{{ section.settings.footer_logo.width }}"
+                height="{{ section.settings.footer_logo.height }}"
+                style="max-width: {{ section.settings.logo_max_width }}%;"
+              >
+            {%- else -%}
+              <span class="footer-logo__store-name h2">{{ shop.name }}</span>
+            {%- endif -%}
           </div>
         </div>
       </div>
@@ -512,27 +512,19 @@
     {
       "type": "image_picker",
       "id": "footer_logo",
-      "label": "Logo image"
+      "label": "Logo image",
+      "visible_if": "{{ section.settings.show_logo }}"
     },
     {
-      "type": "select",
-      "id": "image_ratio",
-      "options": [
-        {
-          "value": "adapt",
-          "label": "Adapt to first image"
-        },
-        {
-          "value": "portrait",
-          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
-        },
-        {
-          "value": "landscape",
-          "label": "Landscape"
-        }
-      ],
-      "default": "adapt",
-      "label": "Logo height"
+      "type": "range",
+      "id": "logo_max_width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Logo max width",
+      "default": 50,
+      "visible_if": "{{ section.settings.show_logo }}"
     },
     {
       "type": "header",

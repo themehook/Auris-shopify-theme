@@ -1272,3 +1272,205 @@ button.product-form__submit.loading:after {
 .product__accordion:not(.accordion) .accordion__title {
   margin-bottom: 1.5rem;
 }
+
+/* =============================================
+   THUMBNAIL POSITION: LEFT / RIGHT
+   ============================================= */
+@media screen and (min-width: 750px) {
+  /* Flex-row wrapper: both bare and sticky (.product__media-gallery) variants */
+  .thumbnail-position--left media-gallery,
+  .thumbnail-position--right media-gallery,
+  .thumbnail-position--left .product__media-gallery,
+  .thumbnail-position--right .product__media-gallery {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 1.2rem;
+    width: 100%;
+  }
+
+  /* Main image slider fills remaining space */
+  .thumbnail-position--left media-gallery > slider-component:not(.thumbnail-slider),
+  .thumbnail-position--right media-gallery > slider-component:not(.thumbnail-slider) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Thumbnail strip wrapper: 80px wide column */
+  .thumbnail-position--left media-gallery > .thumbnail-slider,
+  .thumbnail-position--right media-gallery > .thumbnail-slider {
+    width: 88px !important;
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
+  /* Left: thumbnail strip appears before the main image */
+  .thumbnail-position--left media-gallery > .thumbnail-slider {
+    order: -1;
+  }
+
+  /* Thumbnail list: vertical scrollable column, cancel JS horizontal transform */
+  .thumbnail-position--left media-gallery .thumbnail-list,
+  .thumbnail-position--right media-gallery .thumbnail-list {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    width: 80px !important;
+    height: auto !important;
+    max-height: 465px; /* 5 items × 85px + 4 gaps × 10px */
+    padding: 0 !important;
+    transform: none !important;
+    scroll-behavior: smooth;
+  }
+
+  /* Each thumbnail item: fixed 80×80px */
+  .thumbnail-position--left media-gallery .thumbnail-list__item,
+  .thumbnail-position--right media-gallery .thumbnail-list__item {
+    width: 85px !important;
+    min-width: 85px !important;
+    height: 85px !important;
+    min-height: 85px !important;
+    flex-shrink: 0 !important;
+    position: relative;
+  }
+
+  /* Kill the padding-bottom aspect-ratio trick — replaced by explicit height */
+  .thumbnail-position--left media-gallery .thumbnail-list__item::before,
+  .thumbnail-position--right media-gallery .thumbnail-list__item::before {
+    display: none !important;
+  }
+
+  /* Thumbnail button fills its 80×80 parent */
+  .thumbnail-position--left media-gallery .thumbnail-list .thumbnail,
+  .thumbnail-position--right media-gallery .thumbnail-list .thumbnail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Thumbnail image: cover-fill the button */
+  .thumbnail-position--left media-gallery .thumbnail-list .thumbnail img,
+  .thumbnail-position--right media-gallery .thumbnail-list .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Thumbnail strip: add space at top/bottom for the nav buttons */
+  .thumbnail-position--left media-gallery > .thumbnail-slider,
+  .thumbnail-position--right media-gallery > .thumbnail-slider {
+    position: relative;
+    padding-top: 3.7rem;
+    padding-bottom: 3.7rem;
+  }
+
+  /* Show slider buttons, positioned at top and bottom */
+  .thumbnail-position--left media-gallery .thumbnail-slider .slider-button,
+  .thumbnail-position--right media-gallery .thumbnail-slider .slider-button {
+    display: flex !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+
+  .thumbnail-position--left media-gallery .thumbnail-slider .slider-button--prev,
+  .thumbnail-position--right media-gallery .thumbnail-slider .slider-button--prev {
+    top: 0 !important;
+    bottom: auto !important;
+    transform: translateX(-50%) rotate(-90deg) !important;
+  }
+
+  .thumbnail-position--left media-gallery .thumbnail-slider .slider-button--next,
+  .thumbnail-position--right media-gallery .thumbnail-slider .slider-button--next {
+    bottom: 0 !important;
+    top: auto !important;
+    transform: translateX(-50%) rotate(90deg) !important;
+  }
+
+  /* Hover: always visible for vertical strip */
+  .thumbnail-position--left media-gallery .thumbnail-slider:hover .slider-button,
+  .thumbnail-position--right media-gallery .thumbnail-slider:hover .slider-button {
+    opacity: 1 !important;
+    left: 50% !important;
+    right: auto !important;
+  }
+}
+
+/* =============================================
+   GALLERY LAYOUT: ONLY THUMBNAILS
+   ============================================= */
+@media screen and (min-width: 750px) {
+  /* Override any flex row from thumbnail-position classes */
+  .gallery-layout--only_thumbnails media-gallery,
+  .gallery-layout--only_thumbnails .product__media-gallery {
+    display: block !important;
+  }
+
+  /* Hide the main image viewer */
+  .gallery-layout--only_thumbnails media-gallery > slider-component:not(.thumbnail-slider) {
+    display: none !important;
+  }
+
+  /* Thumbnail strip takes full column width */
+  .gallery-layout--only_thumbnails media-gallery > .thumbnail-slider {
+    width: 100% !important;
+    padding: 0 !important;
+    overflow: visible;
+  }
+
+  /* Thumbnail list: vertical column, show all images */
+  .gallery-layout--only_thumbnails media-gallery .thumbnail-list {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    gap: 1rem !important;
+    overflow: visible !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  /* Each image: full column width, natural aspect ratio */
+  .gallery-layout--only_thumbnails media-gallery .thumbnail-list__item {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: unset !important;
+    flex-shrink: 0 !important;
+    position: static !important;
+  }
+
+  .gallery-layout--only_thumbnails media-gallery .thumbnail-list__item::before {
+    display: none !important;
+  }
+
+  .gallery-layout--only_thumbnails media-gallery .thumbnail-list .thumbnail {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+  }
+
+  .gallery-layout--only_thumbnails media-gallery .thumbnail-list .thumbnail img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Hide carousel nav buttons — all images are always visible */
+  .gallery-layout--only_thumbnails media-gallery .thumbnail-slider .slider-button {
+    display: none !important;
+  }
+}

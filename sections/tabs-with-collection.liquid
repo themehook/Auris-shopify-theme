@@ -461,7 +461,7 @@
         { "value": "style_1", "label": "Style 1" },
         { "value": "style_2", "label": "Style 2 " }
       ],
-      "default": "style_1"
+      "default": "style_2"
     },
     {
       "type": "color_scheme",
@@ -798,6 +798,7 @@
       "type": "select",
       "id": "spec_tooltip_position",
       "label": "Icon position",
+      "visible_if": "{{ section.settings.show_spec_tooltip }}",
       "options": [
         { "value": "right", "label": "Right" },
         { "value": "left",  "label": "Left"  }

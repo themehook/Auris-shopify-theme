@@ -153,7 +153,7 @@
       data-t-items="items"
       data-t-ready-to-add="✓ Ready to add to cart!"
     >
-      <div class="bundle-layout-grid">
+      <div class="bundle-layout-grid {% if section.settings.bundle_layout == 'horizontal' %}bundle-layout--horizontal{% endif %}">
         <div class="bundle-products-column">
           <div class="product_slider_wrapper bundle-content">
             <div class="{{ productWrapper }}">
@@ -205,7 +205,8 @@
                           in_stock_color: section.settings.in_stock,
                           out_of_stock_color: section.settings.out_of_stock,
                           low_stock_color: section.settings.low_stock,
-                          continue_selling_color: section.settings.continue_selling
+                          continue_selling_color: section.settings.continue_selling,
+                          card_content_alignment: section.settings.card_content_align
                         %}
                     </product-bundle-variant-item>
                   </div>
@@ -256,7 +257,8 @@
                           in_stock_color: section.settings.in_stock,
                           out_of_stock_color: section.settings.out_of_stock,
                           low_stock_color: section.settings.low_stock,
-                          continue_selling_color: section.settings.continue_selling
+                          continue_selling_color: section.settings.continue_selling,
+                          card_content_alignment: section.settings.card_content_align
                         %}
                     </product-bundle-variant-item>
                   </div>
@@ -308,6 +310,10 @@
             </div>
 
             <div class="bundle-footer bundle-sidebar-footer">
+              <div class="bundle-text-group">
+                <p class="bundle-count-title"></p>
+                <p class="bundle-minimum-notice">Select {{ section.settings.min_items }} more {% if section.settings.min_items == 1 %}item{% else %}items{% endif %} to create bundle</p>
+              </div>
               <div class="bundle-total-price-wrap">
                 <span>Total</span> <strong class="bundle-total-price">{{ 0 | money }}</strong>
               </div>
@@ -318,7 +324,6 @@
                   </span>
                 </span>
               </button>
-              <p class="bundle-minimum-notice">Select {{ section.settings.min_items }} more {% if section.settings.min_items == 1 %}item{% else %}items{% endif %} to create bundle</p>
             </div>
           </div>
         </div>
@@ -444,12 +449,28 @@
       "content": "Layout"
     },
     {
+      "type": "select",
+      "id": "bundle_layout",
+      "label": "Bundle layout",
+      "options": [
+        {
+          "value": "vertical",
+          "label": "Bundle vertical"
+        },
+        {
+          "value": "horizontal",
+          "label": "Bundle horizontal"
+        }
+      ],
+      "default": "horizontal"
+    },
+    {
       "type": "range",
       "id": "products_to_show",
       "min": 2,
       "max": 20,
       "step": 1,
-      "default": 6,
+      "default": 8,
       "label": "t:sections.featured-collection.settings.products_to_show.label"
     },
     {
@@ -468,9 +489,13 @@
         {
           "value": "4",
           "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
         }
       ],
-      "default": "3"
+      "default": "4"
     },
     {
       "type": "select",
@@ -629,6 +654,17 @@
         }
       ],
       "default": "style_1"
+    },
+    {
+      "type": "select",
+      "id": "card_content_align",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
     },
     {
       "type": "select",

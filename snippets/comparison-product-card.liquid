@@ -1,0 +1,273 @@
+{%- liquid
+  assign product = block.settings.product
+  assign is_featured = block.settings.is_featured
+  assign has_product = false
+  if product != blank
+    assign has_product = true
+  endif
+-%}
+
+<div class="comparison-product__card{% if is_featured %} is-featured{% endif %}" {{ block.shopify_attributes }}>
+
+  <div class="comparison-product__card-product">
+
+    {%- comment -%} Product Image {%- endcomment -%}
+    <div class="comparison-product__image-wrap">
+      {%- if has_product and product.featured_image != blank -%}
+        <img
+          src="{{ product.featured_image | image_url: width: 800 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          loading="lazy"
+        >
+      {%- elsif block.settings.placeholder_image != blank -%}
+        <img
+          src="{{ block.settings.placeholder_image | image_url: width: 800 }}"
+          alt="{{ block.settings.placeholder_image.alt | escape }}"
+          loading="lazy"
+        >
+      {%- elsif block.settings.placeholder_style == 'color' -%}
+        <div
+          class="comparison-product__image-placeholder--color"
+          style="background-color: {{ block.settings.placeholder_color | default: '#e8e8e8' }};"
+        ></div>
+      {%- else -%}
+        <div class="comparison-product__image-placeholder">
+          {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg-new' }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Info block: swatches + title + price — centered {%- endcomment -%}
+    <div class="comparison-product__card-info">
+
+      {%- comment -%} Color swatches from Color option {%- endcomment -%}
+      {%- if has_product -%}
+        {%- assign color_option = nil -%}
+        {%- for option in product.options_with_values -%}
+          {%- assign option_name_down = option.name | downcase -%}
+          {%- if option_name_down == 'color' or option_name_down == 'colour' -%}
+            {%- assign color_option = option -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if color_option != nil -%}
+          <div class="comparison-product__swatches">
+            {%- for value in color_option.values -%}
+              <span
+                class="comparison-product__swatch"
+                style="background-color: {{ value | handle }};"
+                title="{{ value | escape }}"
+                aria-label="{{ value | escape }}"
+              ></span>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%} Title {%- endcomment -%}
+      <p class="comparison-product__title">
+        {%- if has_product -%}
+          {{ product.title | escape }}
+        {%- else -%}
+          {{ block.settings.default_title | escape }}
+        {%- endif -%}
+      </p>
+
+      {%- comment -%} Price {%- endcomment -%}
+      <div class="comparison-product__price-wrap">
+        {%- if has_product -%}
+          {%- if product.compare_at_price > product.price -%}
+            <span class="comparison-product__price is-sale">{{ product.price | money }}</span>
+            <span class="comparison-product__compare-price">{{ product.compare_at_price | money }}</span>
+          {%- else -%}
+            <span class="comparison-product__price">{{ product.price | money }}</span>
+          {%- endif -%}
+        {%- else -%}
+          <span class="comparison-product__price">{{ block.settings.default_price | escape }}</span>
+        {%- endif -%}
+      </div>
+
+    </div>
+
+    {%- comment -%} Quick Add — opens Quick View modal when product is set {%- endcomment -%}
+    <div class="comparison-product__quick-add-wrap">
+      {%- if has_product -%}
+        <modal-opener data-modal="#QuickView-{{ product.id }}-{{ section.id }}">
+          <button
+            type="button"
+            class="comparison-product__quick-add"
+            data-product-url="{{ product.handle }}"
+            aria-haspopup="dialog"
+            aria-label="{{ 'products.product.choose_product_options' | t: product_name: product.title | escape }}"
+          >
+            {{ block.settings.quick_add_label | default: '+ Quick Add' }}
+          </button>
+        </modal-opener>
+
+        {%- comment -%} Quick View modal instance {%- endcomment -%}
+        {%- render 'quick-view-modal-instance',
+          product_card_product: product,
+          section_id: section.id
+        -%}
+      {%- else -%}
+        <button type="button" class="comparison-product__quick-add" disabled>
+          {{ block.settings.quick_add_label | default: '+ Quick Add' }}
+        </button>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  {%- comment -%} Comparison rows {%- endcomment -%}
+  {%- if row_blocks.size > 0 -%}
+    <div class="comparison-product__rows">
+      {%- for row in row_blocks -%}
+        {%- liquid
+          assign row_type = row.settings.row_type
+          assign row_label = row.settings.label
+          if row_label == blank
+            case row_type
+              when 'vendor'
+                assign row_label = 'Brand'
+              when 'availability'
+                assign row_label = 'Availability'
+              when 'product_type'
+                assign row_label = 'Type'
+              when 'options'
+                assign row_label = 'Options'
+              when 'description'
+                assign row_label = 'Description'
+              when 'rating'
+                assign row_label = 'Rating'
+              when 'variant_count'
+                assign row_label = 'Variants'
+              when 'metafield'
+                assign row_label = 'Info'
+              else
+                assign row_label = 'Details'
+            endcase
+          endif
+        -%}
+        <div class="comparison-product__row">
+          <span class="comparison-product__row-label">{{ row_label }}</span>
+          <span class="comparison-product__row-value
+            {%- if row_type == 'availability' -%}
+              {%- if has_product and product.available %} is-available{%- elsif has_product %} is-unavailable{%- endif -%}
+            {%- endif -%}
+          ">
+            {%- case row_type -%}
+              {%- when 'vendor' -%}
+                {{ product.vendor | default: '—' | escape }}
+
+              {%- when 'availability' -%}
+                {%- if has_product -%}
+                  {%- if product.available -%}
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.5 7.5 5.5 10.5 11.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    In Stock
+                  {%- else -%}
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10.5 3.5 3.5 10.5M3.5 3.5l7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    </svg>
+                    Out of Stock
+                  {%- endif -%}
+                {%- else -%}
+                  —
+                {%- endif -%}
+
+              {%- when 'product_type' -%}
+                {{ product.type | default: '—' | escape }}
+
+              {%- when 'options' -%}
+                {%- if has_product and product.options_with_values.size > 0 -%}
+                  {%- for option in product.options_with_values -%}
+                    {%- assign option_name_down = option.name | downcase -%}
+                    {%- if option_name_down == 'color' or option_name_down == 'colour' -%}
+                      {{ option.values | join: ', ' | escape }}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- else -%}
+                  —
+                {%- endif -%}
+
+              {%- when 'description' -%}
+                {%- if has_product and product.description != blank -%}
+                  {{ product.description | strip_html | truncate: 80 }}
+                {%- else -%}
+                  —
+                {%- endif -%}
+
+              {%- when 'rating' -%}
+                {%- if has_product -%}
+                  {%- assign rating_value = product.metafields.reviews.rating.value -%}
+                  {%- if rating_value != blank -%}
+                    <span class="comparison-product__row-stars">
+                      {%- for i in (1..5) -%}
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      {%- endfor -%}
+                    </span>
+                  {%- else -%}
+                    —
+                  {%- endif -%}
+                {%- else -%}
+                  —
+                {%- endif -%}
+
+              {%- when 'variant_count' -%}
+                {%- if has_product -%}
+                  {{ product.variants.size }}
+                {%- else -%}
+                  —
+                {%- endif -%}
+
+              {%- when 'metafield' -%}
+                {%- if has_product and row.settings.metafield_key != blank -%}
+                  {%- assign mf_parts = row.settings.metafield_key | split: '.' -%}
+                  {%- if mf_parts.size == 2 -%}
+                    {{ product.metafields[mf_parts[0]][mf_parts[1]] | default: '—' | escape }}
+                  {%- else -%}
+                    —
+                  {%- endif -%}
+                {%- else -%}
+                  —
+                {%- endif -%}
+
+              {%- when 'custom' -%}
+                {{ row.settings.custom_value | default: '—' | escape }}
+
+              {%- else -%}
+                —
+            {%- endcase -%}
+          </span>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Card footer: Buy Now + Help {%- endcomment -%}
+  <div class="comparison-product__card-footer">
+    {%- if has_product -%}
+      <a href="{{ product.url }}" class="comparison-product__buy-now">
+        {{ block.settings.buy_now_label | default: 'Buy Now' }}
+      </a>
+    {%- else -%}
+      <button type="button" class="comparison-product__buy-now" disabled>
+        {{ block.settings.buy_now_label | default: 'Buy Now' }}
+      </button>
+    {%- endif -%}
+
+    {%- if block.settings.help_text != blank -%}
+      <p class="comparison-product__help">
+        {{ block.settings.help_text | escape }}
+        {%- if block.settings.help_phone != blank -%}
+          <a href="tel:{{ block.settings.help_phone_href | escape }}">{{ block.settings.help_phone | escape }}</a>
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  </div>
+
+</div>

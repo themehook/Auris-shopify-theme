@@ -232,26 +232,23 @@ button.footer_localization_label {
 }
 
 /* Footer logo css */
-.footer-logo-media {
-  &.media {
-    background: inherit;
-  }
-  &.media--landscape {
-    padding-bottom: 10rem;
-    @media only screen and (min-width: 750px) {
-      padding-bottom: 17rem;
-    }
-  }
-  &.media--portrait {
-    padding-bottom: 20%;
-    @media only screen and (min-width: 750px) {
-      padding-bottom: 25%;
-    }
-  }
-}
 .footer-logo-wrapper {
   padding: 1rem 0 3rem;
-  @media only screen and (min-width: 750px) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+@media only screen and (min-width: 750px) {
+  .footer-logo-wrapper {
     padding: 1rem 0 5rem;
   }
+}
+.footer-logo-wrapper img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+.footer-logo__store-name {
+  text-align: center;
 }

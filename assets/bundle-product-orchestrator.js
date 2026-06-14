@@ -654,12 +654,19 @@ if (!customElements.get('bundle-product-manager')) {
       checkMinimumItems() {
         const selectedCount = this.temporaryBundle.size;
         const notice = this.querySelector('.bundle-minimum-notice');
+        const countTitle = this.querySelector('.bundle-count-title');
         const footer = this.querySelector('.bundle-footer');
+
+        if (countTitle) {
+          const itemWord = selectedCount === 1 ? this.translations.item : this.translations.items;
+          countTitle.textContent = `${selectedCount} ${itemWord} in bundle`;
+        }
+
         if (!notice) return;
         if (selectedCount < this.minItems) {
           const remainingItems = this.minItems - selectedCount;
-          const itemText = remainingItems === 1 
-            ? this.translations.item 
+          const itemText = remainingItems === 1
+            ? this.translations.item
             : this.translations.items;
           notice.innerHTML = this.getTranslation('selectMoreItems', {
             count: remainingItems,

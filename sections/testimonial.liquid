@@ -84,20 +84,36 @@
   {%- endif -%}
 
   <div class="{{ container }} {% unless section.settings.show_offset %}p-0{% endunless %}">
-    {% if section.settings.heading != blank or section.settings.subtitle != blank %}
-      <div class="section-heading text-{{ section.settings.text_center }}  {% if section.settings.border_line %} mb-50 {% else %} mb-30{% endif %} {% if section.settings.image != blank %} relative  {% endif %}">
-        {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
-          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
-        {% endif %}
-        <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank and section.settings.border_line %}heading__space--bottom{% endif %} ">
-          {% if section.settings.border_line %}<span>{% endif %}
-          {{- section.settings.heading -}}
-          {% if section.settings.border_line %}</span>{% endif %}
-        </h2>
-        {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
-          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
-        {% endif %}
-      </div>
+    {% if section.settings.show_content_card %}
+      <div class="testimonial__layout--with-card" style="--content-card-width: {{ section.settings.content_card_width }}%">
+        <div class="testimonial__content-card" style="justify-content: {{ section.settings.content_card_vertical_align }}; text-align: {{ section.settings.content_card_text_align }}; align-items: {{ section.settings.content_card_text_align | replace: 'left', 'flex-start' | replace: 'right', 'flex-end' | replace: 'center', 'center' }}">
+          {%- if section.settings.content_card_subtitle != blank -%}
+            <span class="testimonial__content-card--subtitle">{{ section.settings.content_card_subtitle }}</span>
+          {%- endif -%}
+          {%- if section.settings.content_card_title != blank -%}
+            <{{ section.settings.content_card_title_size }} class="testimonial__content-card--title">{{ section.settings.content_card_title }}</{{ section.settings.content_card_title_size }}>
+          {%- endif -%}
+          {%- if section.settings.content_card_description != blank -%}
+            <div class="testimonial__content-card--desc rte">{{ section.settings.content_card_description }}</div>
+          {%- endif -%}
+        </div>
+        <div class="testimonial__slider-column">
+    {% else %}
+      {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+        <div class="section-heading text-{{ section.settings.text_center }}  {% if section.settings.border_line %} mb-50 {% else %} mb-30{% endif %} {% if section.settings.image != blank %} relative  {% endif %}">
+          {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
+            <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+          {% endif %}
+          <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank and section.settings.border_line %}heading__space--bottom{% endif %} ">
+            {% if section.settings.border_line %}<span>{% endif %}
+            {{- section.settings.heading -}}
+            {% if section.settings.border_line %}</span>{% endif %}
+          </h2>
+          {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+            <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
+          {% endif %}
+        </div>
+      {% endif %}
     {% endif %}
 
     <div class="testimonial__section--inner component--slider-wrapper hero__slider--activation testimonial__swiper--activation swiper {% if section.settings.show_offset %}no__pading--offset{% endif %}">
@@ -183,48 +199,15 @@
                   </div>
                 {% elsif section.settings.card_layout_style == 'card_two' %}
                   <div
-                    class="testimonial__items testimonial_card testimonial-card-style2 relative  image__card--position-{{ section.settings.card_image_style }} d-flex testimonial-card-alignment-{{ section.settings.card_text_alignment }} color-{{ section.settings.color_scheme }} {% if section.settings.background_transparent %} testimonial--card-transparent {% endif %} {% if section.settings.custom_colors %}card-custom--colors-{{ section.id }}{% endif %} {% unless section.settings.custom_colors %}gradient{% endunless %}"
+                    class="testimonial__items testimonial_card testimonial-card-style2 d-flex color-{{ section.settings.color_scheme }} {% if section.settings.background_transparent %} testimonial--card-transparent {% endif %} {% if section.settings.custom_colors %}card-custom--colors-{{ section.id }}{% endif %} {% unless section.settings.custom_colors %}gradient{% endunless %}"
                     {{ block.shopify_attributes }}
                   >
-                    <div class="testimonial__items--content">
-                      {%- if block.settings.heading_title != blank -%}
-                        <h3 class="testimonial__items--heading__title mb-20 {{ section.settings.heading_title_size }}">
-                          {{
-                            block.settings.heading_title
-                            | replace: 'p>', 'span>'
-                            | replace: 'h1>', 'span>'
-                            | replace: 'h2>', 'span>'
-                            | replace: 'h3>', 'span>'
-                            | replace: 'h4>', 'span>'
-                            | replace: 'h5>', 'span>'
-                            | replace: 'h6>', 'span>'
-                          }}
-                        </h3>
-                      {%- endif -%}
-                      {% unless block.settings.rating == 'none' %}
-                        <div class="testimonial__card--review">
-                          <div class="rating" role="img" aria-label="5.0 out of 5.0 stars">
-                            <span
-                              aria-hidden="true"
-                              class="rating-star"
-                              style="--rating: {{ block.settings.rating }}; --rating-max: 5.0; --rating-decimal: 0; --color-icon: {{ section.settings.rating_color }};"
-                            ></span>
-                          </div>
-                        </div>
-                      {% endunless %}
-                      <div class="testimonial__items--desc">{{ block.settings.text }}</div>
-                    </div>
-                    <div class="testimonial__text--chat__icon">
-                      <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M67.4185 39.108C67.1018 37.9047 67.2918 36.6063 67.7985 35.4663C69.0018 32.8697 69.6352 29.9563 69.6352 26.9163C69.6352 15.548 60.4202 6.33301 49.0518 6.33301C42.4652 6.33301 36.5752 9.43634 32.8068 14.2813C48.8618 14.9147 61.7185 28.1197 61.7185 44.333C61.7185 44.6813 61.7185 45.0297 61.7185 45.378L62.7635 45.663C65.8352 46.4863 68.6218 43.668 67.7985 40.628L67.3868 39.108H67.4185Z" fill="currentColor" fill-opacity="0.05"/>
-                        <path d="M31.6795 18.9997C17.6885 18.9997 6.3335 30.3547 6.3335 44.3457C6.3335 48.401 7.29664 52.2283 8.96948 55.6247C9.42571 56.5371 9.57779 57.551 9.29898 58.5394L7.77822 64.1916C7.11922 66.6502 9.37502 68.8806 11.8082 68.2216L17.4604 66.7009C18.4235 66.4474 19.4627 66.5995 20.3752 67.0304C23.7716 68.7285 27.5988 69.6663 31.6542 69.6663C45.6452 69.6663 57.0002 58.3113 57.0002 44.3203C57.0002 30.3293 45.6705 18.9997 31.6795 18.9997ZM21.5411 46.8803C20.1471 46.8803 19.0065 45.7397 19.0065 44.3457C19.0065 42.9516 20.1471 41.8111 21.5411 41.8111C22.9351 41.8111 24.0757 42.9516 24.0757 44.3457C24.0757 45.7397 22.9351 46.8803 21.5411 46.8803ZM31.6795 46.8803C30.2855 46.8803 29.1449 45.7397 29.1449 44.3457C29.1449 42.9516 30.2855 41.8111 31.6795 41.8111C33.0735 41.8111 34.2141 42.9516 34.2141 44.3457C34.2141 45.7397 33.0735 46.8803 31.6795 46.8803ZM41.8179 46.8803C40.4239 46.8803 39.2833 45.7397 39.2833 44.3457C39.2833 42.9516 40.4239 41.8111 41.8179 41.8111C43.2119 41.8111 44.3525 42.9516 44.3525 44.3457C44.3525 45.7397 43.2119 46.8803 41.8179 46.8803Z" fill="currentColor" fill-opacity="0.05"/>
-                      </svg>
-                    </div>
-                    <div class="testimonial__items--bottom">
-                      <div class="testimonial__items--thumbnail testimonial-author-thumbnail  {% if section.settings.image_ratio == "circle" %}image__border-radius{% endif %} testimonial-thumbnail-width-{{ section.settings.image_width }}">
+                    <!-- Top: Author image + name + subtitle -->
+                    <div class="testimonial__items--top d-flex align-items-center">
+                      <div class="testimonial__items--thumbnail testimonial-author-thumbnail {% if section.settings.image_ratio == "circle" %}image__border-radius{% endif %} testimonial-thumbnail-width-{{ section.settings.image_width }}">
                         {%- if block.settings.image != blank -%}
                           <div
-                            class="media media--transparent media--{{ section.settings.image_ratio }} "
+                            class="media media--transparent media--{{ section.settings.image_ratio }}"
                             {% if section.settings.image_ratio == 'adapt' %}
                               style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
                             {% endif %}
@@ -267,6 +250,60 @@
                         <div class="testimonial__author--subtitle">{{ block.settings.subheading }}</div>
                       </div>
                     </div>
+
+                    <!-- Middle: Rating + testimonial text -->
+                    <div class="testimonial__items--content">
+                      {% unless block.settings.rating == 'none' %}
+                        <div class="testimonial__card--review">
+                          <div class="rating" role="img" aria-label="5.0 out of 5.0 stars">
+                            <span
+                              aria-hidden="true"
+                              class="rating-star"
+                              style="--rating: {{ block.settings.rating }}; --rating-max: 5.0; --rating-decimal: 0; --color-icon: {{ section.settings.rating_color }};"
+                            ></span>
+                          </div>
+                        </div>
+                      {% endunless %}
+                      <div class="testimonial__items--desc">{{ block.settings.text }}</div>
+                    </div>
+
+                    <!-- Bottom: Reviewed product block -->
+                    {%- assign reviewed_prod = block.settings.reviewed_product -%}
+                    <div class="testimonial__items--product d-flex align-items-center">
+                      <!-- Left: product thumbnail -->
+                      <div class="testimonial__product--image">
+                        {%- if reviewed_prod != blank and reviewed_prod.featured_image != blank -%}
+                          <img
+                            src="{{ reviewed_prod.featured_image | image_url: width: 60 }}"
+                            alt="{{ reviewed_prod.title | escape }}"
+                            width="30"
+                            height="30"
+                            loading="lazy"
+                          >
+                        {%- else -%}
+                          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg-2' }}
+                        {%- endif -%}
+                      </div>
+                      <!-- Right: brand label + product title -->
+                      <div class="testimonial__product--details">
+                        <div class="testimonial__product--label">
+                          {%- if reviewed_prod != blank and reviewed_prod.vendor != blank -%}
+                            {{ reviewed_prod.vendor }}
+                          {%- else -%}
+                            {{ block.settings.product_label | default: 'Reviewed Product' }}
+                          {%- endif -%}
+                        </div>
+                        <div class="testimonial__product--title">
+                          {%- if reviewed_prod != blank -%}
+                            {{ reviewed_prod.title }}
+                          {%- elsif block.settings.reviewed_product_name != blank -%}
+                            {{ block.settings.reviewed_product_name }}
+                          {%- else -%}
+                            Product Title
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 {% endif %}
               </div>
@@ -290,6 +327,10 @@
         <div class="swiper-pagination component-slider--pagination"></div>
       {%- endif -%}
     </div>
+    {% if section.settings.show_content_card %}
+        </div><!-- /.testimonial__slider-column -->
+      </div><!-- /.testimonial__layout--with-card -->
+    {% endif %}
   </div>
 </div>
 
@@ -367,6 +408,27 @@
           "id": "author_image",
           "label": "Show author image",
           "default": true
+        },
+        {
+          "type": "header",
+          "content": "Reviewed Product (Card Style 2)"
+        },
+        {
+          "type": "text",
+          "id": "product_label",
+          "label": "Product label",
+          "default": "Reviewed Product"
+        },
+        {
+          "type": "product",
+          "id": "reviewed_product",
+          "label": "Reviewed product"
+        },
+        {
+          "type": "text",
+          "id": "reviewed_product_name",
+          "label": "Product name (fallback)",
+          "info": "Shown when no product is selected above"
         }
       ]
     }
@@ -450,6 +512,87 @@
       "id": "border_line",
       "label": "Enable border line",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Content Card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_content_card",
+      "label": "Show content card",
+      "default": false,
+      "info": "Displays a content panel to the left of the testimonial slider"
+    },
+    {
+      "type": "range",
+      "id": "content_card_width",
+      "min": 20,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "label": "Content card width",
+      "default": 33,
+      "visible_if": "{{ section.settings.show_content_card == true }}"
+    },
+    {
+      "type": "select",
+      "id": "content_card_vertical_align",
+      "label": "Vertical alignment",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Middle" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "center",
+      "visible_if": "{{ section.settings.show_content_card == true }}"
+    },
+    {
+      "type": "select",
+      "id": "content_card_text_align",
+      "label": "Horizontal alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left",
+      "visible_if": "{{ section.settings.show_content_card == true }}"
+    },
+    {
+      "type": "text",
+      "id": "content_card_subtitle",
+      "label": "Subtitle",
+      "default": "Testimonials",
+      "visible_if": "{{ section.settings.show_content_card == true }}"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "content_card_title",
+      "label": "Title",
+      "default": "What our customers say about us?",
+      "visible_if": "{{ section.settings.show_content_card == true }}"
+    },
+    {
+      "type": "select",
+      "id": "content_card_title_size",
+      "label": "Title font size",
+      "options": [
+        { "value": "h1", "label": "Heading 1" },
+        { "value": "h2", "label": "Heading 2" },
+        { "value": "h3", "label": "Heading 3" },
+        { "value": "h4", "label": "Heading 4" },
+        { "value": "h5", "label": "Heading 5" },
+        { "value": "h6", "label": "Heading 6" }
+      ],
+      "default": "h2",
+      "visible_if": "{{ section.settings.show_content_card == true }}"
+    },
+    {
+      "type": "richtext",
+      "id": "content_card_description",
+      "label": "Description",
+      "visible_if": "{{ section.settings.show_content_card == true }}"
     },
     {
       "type": "header",
