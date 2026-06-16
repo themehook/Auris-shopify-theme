@@ -1,3 +1,66 @@
+/* ── Section Header ── */
+.video-reels-header {
+  position: relative;
+}
+
+.video-reels-header--with-nav {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.video-reels-header--with-nav .section-heading {
+  flex: 1;
+}
+
+/* ── Kicker / Eyebrow Subtitle ── */
+.video-reels-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.video-reels-kicker__shape {
+  display: block;
+  width: 2.8rem;
+  height: 0.2rem;
+  flex-shrink: 0;
+}
+
+/* ── Header Navigation ── */
+.video-reels__header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
+  padding-bottom: 0.4rem;
+}
+
+.video-reels .video-reels__header-nav .video-reels__nav-button {
+  position: static;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  width: 4rem;
+  height: 4rem;
+}
+
+@media only screen and (max-width: 749px) {
+  .video-reels-header--with-nav {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+}
+
+/* ── Section ── */
 .video-reels {
   position: relative;
   margin: 0 auto;

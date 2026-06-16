@@ -15,13 +15,13 @@
     }
   }
 
-  #section__{{ section.id }}.video-reels__nav-buttons {
+  #section__{{ section.id }} {
     --slider-button-background: {{ section.settings.button_background }};
     --slider-button-color: {{ section.settings.button_text_color }};
   }
 
   {%- if section.settings.custom_colors_navigation -%}
-    #section__{{ section.id }}.video-reels__nav-buttons {
+    #section__{{ section.id }} {
       --color-foreground: {{ section.settings.nav_foreground.red }}, {{ section.settings.nav_foreground.green }}, {{ section.settings.nav_foreground.blue }};
       --color-background: {{ section.settings.nav_background.red }}, {{ section.settings.nav_background.green }}, {{ section.settings.nav_background.blue }};
     }
@@ -36,14 +36,42 @@
 
 <div class="video-reels section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} section--top-space-{{ section.id }} {% if settings.animations_reveal_on_scroll %}scroll-trigger animate--slide-in{% endif %}">
   <div class="video-reels__container-wrapper">
-    {%- if section.settings.heading != blank -%}
-      <div class="section-heading text-{{ section.settings.alignment }} mobile-text-{{ section.settings.mobile_alignment }} mb-20">
-        <h2 class="section-heading__title {{ section.settings.heading_size }} gradient--title">
-          {{- section.settings.heading -}}
-        </h2>
-        {%- if section.settings.subtitle != blank -%}
-          <div class="section-heading__sub_title">{{ section.settings.subtitle }}</div>
+    {%- assign nav_in_header = false -%}
+    {%- if section.settings.nav_position == 'header' and section.settings.show_navigation -%}
+      {%- assign nav_in_header = true -%}
+    {%- endif -%}
+    {%- if section.settings.heading != blank or section.settings.kicker != blank -%}
+      <div class="container">
+      <div class="video-reels-header mb-20 {% if nav_in_header %}video-reels-header--with-nav{% endif %}">
+        <div class="section-heading text-{{ section.settings.alignment }} mobile-text-{{ section.settings.mobile_alignment }}">
+          {%- if section.settings.kicker != blank -%}
+            <div class="video-reels-kicker" style="color: {{ section.settings.kicker_color }};">
+              {%- if section.settings.show_kicker_shape -%}
+                <span class="video-reels-kicker__shape" style="background-color: {{ section.settings.kicker_color }};"></span>
+              {%- endif -%}
+              <span class="video-reels-kicker__text">{{- section.settings.kicker -}}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="section-heading__title {{ section.settings.heading_size }} gradient--title">
+              {{- section.settings.heading -}}
+            </h2>
+          {%- endif -%}
+          {%- if section.settings.subtitle != blank -%}
+            <div class="section-heading__sub_title">{{ section.settings.subtitle }}</div>
+          {%- endif -%}
+        </div>
+        {%- if nav_in_header -%}
+          <div class="video-reels__header-nav" id="section__{{ section.id }}">
+            <button type="button" class="video-reels__nav-button video-reels__nav-button--prev">
+              {% render 'hooktheme-icon-chevron-left' %}
+            </button>
+            <button type="button" class="video-reels__nav-button video-reels__nav-button--next">
+              {% render 'hooktheme-icon-chevron-right' %}
+            </button>
+          </div>
         {%- endif -%}
+      </div>
       </div>
     {%- endif -%}
 
@@ -123,15 +151,17 @@
           {%- endfor -%}
         </div>
 
-        <div class="video-reels__nav-buttons" id="section__{{ section.id }}">
-          {%- if section.settings.show_navigation -%}
-            <button type="button" class="video-reels__nav-button video-reels__nav-button--prev">
-              {% render 'hooktheme-icon-chevron-left' %}
-            </button>
-            <button type="button" class="video-reels__nav-button video-reels__nav-button--next">
-              {% render 'hooktheme-icon-chevron-right' %}
-            </button>
-          {%- endif -%}
+        <div class="video-reels__nav-buttons"{% unless nav_in_header %} id="section__{{ section.id }}"{% endunless %}>
+          {%- unless nav_in_header -%}
+            {%- if section.settings.show_navigation -%}
+              <button type="button" class="video-reels__nav-button video-reels__nav-button--prev">
+                {% render 'hooktheme-icon-chevron-left' %}
+              </button>
+              <button type="button" class="video-reels__nav-button video-reels__nav-button--next">
+                {% render 'hooktheme-icon-chevron-right' %}
+              </button>
+            {%- endif -%}
+          {%- endunless -%}
           {%- if section.settings.show_pagination -%}
             <div class="video-reels__pagination swiper-pagination component-slider--pagination"></div>
           {%- endif -%}
@@ -156,6 +186,25 @@
     {
       "type": "header",
       "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Subtitle",
+      "info": "Short label displayed above the heading with a decorative shape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_kicker_shape",
+      "label": "Show subtitle shape",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "kicker_color",
+      "label": "Subtitle & shape color",
+      "default": "#c5f000",
+      "visible_if": "{{ section.settings.show_kicker_shape}}"
     },
     {
       "type": "text",
@@ -310,6 +359,16 @@
       "id": "show_pagination",
       "label": "Show pagination dots",
       "default": true
+    },
+    {
+      "type": "select",
+      "id": "nav_position",
+      "label": "Navigation buttons position",
+      "options": [
+        { "value": "slider", "label": "Inside slider" },
+        { "value": "header", "label": "Section header (top right)" }
+      ],
+      "default": "slider"
     },
     {
       "type": "color",

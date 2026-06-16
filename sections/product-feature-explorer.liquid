@@ -1,0 +1,547 @@
+{{ 'section-title.css' | asset_url | stylesheet_tag }}
+{{ 'section-product-feature-explorer.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  #pfe-{{ section.id }} .pfe-layout {
+    --pfe-image-width: {{ section.settings.thumbnail_width }}%;
+  }
+  #pfe-{{ section.id }} .pfe-container {
+    padding: {{ section.settings.container_padding }}px;
+    {%- if section.settings.show_container_border -%}
+    border: {{ section.settings.container_border_width }}px solid {{ section.settings.container_border_color }};
+    border-radius: {{ section.settings.container_border_radius }}px;
+    {%- endif -%}
+  }
+</style>
+
+{%- liquid
+  assign container = 'container'
+  if section.settings.layout == 'full-width'
+    assign container = 'container-fluid'
+  endif
+-%}
+
+<div
+  id="pfe-{{ section.id }}"
+  class="product-feature-explorer color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding"
+  data-section-id="{{ section.id }}"
+>
+  <div class="{{ container }}">
+    <div class="pfe-container color-{{ section.settings.container_color_scheme }}">
+    <div class="pfe-layout">
+
+      {%- comment -%} ── Left: Image Column ── {%- endcomment -%}
+      <div class="pfe-image-col">
+        <div class="pfe-image-wrap">
+          {%- for block in section.blocks -%}
+            {%- assign product = block.settings.product -%}
+            <div
+              class="pfe-image{% if forloop.first %} is-active{% endif %}"
+              data-pfe-image="{{ forloop.index0 }}"
+            >
+              {%- if product != blank and product.featured_image != blank -%}
+                <a href="{{ product.url }}" class="pfe-image-link" aria-label="{{ product.title | escape }}">
+                  <img
+                    src="{{ product.featured_image | image_url: width: 1000 }}"
+                    srcset="
+                      {{ product.featured_image | image_url: width: 500 }} 500w,
+                      {{ product.featured_image | image_url: width: 800 }} 800w,
+                      {{ product.featured_image | image_url: width: 1000 }} 1000w
+                    "
+                    sizes="(max-width: 991px) 100vw, 45vw"
+                    alt="{{ product.featured_image.alt | escape | default: product.title }}"
+                    width="{{ product.featured_image.width }}"
+                    height="{{ product.featured_image.height }}"
+                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                  >
+                </a>
+              {%- elsif block.settings.placeholder_image != blank -%}
+                <img
+                  src="{{ block.settings.placeholder_image | image_url: width: 1000 }}"
+                  alt="{{ block.settings.placeholder_image.alt | escape }}"
+                  loading="lazy"
+                >
+              {%- else -%}
+                <div class="pfe-image-placeholder">
+                  {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- comment -%} ── Right: Content Column ── {%- endcomment -%}
+      <div class="pfe-content-col pfe-content--align-{{ section.settings.content_h_align }} pfe-content--valign-{{ section.settings.content_v_align }}">
+
+        {%- if section.settings.subtitle != blank -%}
+          <span class="pfe-subtitle">{{- section.settings.subtitle -}}</span>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="pfe-title gradient--text {{ section.settings.heading_size }}">
+            {{-
+              section.settings.heading
+              | replace: 'p>', 'span>'
+              | replace: 'h1>', 'span>'
+              | replace: 'h2>', 'span>'
+              | replace: 'h3>', 'span>'
+              | replace: 'h4>', 'span>'
+              | replace: 'h5>', 'span>'
+              | replace: 'h6>', 'span>'
+            -}}
+          
+          </h2>
+          
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+
+          {%- comment -%} Tab buttons {%- endcomment -%}
+          <div class="pfe-tabs" role="tablist">
+            {%- for block in section.blocks -%}
+              {%- assign tab_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
+              <button
+                class="pfe-tab{% if forloop.first %} is-active{% endif %}"
+                data-pfe-tab="{{ forloop.index0 }}"
+                role="tab"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                aria-controls="pfe-panel-{{ section.id }}-{{ forloop.index0 }}"
+                type="button"
+              >
+                <span class="pfe-tab__number">{{ tab_num }}</span>
+                {{- block.settings.tab_label | default: 'Feature' | escape -}}
+              </button>
+            {%- endfor -%}
+          </div>
+
+          {%- comment -%} Tab panels {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- assign product = block.settings.product -%}
+            {%- assign has_product = false -%}
+            {%- if product != blank -%}
+              {%- assign has_product = true -%}
+            {%- endif -%}
+
+            {%- comment -%} Title: real product or default {%- endcomment -%}
+            {%- if has_product -%}
+              {%- assign panel_title = product.title -%}
+            {%- else -%}
+              {%- assign panel_title = block.settings.default_title -%}
+            {%- endif -%}
+
+            {%- comment -%} Description: real product or default {%- endcomment -%}
+            {%- if has_product and product.description != blank -%}
+              {%- assign panel_desc = product.description | strip_html | truncate: 180 -%}
+            {%- else -%}
+              {%- assign panel_desc = block.settings.default_description -%}
+            {%- endif -%}
+
+            {%- comment -%} Tags: real product tags (first 2) or custom fields {%- endcomment -%}
+            {%- if has_product and product.tags.size > 0 -%}
+              {%- assign tag_1 = product.tags[0] -%}
+              {%- assign tag_2 = product.tags[1] | default: '' -%}
+            {%- else -%}
+              {%- assign tag_1 = block.settings.tag_1 -%}
+              {%- assign tag_2 = block.settings.tag_2 -%}
+            {%- endif -%}
+
+            <div
+              class="pfe-tab-panel{% if forloop.first %} is-active{% endif %}"
+              id="pfe-panel-{{ section.id }}-{{ forloop.index0 }}"
+              data-pfe-panel="{{ forloop.index0 }}"
+              role="tabpanel"
+              {{ block.shopify_attributes }}
+            >
+              {%- if panel_title != blank -%}
+                <p class="pfe-panel-title">
+                  {%- if has_product -%}
+                    <a href="{{ product.url }}" class="pfe-panel-title-link">{{- panel_title | escape -}}</a>
+                  {%- else -%}
+                    {{- panel_title | escape -}}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+              {%- if panel_desc != blank -%}
+                <p class="pfe-panel-desc">{{- panel_desc -}}</p>
+              {%- endif -%}
+              {%- if tag_1 != blank or tag_2 != blank -%}
+                <div class="pfe-tags">
+                  {%- if tag_1 != blank -%}
+                    <span class="pfe-tag">{{- tag_1 | escape -}}</span>
+                  {%- endif -%}
+                  {%- if tag_2 != blank -%}
+                    <span class="pfe-tag">{{- tag_2 | escape -}}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        {%- endif -%}
+
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var section = document.getElementById('pfe-{{ section.id }}');
+  if (!section) return;
+
+  var tabs   = Array.from(section.querySelectorAll('.pfe-tab'));
+  var panels = Array.from(section.querySelectorAll('.pfe-tab-panel'));
+  var images = Array.from(section.querySelectorAll('[data-pfe-image]'));
+
+  function activate(index) {
+    tabs.forEach(function (tab, i) {
+      var active = i === index;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    panels.forEach(function (panel, i) {
+      panel.classList.toggle('is-active', i === index);
+    });
+    images.forEach(function (img, i) {
+      img.classList.toggle('is-active', i === index);
+    });
+  }
+
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { activate(i); });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product feature explorer",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "container", "label": "Contained" },
+        { "value": "full-width", "label": "Full width" }
+      ],
+      "default": "container"
+    },
+    
+    {
+      "type": "header",
+      "content": "Image column"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_width",
+      "min": 25,
+      "max": 60,
+      "step": 5,
+      "unit": "%",
+      "label": "Thumbnail column width",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Explore our products"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "default": "<p>Engineered for every need</p>",
+      "label": "Title"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Title font size",
+      "options": [
+        { "value": "hxl", "label": "2XL" },
+        { "value": "h0",  "label": "XL" },
+        { "value": "h1",  "label": "Large" },
+        { "value": "h2",  "label": "Medium" },
+        { "value": "h3",  "label": "Small" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "header",
+      "content": "Content alignment"
+    },
+    {
+      "type": "select",
+      "id": "content_h_align",
+      "label": "Horizontal alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "content_v_align",
+      "label": "Vertical alignment",
+      "options": [
+        { "value": "top",    "label": "Top" },
+        { "value": "middle", "label": "Middle" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "header",
+      "content": "Container"
+    },
+    {
+      "type": "range",
+      "id": "container_padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Container padding",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_container_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "container_border_color",
+      "label": "Border color",
+      "default": "#e0e0e0",
+      "visible_if": "{{ section.settings.show_container_border }}"
+    },
+    {
+      "type": "range",
+      "id": "container_border_width",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 1,
+      "visible_if": "{{ section.settings.show_container_border }}"
+    },
+    {
+      "type": "range",
+      "id": "container_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 16,
+      "visible_if": "{{ section.settings.show_container_border }}"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "container_color_scheme",
+      "label": "Container color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 60
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Feature tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab label",
+          "default": "Sound"
+        },
+        {
+          "type": "header",
+          "content": "Product"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "placeholder_image",
+          "label": "Placeholder image",
+          "info": "Shown when no product is selected"
+        },
+        {
+          "type": "header",
+          "content": "Default content (shown when no product selected)"
+        },
+        {
+          "type": "text",
+          "id": "default_title",
+          "label": "Default title",
+          "default": "Product Title"
+        },
+        {
+          "type": "textarea",
+          "id": "default_description",
+          "label": "Default description",
+          "default": "Experience premium quality crafted for everyday use, combining style and performance seamlessly."
+        },
+        {
+          "type": "header",
+          "content": "Tags"
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "Tag 1",
+          "default": "Premium quality",
+          "info": "Overridden by the product's first tag when a product is selected"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "Tag 2",
+          "default": "Best seller",
+          "info": "Overridden by the product's second tag when a product is selected"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product feature explorer",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Sound",
+            "default_title": "Hi-Res, lossless sound",
+            "default_description": "24-bit audio technology keeps every layer of the mix intact — exactly as it was recorded.",
+            "tag_1": "24-bit depth",
+            "tag_2": "Lossless"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Fit",
+            "default_title": "Engineered for comfort",
+            "default_description": "Designed to stay secure through any activity without sacrificing all-day comfort.",
+            "tag_1": "Ergonomic",
+            "tag_2": "Lightweight"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Controls",
+            "default_title": "Intuitive controls",
+            "default_description": "Touch and voice controls let you manage calls, music, and volume without reaching for your phone.",
+            "tag_1": "Touch controls",
+            "tag_2": "Voice ready"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Battery",
+            "default_title": "All-day battery life",
+            "default_description": "Up to 30 hours of combined playback so your music never stops before you do.",
+            "tag_1": "30hr total",
+            "tag_2": "Fast charge"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

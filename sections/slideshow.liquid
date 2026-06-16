@@ -305,6 +305,8 @@
                           {% liquid
                             if block.settings.button_type == 'primary'
                               assign button_class = 'button--primary'
+                            elsif block.settings.button_type == 'text_link'
+                              assign button_class = 'slideshow__text-link'
                             else
                               assign button_class = 'button--secondary'
                             endif
@@ -318,12 +320,12 @@
                                 {% else %}
                                   role="link" aria-disabled="true"
                                 {% endif %}
-                                class="button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon"
+                                class="{% if block.settings.button_type == 'text_link' %}slideshow__text-link{% else %}button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon{% endif %}"
                               >
                             {% endunless %}
                             {% if block.settings.enble_entire_link %}
                               <button
-                                class="button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon"
+                                class="{% if block.settings.button_type == 'text_link' %}slideshow__text-link{% else %}button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon{% endif %}"
                               >
                             {%- endif %}
                             {{- block.settings.button_label | escape -}}
@@ -342,6 +344,8 @@
                           {% liquid
                             if block.settings.button_2_type == 'primary'
                               assign button_class = 'button--primary'
+                            elsif block.settings.button_2_type == 'text_link'
+                              assign button_class = 'slideshow__text-link'
                             else
                               assign button_class = 'button--secondary'
                             endif
@@ -354,12 +358,12 @@
                                 {% else %}
                                   role="link" aria-disabled="true"
                                 {% endif %}
-                                class="button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon"
+                                class="{% if block.settings.button_2_type == 'text_link' %}slideshow__text-link{% else %}button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon{% endif %}"
                               >
                             {% endunless %}
                             {% if block.settings.enble_entire_link %}
                               <button
-                                class="button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon"
+                                class="{% if block.settings.button_2_type == 'text_link' %}slideshow__text-link{% else %}button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon{% endif %}"
                               >
                             {%- endif %}
                             {{- block.settings.button_2_label | escape -}}
@@ -471,6 +475,8 @@
                             {% liquid
                               if block.settings.button_type == 'primary'
                                 assign button_class = ''
+                              elsif block.settings.button_type == 'text_link'
+                                assign button_class = 'slideshow__text-link'
                               else
                                 assign button_class = 'button--secondary'
                               endif
@@ -486,7 +492,7 @@
                                 {% if block.settings.button_link != blank %}
                                   href="{{ block.settings.button_link }}"
                                 {% endif %}
-                                class="button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon"
+                                class="{% if block.settings.button_type == 'text_link' %}slideshow__text-link{% else %}button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon{% endif %}"
                                 {% if block.settings.button_link == blank %}
                                   aria-disabled="true"
                                 {% endif %}
@@ -504,6 +510,8 @@
                               {% liquid
                                 if block.settings.button_2_type == 'primary'
                                   assign button_class = 'button--primary'
+                                elsif block.settings.button_2_type == 'text_link'
+                                  assign button_class = 'slideshow__text-link'
                                 else
                                   assign button_class = 'button--secondary'
                                 endif
@@ -515,7 +523,7 @@
                                   {% else %}
                                     role="link" aria-disabled="true"
                                   {% endif %}
-                                  class="button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon"
+                                  class="{% if block.settings.button_2_type == 'text_link' %}slideshow__text-link{% else %}button button--{{ block.settings.button_size }} {{ button_class }} button--with-icon{% endif %}"
                                 >
                                   {{- block.settings.button_2_label | escape -}}
                                   {% if block.settings.button_2_icon %}
@@ -951,6 +959,10 @@
             {
               "value": "primary",
               "label": "Primary"
+            },
+            {
+              "value": "text_link",
+              "label": "Text link"
             }
           ]
         },
@@ -987,6 +999,10 @@
             {
               "value": "primary",
               "label": "Primary"
+            },
+            {
+              "value": "text_link",
+              "label": "Text link"
             }
           ]
         },

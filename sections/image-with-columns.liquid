@@ -52,6 +52,21 @@
     opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};
   }
 
+  {%- if section.settings.image_position == 'image_bottom' -%}
+    #iwc-wrapper-{{ section.id }} .image-with-columns-thumbnail { order: 3; }
+    #iwc-wrapper-{{ section.id }} .columns-text-wrapper { order: 1; }
+    #iwc-wrapper-{{ section.id }} .iwc-button-wrap { order: 2; }
+  {%- else -%}
+    #iwc-wrapper-{{ section.id }} .image-with-columns-thumbnail { order: 1; }
+    #iwc-wrapper-{{ section.id }} .columns-text-wrapper { order: 2; }
+    #iwc-wrapper-{{ section.id }} .iwc-button-wrap { order: 3; }
+  {%- endif -%}
+
+  #iwc-wrapper-{{ section.id }} .iwc-columns-grid {
+    --iwc-columns: {{ section.settings.columns_per_row }};
+    --iwc-gap: {{ section.settings.column_gap }}px;
+  }
+
 {%- endstyle -%}
 
 <div class="image-with-columns-section image-with-columns-{{ section.id }} color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding"
@@ -81,8 +96,23 @@
     </div>
   {%- endif -%}
   <div class="{{ container }} {% if page_offset %}p-0{% endif %}">
-   
-    <div class="image-with-columns-wrapper {{ section.settings.image_position }}  {% if section.settings.image_2 != blank %} columns-wrapper-relative {% endif %}">
+    {%- if section.settings.subtitle != blank or section.settings.heading != blank or section.settings.description != blank -%}
+      <div class="iwc-section-heading text-{{ section.settings.heading_alignment }}">
+        {%- if section.settings.subtitle != blank -%}
+          <span class="iwc-subtitle">{{- section.settings.subtitle -}}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="iwc-title gradient--text {{ section.settings.heading_size }}">
+            {{- section.settings.heading | replace: 'p>', 'span>' | replace: 'h1>', 'span>' | replace: 'h2>', 'span>' | replace: 'h3>', 'span>' -}}
+          </h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <div class="iwc-description rte">{{ section.settings.description }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div id="iwc-wrapper-{{ section.id }}" class="image-with-columns-wrapper {{ section.settings.image_position }}  {% if section.settings.image_2 != blank %} columns-wrapper-relative {% endif %}">
         <!-- Image Section -->
         <div class="image-with-columns-thumbnail image-width--{{ section.settings.image_width }}">
           <div class="image-columns-media image-columns-media--{{ section.settings.height }} {% if section.settings.image_1 != blank %}media{% else %}image-with-column-media--placeholder placeholder{% endif %} {% if section.settings.round_corner %} rounded--image {% endif %}  {% if section.settings.bg_transparent %} media-transparent {% endif %}"
@@ -114,23 +144,37 @@
         <!-- Columns Section -->
         {% if section.blocks.size > 0 %}
           <div class="columns-text-wrapper">
-              <div class="row columns-text-wrapper-flex row-cols-1 row-cols-md-{{ section.settings.columns_per_row }} g-4">
+              <div class="iwc-columns-grid">
               {%- for block in section.blocks -%}
                   {%- case block.type -%}
                   {%- when 'column' -%}
-                      <div class="col mb-20" {{ block.shopify_attributes }}>
-                      <div class="columns--item color-{{ section.settings.color_scheme_2 }} h-100 text-{{ section.settings.text_alignment }} {% if section.settings.show_border %} columns-item-border {% endif %}">
-                          {% if block.settings.title != blank %}
-                          <h3 class="columns--title {{ section.settings.column_heading_size }} mb-20">
-                              {{ block.settings.title }}
-                          </h3>
-                          {% endif %}
-                          
-                          {% if block.settings.text != blank %}
-                          <div class="columns--text">
-                              {{ block.settings.text }}
+                      <div {{ block.shopify_attributes }}>
+                      <div class="columns--item color-{{ section.settings.color_scheme_2 }} h-100 text-{{ section.settings.text_alignment }} {% if section.settings.show_border %} columns-item-border {% endif %}{% if block.settings.icon != blank %} columns--item-icon-{{ block.settings.icon_position }}{% endif %}">
+                          {%- if block.settings.icon != blank -%}
+                            <div class="columns--icon-wrap">
+                              <img
+                                src="{{ block.settings.icon | image_url: width: 200 }}"
+                                alt="{{ block.settings.icon.alt | escape }}"
+                                width="{{ block.settings.icon_width }}"
+                                height="{{ block.settings.icon_width }}"
+                                loading="lazy"
+                                style="width: {{ block.settings.icon_width }}px; height: {{ block.settings.icon_width }}px;"
+                              >
+                            </div>
+                          {%- endif -%}
+                          <div class="columns--body">
+                            {% if block.settings.title != blank %}
+                            <h3 class="columns--title gradient--text {{ block.settings.heading_size }} mb-20">
+                                {{- block.settings.title | replace: 'p>', 'span>' | replace: 'h1>', 'span>' | replace: 'h2>', 'span>' | replace: 'h3>', 'span>' | replace: 'h4>', 'span>' -}}
+                            </h3>
+                            {% endif %}
+
+                            {% if block.settings.text != blank %}
+                            <div class="columns--text">
+                                {{ block.settings.text }}
+                            </div>
+                            {% endif %}
                           </div>
-                          {% endif %}
                       </div>
                       </div>
                   {%- endcase -%}
@@ -138,6 +182,16 @@
               </div>
           </div>
         {% endif %}
+        {%- if section.settings.show_button and section.settings.button_label != blank -%}
+          <div class="iwc-button-wrap text-{{ section.settings.heading_alignment }}">
+            <a
+              href="{{ section.settings.button_link | default: '#' }}"
+              class="button button--{{ section.settings.button_style }} button--{{ section.settings.button_size }}"
+            >
+              {{- section.settings.button_label | escape -}}
+            </a>
+          </div>
+        {%- endif -%}
     </div>
   </div>
 </div>
@@ -187,6 +241,51 @@
       "unit": "%",
       "label": "Image overlay opacity",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Sub title",
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Image columns</p>",
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "hxl", "label": "2XL" },
+        { "value": "h0",  "label": "XL" },
+        { "value": "h1",  "label": "Large" },
+        { "value": "h2",  "label": "Medium" },
+        { "value": "h3",  "label": "Small" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "center"
     },
     {
       "type": "header",
@@ -368,6 +467,58 @@
       "default": true
     },
     {
+      "type": "range",
+      "id": "column_gap",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Column gap",
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show button",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop now",
+      "visible_if": "{{ section.settings.show_button }}"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "visible_if": "{{ section.settings.show_button }}"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary",   "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" }
+      ],
+      "default": "primary",
+      "visible_if": "{{ section.settings.show_button }}"
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Button size",
+      "options": [
+        { "value": "large",  "label": "Large" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "small",  "label": "Small" }
+      ],
+      "default": "medium",
+      "visible_if": "{{ section.settings.show_button }}"
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme_2",
       "label": "Color scheme",
@@ -446,16 +597,60 @@
       "name": "Column",
       "settings": [
         {
-          "type": "text",
+          "type": "richtext",
           "id": "title",
           "label": "Heading",
-          "default": "Column heading"
+          "default": "<p>Column heading</p>"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading size",
+          "options": [
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" }
+          ],
+          "default": "h4"
         },
         {
           "type": "richtext",
           "id": "text",
           "label": "Text",
           "default": "<p>Use this section to explain a set of product features, to link to a series of pages.</p>"
+        },
+        {
+          "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon image"
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Icon position",
+          "options": [
+            { "value": "top",    "label": "Top" },
+            { "value": "bottom", "label": "Bottom" },
+            { "value": "left",   "label": "Left" },
+            { "value": "right",  "label": "Right" }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 20,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Icon size",
+          "default": 48
         }
       ]
     }

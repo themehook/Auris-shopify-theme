@@ -1,0 +1,306 @@
+{{ 'section-notice-board.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="notice-board-section color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="container">
+
+    {%- if section.settings.subtitle != blank or section.settings.heading != blank or section.settings.show_see_more -%}
+      <div class="notice-board-header">
+        <div class="notice-board-heading-wrap">
+          {%- if section.settings.subtitle != blank -%}
+            <div class="notice-board-subtitle-wrap">
+              <span class="notice-board-subtitle-line"></span>
+              <span class="notice-board-subtitle">{{- section.settings.subtitle -}}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="notice-board-title gradient--text {{ section.settings.heading_size }}">
+              {{- section.settings.heading | replace: 'p>', 'span>' | replace: 'h1>', 'span>' | replace: 'h2>', 'span>' | replace: 'h3>', 'span>' -}}
+            </h2>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.show_see_more and section.settings.see_more_label != blank -%}
+          <a href="{{ section.settings.see_more_link | default: '#' }}" class="notice-board-see-more">
+            {{- section.settings.see_more_label | escape -}}
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="notice-board-list">
+        {%- for block in section.blocks -%}
+          {%- assign display_date = block.settings.date -%}
+          {%- if display_date == blank -%}
+            {%- assign display_date = 'now' | date: '%b %d, %Y' -%}
+          {%- endif -%}
+          <div class="notice-board-item" {{ block.shopify_attributes }}>
+            <div class="notice-board-meta">
+              {%- if block.settings.badge_label != blank -%}
+                <span class="notice-board-badge" style="background-color: {{ block.settings.badge_bg_color }}; color: {{ block.settings.badge_text_color }};">
+                  {{- block.settings.badge_label | escape -}}
+                </span>
+              {%- endif -%}
+              <span class="notice-board-date">{{- display_date -}}</span>
+            </div>
+            <span class="notice-board-divider" aria-hidden="true"></span>
+            <div class="notice-board-content">
+              {%- if block.settings.icon != 'none' -%}
+                <span class="notice-board-icon" aria-hidden="true">
+                  {%- case block.settings.icon -%}
+                  {%- when 'information' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  {%- when 'warning' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  {%- when 'check' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  {%- when 'star' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {%- endcase -%}
+                </span>
+              {%- endif -%}
+              <div class="notice-board-text rte">{{- block.settings.text -}}</div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Notice board",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "What's new"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Latest <strong>Updates</strong></p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "hxl", "label": "2XL" },
+        { "value": "h0",  "label": "XL" },
+        { "value": "h1",  "label": "Large" },
+        { "value": "h2",  "label": "Medium" },
+        { "value": "h3",  "label": "Small" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "header",
+      "content": "See more button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_see_more",
+      "label": "Show \"See more\" button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "see_more_label",
+      "label": "Button label",
+      "default": "See More",
+      "visible_if": "{{ section.settings.show_see_more }}"
+    },
+    {
+      "type": "url",
+      "id": "see_more_link",
+      "label": "Button link",
+      "visible_if": "{{ section.settings.show_see_more }}"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 60
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "notice_item",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Badge"
+        },
+        {
+          "type": "text",
+          "id": "badge_label",
+          "label": "Badge",
+          "default": "NEW"
+        },
+        {
+          "type": "color",
+          "id": "badge_bg_color",
+          "label": "Background color",
+          "default": "#009640"
+        },
+        {
+          "type": "color",
+          "id": "badge_text_color",
+          "label": "Foreground color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date",
+          "info": "Leave blank to show today's date automatically. Example: Jun 04, 2026",
+          "placeholder": "Jun 04, 2026"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none",        "label": "None" },
+            { "value": "information", "label": "Information" },
+            { "value": "warning",     "label": "Warning" },
+            { "value": "check",       "label": "Check" },
+            { "value": "star",        "label": "Star" }
+          ],
+          "default": "information"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Enter your notice or announcement text here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Notice board",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "notice_item",
+          "settings": {
+            "badge_label": "NEW",
+            "badge_bg_color": "#009640",
+            "badge_text_color": "#ffffff",
+            "icon": "information",
+            "text": "<p>A brand new product has just arrived in our store. Don't miss out!</p>"
+          }
+        },
+        {
+          "type": "notice_item",
+          "settings": {
+            "badge_label": "UPDATE",
+            "badge_bg_color": "#0066cc",
+            "badge_text_color": "#ffffff",
+            "icon": "check",
+            "text": "<p>We've updated our shipping policy. Orders now arrive faster than ever.</p>"
+          }
+        },
+        {
+          "type": "notice_item",
+          "settings": {
+            "badge_label": "IMPORTANT",
+            "badge_bg_color": "#e85d00",
+            "badge_text_color": "#ffffff",
+            "icon": "warning",
+            "text": "<p>Please review our updated return policy before placing your next order.</p>"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

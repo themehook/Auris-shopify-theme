@@ -75,11 +75,21 @@
                   {{ block.settings.heading | replace: 'p>', 'span>' }}
                 </h2>
               {%- when 'sub_heading' -%}
-                {% if block.settings.subtitle != blank %}
-                  <div class="rich-text-subheading">
-                    {{ block.settings.subtitle }}
-                  </div>
-                {% endif %}
+                {%- if block.settings.subtitle != blank -%}
+                  {%- if block.settings.subtitle_style == 'badge' -%}
+                    <div
+                      class="rich-text-subheading rich-text-subheading--badge"
+                      style="background-color: {{ block.settings.badge_bg_color }}; color: {{ block.settings.badge_text_color }};"
+                      {{ block.shopify_attributes }}
+                    >
+                      {{- block.settings.subtitle -}}
+                    </div>
+                  {%- else -%}
+                    <div class="rich-text-subheading" {{ block.shopify_attributes }}>
+                      {{- block.settings.subtitle -}}
+                    </div>
+                  {%- endif -%}
+                {%- endif -%}
               {%- when 'text' -%}
                 <div
                   class="rich-text__text rte rich-text__{{ block.settings.text_size }} richt_text--{{ block.settings.text_color }}"
@@ -558,6 +568,30 @@
           "id": "subtitle",
           "label": "Subheading",
           "default": "Sub title"
+        },
+        {
+          "type": "select",
+          "id": "subtitle_style",
+          "label": "Style",
+          "options": [
+            { "value": "text",  "label": "Only text" },
+            { "value": "badge", "label": "Badge" }
+          ],
+          "default": "text"
+        },
+        {
+          "type": "color",
+          "id": "badge_bg_color",
+          "label": "Badge background color",
+          "default": "#1a1a1a",
+          "visible_if": "{{ block.settings.subtitle_style == 'badge' }}"
+        },
+        {
+          "type": "color",
+          "id": "badge_text_color",
+          "label": "Badge text color",
+          "default": "#ffffff",
+          "visible_if": "{{ block.settings.subtitle_style == 'badge' }}"
         }
       ]
     },

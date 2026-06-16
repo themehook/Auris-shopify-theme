@@ -1,0 +1,263 @@
+/* ============================================================
+   Product Feature Explorer Section
+   ============================================================ */
+
+.product-feature-explorer {
+  overflow: hidden;
+}
+
+/* ── Container ── */
+.pfe-container {
+  background-color: rgb(var(--color-background));
+}
+
+/* Two-column grid */
+.pfe-layout {
+  display: grid;
+  grid-template-columns: var(--pfe-image-width, 42%) 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+@media only screen and (max-width: 991px) {
+  .pfe-layout {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+}
+
+/* ── Image Column ── */
+.pfe-image-col {
+  position: sticky;
+  top: 10rem;
+}
+
+@media only screen and (max-width: 991px) {
+  .pfe-image-col {
+    position: static;
+  }
+}
+
+.pfe-image-wrap {
+  border-radius: 1.6rem;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.04);
+}
+
+.pfe-image {
+  display: none;
+}
+
+.pfe-image.is-active {
+  display: block;
+}
+
+.pfe-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.pfe-image-placeholder {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pfe-image-placeholder svg {
+  width: 100%;
+  height: auto;
+}
+
+/* ── Content Column ── */
+.pfe-subtitle {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.55);
+  margin-bottom: 1.2rem;
+}
+
+.pfe-title {
+  margin-bottom: 2.8rem;
+  line-height: 1.2;
+  & span{
+    display: block;
+  }
+}
+
+/* ── Tab Buttons ── */
+.pfe-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 3rem;
+  role: tablist;
+}
+
+.pfe-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.7rem;
+  border: 1.5px solid rgba(var(--color-foreground), 0.15);
+  border-radius: 10rem;
+  background: transparent;
+  color: rgba(var(--color-foreground), 0.55);
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pfe-tab:hover {
+  border-color: rgba(var(--color-button), var(--alpha-button-background));
+  color: rgb(var(--color-foreground));
+}
+
+.pfe-tab.is-active {
+  border-color: rgba(var(--color-button), var(--alpha-button-background));
+  color: rgb(var(--color-foreground));
+  background: rgba(var(--color-foreground), 0.06);
+  font-weight: 600;
+}
+
+.pfe-tab__number {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* ── Tab Panels ── */
+.pfe-tab-panel {
+  display: none;
+  padding-left: 2rem;
+  border-left: 3px solid rgb(var(--color-button));
+}
+
+.pfe-tab-panel.is-active {
+  display: block;
+  animation: pfe-fade-in 0.25s ease;
+}
+
+@keyframes pfe-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pfe-panel-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 0.9rem;
+  color: rgb(var(--color-foreground));
+}
+
+.pfe-panel-desc {
+  font-size: 1.5rem;
+  line-height: 1.75;
+  color: rgba(var(--color-foreground), 0.7);
+  margin: 0 0 1.8rem;
+}
+
+.pfe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.pfe-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: .8rem 1.2rem;
+  border: 1.5px solid rgba(var(--color-foreground), 0.18);
+  border-radius: 2rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: rgba(var(--color-foreground), 0.75);
+  line-height: 1;
+  background: rgba(var(--color-foreground), 0.03);
+}
+
+@media only screen and (max-width: 749px) {
+  .pfe-layout {
+    gap: 2.5rem;
+  }
+  .pfe-tab {
+    font-size: 1.3rem;
+    padding: 0.65rem 1.2rem;
+  }
+  .pfe-title {
+    margin-bottom: 2rem;
+  }
+}
+
+/* ── Vertical alignment ── */
+.pfe-content--valign-middle {
+  align-self: center;
+}
+
+.pfe-content--valign-bottom {
+  align-self: end;
+}
+
+/* ── Horizontal alignment: center ── */
+.pfe-content--align-center {
+  text-align: center;
+}
+
+.pfe-content--align-center .pfe-tabs {
+  justify-content: center;
+}
+
+.pfe-content--align-center .pfe-tab-panel {
+  border-left: none;
+  padding-left: 0;
+  border-top: 3px solid rgb(var(--color-button));
+  padding-top: 1.5rem;
+}
+
+.pfe-content--align-center .pfe-tags {
+  justify-content: center;
+}
+
+/* ── Horizontal alignment: right ── */
+.pfe-content--align-right {
+  text-align: right;
+}
+
+.pfe-content--align-right .pfe-tabs {
+  justify-content: flex-end;
+}
+
+.pfe-content--align-right .pfe-tab-panel {
+  border-left: none;
+  padding-left: 0;
+  border-right: 3px solid rgb(var(--color-button));
+  padding-right: 2rem;
+}
+
+.pfe-content--align-right .pfe-tags {
+  justify-content: flex-end;
+}
+
+/* ── Product image link ── */
+.pfe-image-link {
+  display: block;
+}
+
+/* ── Product title link ── */
+.pfe-panel-title-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.pfe-panel-title-link:hover {
+  color: rgba(var(--color-button), var(--alpha-button-background));
+}

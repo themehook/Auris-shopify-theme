@@ -118,7 +118,8 @@
                     {{ block.shopify_attributes }}
                   >
                     <button class="faq__list--item--heading faq__list--item__button  {{ section.settings.faq_button_size }} mb-0">
-                      {{ block.settings.heading }}
+                      <span class="faq__item--number">{%- if forloop.index < 10 -%}0{%- endif -%}{{ forloop.index }}</span>
+                      <span class="faq__item--label">{{ block.settings.heading }}</span>
                       <span class="faq__button--icon">
                         {%- render 'hooktheme-icon-plus', className: 'plus__icon' -%}
                         {%- render 'hooktheme-icon-minus', className: 'minus__icon' -%}
