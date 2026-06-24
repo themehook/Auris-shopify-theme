@@ -463,3 +463,23 @@
 .media--rounded{
   border-radius: 0.8rem;
 }
+.banner__subheading .cl-subtitle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  margin-bottom: 0;
+}
+.banner__subheading .cl-subtitle-shape {
+  display: block;
+  width: 2.8rem;
+  height: 0.2rem;
+  flex-shrink: 0;
+}
+.banner__subheading.body .cl-subtitle-wrap{
+  font-weight: 600;
+}

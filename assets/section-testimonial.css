@@ -292,11 +292,17 @@
   color: rgb(var(--color-foreground));
   margin-bottom: 1.6rem;
 }
+.testimonial__content-card--subtitle.cl-subtitle-wrap {
+  display: inline-flex;
+}
 
 .testimonial__content-card--title {
   margin-top: 0;
   margin-bottom: 2rem;
   line-height: 1.15;
+  & span{
+    display: block;
+  }
 }
 
 .testimonial__content-card--desc {

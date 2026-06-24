@@ -62,7 +62,7 @@
       {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
         <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
       {% endif %}
-      <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank %}heading__space--bottom{% endif %}  {% if section.settings.heading == blank or section.settings.button_position == 'top' %}mb-0{% endif %}">
+      <h2 class="section-heading__title gradient--text {% if section.settings.heading_position == "top" and section.settings.subtitle != blank %}heading__space--bottom{% endif %}  {% if section.settings.heading == blank or section.settings.button_position == 'top' %}mb-0{% endif %}">
         {{- section.settings.heading -}}
       </h2>
       {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}

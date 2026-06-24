@@ -88,10 +88,28 @@
       <div class="testimonial__layout--with-card" style="--content-card-width: {{ section.settings.content_card_width }}%">
         <div class="testimonial__content-card" style="justify-content: {{ section.settings.content_card_vertical_align }}; text-align: {{ section.settings.content_card_text_align }}; align-items: {{ section.settings.content_card_text_align | replace: 'left', 'flex-start' | replace: 'right', 'flex-end' | replace: 'center', 'center' }}">
           {%- if section.settings.content_card_subtitle != blank -%}
-            <span class="testimonial__content-card--subtitle">{{ section.settings.content_card_subtitle }}</span>
+            {%- if section.settings.content_card_show_subtitle_shape -%}
+              <div class="testimonial__content-card--subtitle cl-subtitle-wrap" style="color: {{ section.settings.content_card_subtitle_shape_color }};">
+                <span class="cl-subtitle-shape" style="background-color: {{ section.settings.content_card_subtitle_shape_color }};"></span>
+                <span>{{ section.settings.content_card_subtitle }}</span>
+              </div>
+            {%- else -%}
+              <span class="testimonial__content-card--subtitle">{{ section.settings.content_card_subtitle }}</span>
+            {%- endif -%}
           {%- endif -%}
           {%- if section.settings.content_card_title != blank -%}
-            <{{ section.settings.content_card_title_size }} class="testimonial__content-card--title">{{ section.settings.content_card_title }}</{{ section.settings.content_card_title_size }}>
+              <h2 class="testimonial__content-card--title {{ section.settings.content_card_title_size }} mb-0 gradient--text">
+                {{-
+                  section.settings.content_card_title
+                  | replace: 'p>', 'span>'
+                  | replace: 'h1>', 'span>'
+                  | replace: 'h2>', 'span>'
+                  | replace: 'h3>', 'span>'
+                  | replace: 'h4>', 'span>'
+                  | replace: 'h5>', 'span>'
+                  | replace: 'h6>', 'span>'
+                -}}
+              </h2>
           {%- endif -%}
           {%- if section.settings.content_card_description != blank -%}
             <div class="testimonial__content-card--desc rte">{{ section.settings.content_card_description }}</div>
@@ -521,7 +539,7 @@
       "type": "checkbox",
       "id": "show_content_card",
       "label": "Show content card",
-      "default": false,
+      "default": true,
       "info": "Displays a content panel to the left of the testimonial slider"
     },
     {
@@ -567,10 +585,24 @@
       "visible_if": "{{ section.settings.show_content_card == true }}"
     },
     {
-      "type": "inline_richtext",
+      "type": "checkbox",
+      "id": "content_card_show_subtitle_shape",
+      "label": "Show subtitle shape",
+      "default": true,
+      "visible_if": "{{ section.settings.show_content_card == true }}"
+    },
+    {
+      "type": "color",
+      "id": "content_card_subtitle_shape_color",
+      "label": "Subtitle & shape color",
+      "default": "#111111",
+      "visible_if": "{{ section.settings.content_card_show_subtitle_shape }}"
+    },
+    {
+      "type": "richtext",
       "id": "content_card_title",
+      "default": "<p>What our customers say about us?</p>",
       "label": "Title",
-      "default": "What our customers say about us?",
       "visible_if": "{{ section.settings.show_content_card == true }}"
     },
     {

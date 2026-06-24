@@ -189,18 +189,23 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
       <div class="section--header-wrapper mb-50">
     {% endif %}
 
-    <div class="section-heading text-{{ section.settings.text_center }} mobile--text-{{ section.settings.mobile_text_center }}  {% if section.settings.heading != blank or section.settings.subtitle != blank %} {% unless section.settings.button_position == 'top' or section.settings.timer %}  {% if section.settings.border_line %} mb-70 {% else %} mb-50{% endif %} {% endunless %} {% endif %} {% if section.settings.button_position == 'top' and section.settings.button_label == blank and section.settings.timer == false %} mb-50{% endif %}">
-      {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
-        <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
-      {% endif %}
-      <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank %}heading__space--bottom{% endif %}  {% if section.settings.heading == blank or section.settings.button_position == 'top' %}mb-0{% endif %}">
+    <div class="section-heading text-{{ section.settings.text_center }} mobile--text-{{ section.settings.mobile_text_center }}  {% if section.settings.heading != blank or section.settings.subtitle != blank or section.settings.description != blank %} {% unless section.settings.button_position == 'top' or section.settings.timer %}  {% if section.settings.border_line %} mb-70 {% else %} mb-50{% endif %} {% endunless %} {% endif %} {% if section.settings.button_position == 'top' and section.settings.button_label == blank and section.settings.timer == false %} mb-50{% endif %}">
+      {%- if section.settings.subtitle != blank -%}
+        <div class="cl-subtitle-wrap" style="color: {{ section.settings.subtitle_shape_color }};">
+          {%- if section.settings.show_subtitle_shape -%}
+            <span class="cl-subtitle-shape" style="background-color: {{ section.settings.subtitle_shape_color }};"></span>
+          {%- endif -%}
+          <span>{{- section.settings.subtitle -}}</span>
+        </div>
+      {%- endif -%}
+      <h2 class="section-heading__title {% if section.settings.description != blank %}heading__space--bottom{% endif %}  {% if section.settings.heading == blank or section.settings.button_position == 'top' %}mb-0{% endif %}">
         {{- section.settings.heading -}}
       </h2>
-      {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
+      {%- if section.settings.description != blank -%}
         <span class="section-heading__sub_title">
-          {{- section.settings.subtitle -}}
+          {{- section.settings.description -}}
         </span>
-      {% endif %}
+      {%- endif -%}
     </div>
 
     {% if section.settings.timer %}
@@ -379,7 +384,9 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
                 card_content_alignment: section.settings.card_content_alignment,
                 swatches_position: section.settings.swatches_position,
                 show_spec_tooltip: section.settings.show_spec_tooltip,
-                spec_tooltip_position: section.settings.spec_tooltip_position
+                spec_tooltip_position: section.settings.spec_tooltip_position,
+                show_product_tags: section.settings.show_product_tags,
+                product_tag_size: section.settings.product_tag_size
               %}
             </div>
           {%- else -%}
@@ -485,15 +492,34 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
       "content": "Section header"
     },
     {
-      "type": "inline_richtext",
+      "type": "text",
       "id": "subtitle",
-      "label": "Subheading"
+      "label": "Subtitle",
+      "info": "Short label displayed above the heading with a decorative shape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle_shape",
+      "label": "Show subtitle shape",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "subtitle_shape_color",
+      "label": "Subtitle & shape color",
+      "default": "#111111",
+      "visible_if": "{{ section.settings.show_subtitle_shape }}"
     },
     {
       "type": "text",
       "id": "heading",
       "default": "Featured Collection",
       "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "description",
+      "label": "Description"
     },
     {
       "type": "select",
@@ -1391,10 +1417,15 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
         {
           "value": "style_3",
           "label": "Style 3"
+        },
+        {
+          "value": "style_4",
+          "label": "Style 4"
         }
       ],
       "default": "style_1"
     },
+
     {
       "type": "select",
       "id": "image_ratio",
@@ -1517,6 +1548,23 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
       "id": "show_product_rating",
       "default": false,
       "label": "Show product rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_tags",
+      "label": "Show product tags",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "product_tag_size",
+      "label": "Tag size",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "visible_if": "{{ section.settings.show_product_tags }}"
     },
     {
       "type": "checkbox",

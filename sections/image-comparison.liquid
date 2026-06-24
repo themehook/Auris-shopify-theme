@@ -11,6 +11,12 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+  {%- if section.settings.divider_color != blank -%}
+    .section-{{ section.id }}-padding .image-comparison__button::before,
+    .section-{{ section.id }}-padding .image-comparison__button::after {
+      background-color: {{ section.settings.divider_color }};
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 {%- liquid
@@ -95,6 +101,17 @@
         </div>
       </div>
 
+      {%- if section.settings.before_badge != blank or section.settings.before_text != blank -%}
+        <div class="image-comparison__label image-comparison__label--before">
+          {%- if section.settings.before_badge != blank -%}
+            <span class="image-comparison__badge" style="background-color: {{ section.settings.before_badge_bg_color }}; color: {{ section.settings.before_badge_text_color }};">{{ section.settings.before_badge }}</span>
+          {%- endif -%}
+          {%- if section.settings.before_text != blank -%}
+            <span class="image-comparison__plain-text" style="color: {{ section.settings.before_text_color }};">{{ section.settings.before_text }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
       <div class="image--comparison__after">
         <div class="image-comparison--media {% if section.settings.image_2 != blank %}media{% else %}placeholder_svg_parent placeholder{% endif %} {% if section.settings.round_corner %}rounded--image{% endif %}">
           {%- if section.settings.image_2 != blank -%}
@@ -144,6 +161,17 @@
             }}
           {%- endif -%}
         </div>
+
+        {%- if section.settings.after_badge != blank or section.settings.after_text != blank -%}
+          <div class="image-comparison__label image-comparison__label--after">
+            {%- if section.settings.after_badge != blank -%}
+              <span class="image-comparison__badge" style="background-color: {{ section.settings.after_badge_bg_color }}; color: {{ section.settings.after_badge_text_color }};">{{ section.settings.after_badge }}</span>
+            {%- endif -%}
+            {%- if section.settings.after_text != blank -%}
+              <span class="image-comparison__plain-text" style="color: {{ section.settings.after_text_color }};">{{ section.settings.after_text }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </div>
 
       <button type="button" class="image-comparison__button">
@@ -246,6 +274,36 @@
       "label": "Mobile image"
     },
     {
+      "type": "text",
+      "id": "before_badge",
+      "label": "Badge text",
+      "default": "Before"
+    },
+    {
+      "type": "color",
+      "id": "before_badge_bg_color",
+      "label": "Badge background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "before_badge_text_color",
+      "label": "Badge text color",
+      "default": "#111111"
+    },
+    {
+      "type": "text",
+      "id": "before_text",
+      "label": "Caption text",
+      "default": "The noisy world"
+    },
+    {
+      "type": "color",
+      "id": "before_text_color",
+      "label": "Caption text color",
+      "default": "#ffffff"
+    },
+    {
       "type": "header",
       "content": "After image"
     },
@@ -258,6 +316,36 @@
       "type": "image_picker",
       "id": "mobile_image_2",
       "label": "Mobile image"
+    },
+    {
+      "type": "text",
+      "id": "after_badge",
+      "label": "Badge text",
+      "default": "After"
+    },
+    {
+      "type": "color",
+      "id": "after_badge_bg_color",
+      "label": "Badge background color",
+      "default": "#e52e2e"
+    },
+    {
+      "type": "color",
+      "id": "after_badge_text_color",
+      "label": "Badge text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "after_text",
+      "label": "Caption text",
+      "default": "Pure focus"
+    },
+    {
+      "type": "color",
+      "id": "after_text_color",
+      "label": "Caption text color",
+      "default": "#e52e2e"
     },
     {
       "type": "select",
@@ -282,6 +370,16 @@
       ],
       "default": "adapt",
       "label": "t:sections.image-with-text.settings.height.label"
+    },
+    {
+      "type": "header",
+      "content": "Divider"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#ffffff"
     },
     {
       "type": "header",

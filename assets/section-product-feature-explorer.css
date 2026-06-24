@@ -81,6 +81,9 @@
   color: rgba(var(--color-foreground), 0.55);
   margin-bottom: 1.2rem;
 }
+.pfe-subtitle.cl-subtitle-wrap {
+  display: inline-flex;
+}
 
 .pfe-title {
   margin-bottom: 2.8rem;

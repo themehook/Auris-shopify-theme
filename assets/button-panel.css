@@ -88,12 +88,12 @@ height: 2rem;
 }
 .button__panel--item-link{
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     align-items: center;
     padding: 0.8rem 1.5rem;
     position: relative;
     @media only screen and (min-width: 750px){
-        gap: 1.2rem;
+        gap: 1rem;
         padding: 0.8rem 1.7rem;
     }
     &.icon-top{
@@ -201,5 +201,27 @@ height: 2rem;
     & svg{
         width: 2rem;
         height: 2rem;
+    }
+}
+.button-icon-width-30{
+    & svg{
+        width: 2.8rem;
+        height: 2.5rem
+    }
+}
+.button-icon-width-40{
+    & svg{
+        width: 4rem;
+        height: 4rem;
+    }
+}
+.button-svg-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    & svg {
+        display: block;
+        color: inherit;
     }
 }

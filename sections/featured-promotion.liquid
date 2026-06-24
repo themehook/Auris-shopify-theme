@@ -54,19 +54,24 @@
 -%}
 <div class="text--with-icons section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} section--top-space-{{ section.id }} gradient">
   <div class="{{ container }}">
-    {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+    {% if section.settings.heading != blank or section.settings.subtitle != blank or section.settings.description != blank %}
       <div class="section-heading text-{{ section.settings.text_center }}  {% if section.settings.border_line %} mb-50 {% else %} mb-30{% endif %} {% if section.settings.image != blank %} relative  {% endif %}">
-        {% if section.settings.heading_position == 'bottom' and section.settings.subtitle != blank %}
-          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
-        {% endif %}
-        <h2 class="section-heading__title {% if section.settings.heading_position == "top" and section.settings.subtitle != blank and section.settings.border_line %}heading__space--bottom{% endif %} ">
+        {%- if section.settings.subtitle != blank -%}
+          <div class="cl-subtitle-wrap" style="color: {{ section.settings.subtitle_shape_color }};">
+            {%- if section.settings.show_subtitle_shape -%}
+              <span class="cl-subtitle-shape" style="background-color: {{ section.settings.subtitle_shape_color }};"></span>
+            {%- endif -%}
+            <span>{{- section.settings.subtitle -}}</span>
+          </div>
+        {%- endif -%}
+        <h2 class="section-heading__title gradient--text {% if section.settings.description != blank and section.settings.border_line %}heading__space--bottom{% endif %} ">
           {% if section.settings.border_line %}<span>{% endif %}
-          {{- section.settings.heading -}}
+          {{- section.settings.heading | replace: 'p>', 'span>' | replace: 'h1>', 'span>' | replace: 'h2>', 'span>' | replace: 'h3>', 'span>' -}}
           {% if section.settings.border_line %}</span>{% endif %}
         </h2>
-        {% if section.settings.heading_position == 'top' and section.settings.subtitle != blank %}
-          <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
-        {% endif %}
+        {%- if section.settings.description != blank -%}
+          <span class="section-heading__sub_title">{{- section.settings.description -}}</span>
+        {%- endif -%}
       </div>
     {% endif %}
 
@@ -157,15 +162,34 @@
       "content": "Section header"
     },
     {
-      "type": "inline_richtext",
+      "type": "text",
       "id": "subtitle",
-      "label": "Subheading"
+      "label": "Subtitle",
+      "info": "Short label displayed above the heading with a decorative shape"
     },
     {
-      "type": "text",
+      "type": "checkbox",
+      "id": "show_subtitle_shape",
+      "label": "Show subtitle shape",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "subtitle_shape_color",
+      "label": "Subtitle & shape color",
+      "default": "#111111",
+      "visible_if": "{{ section.settings.show_subtitle_shape }}"
+    },
+    {
+      "type": "richtext",
       "id": "heading",
-      "default": "Promotion text ",
+      "default": "<p>Promotion text</p>",
       "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "description",
+      "label": "Description"
     },
     {
       "type": "select",

@@ -339,5 +339,12 @@
     justify-content: end;
   }
 }
+
+.section--header-wrapper{
+  & .section-heading__sub_title{
+    margin-top: 1.5rem;
+    display: inline-block;
+  }
+}
 /* Countdown timer box css start */
 

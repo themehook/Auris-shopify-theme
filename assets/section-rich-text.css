@@ -481,6 +481,7 @@
 .rich__text--feature{
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   @media only screen and (max-width: 749px){
     gap: 2rem;
   }
@@ -512,4 +513,65 @@
 
 .rich-text__text p{
   margin-bottom: 0;
+}
+
+/* Text feature — icon support */
+.rich__text--feature__item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.rich__text--feature__icon img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.rich__text--feature__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.rich__text--feature__svg svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Icon position: right — icon on the right, text on the left */
+.rich__text--feature-icon-right .rich__text--feature__item {
+  flex-direction: row-reverse;
+}
+
+/* Left/right icon: text always left-aligned regardless of section alignment */
+.rich__text--feature-icon-left .rich__text--feature__content,
+.rich__text--feature-icon-right .rich__text--feature__content {
+  text-align: left;
+}
+
+/* Icon position: top — icon above, text centered below */
+.rich__text--feature-icon-top .rich__text--feature__item {
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Icon position: bottom — icon below, text centered above */
+.rich__text--feature-icon-bottom .rich__text--feature__item {
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+/* Top/bottom icon: text always center-aligned */
+.rich__text--feature-icon-top .rich__text--feature__content,
+.rich__text--feature-icon-bottom .rich__text--feature__content {
+  text-align: center;
+}
+
+@media only screen and (max-width: 749px) {
+  .rich__text--feature__item {
+    gap: 1rem;
+  }
 }

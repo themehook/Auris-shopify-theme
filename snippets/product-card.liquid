@@ -354,6 +354,14 @@
       %}
     {% endif %}
 
+    {%- if show_product_tags and product_card_product.tags.size > 0 -%}
+      <div class="product__card__tags {{ swatch_justify_class }}" style="--product-tag-size: {{ product_tag_size | default: 11 }}px;">
+        {%- for tag in product_card_product.tags limit: 2 -%}
+          <span class="product__card__tag">{{ tag }}</span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
     {% comment %} Add To cart button style 3 desktop {% endcomment %}
     {% if show_cart_button and card_style == 'style_3' %}
       {% render 'add-to-cart-form',
@@ -408,7 +416,22 @@
       </div>
     {% endif %}
     {% comment %} Select Option button ./ {% endcomment %}
+
   </div>
+
+  {% comment %} Add To cart button style 4 — overlays card from bottom on hover {% endcomment %}
+  {% if show_cart_button and card_style == 'style_4' %}
+    {% render 'add-to-cart-form',
+      product_card_product: product_card_product,
+      variant: variant,
+      custom_class: 'd-md-none product__card--style4-cart',
+      button_class: 'button cart-button--full-width',
+      show_preorder_button: show_preorder_button,
+      button_label: true,
+      cart_button_type: cart_button_type
+    %}
+  {%- endif -%}
+  {% comment %} Add To cart button style 4 ./ {% endcomment %}
 
   {%- comment -%} Quick View Modal Instance - Unique per product {%- endcomment -%}
   {%- if show_quick_view -%}

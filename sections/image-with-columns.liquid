@@ -149,17 +149,24 @@
                   {%- case block.type -%}
                   {%- when 'column' -%}
                       <div {{ block.shopify_attributes }}>
-                      <div class="columns--item color-{{ section.settings.color_scheme_2 }} h-100 text-{{ section.settings.text_alignment }} {% if section.settings.show_border %} columns-item-border {% endif %}{% if block.settings.icon != blank %} columns--item-icon-{{ block.settings.icon_position }}{% endif %}">
-                          {%- if block.settings.icon != blank -%}
+                      <div class="columns--item color-{{ section.settings.color_scheme_2 }} h-100 text-{{ section.settings.text_alignment }} {% if section.settings.show_border %} columns-item-border {% endif %}{% if block.settings.show_icon %} columns--item-icon-{{ block.settings.icon_position }}{% endif %}">
+                          {%- if block.settings.show_icon -%}
                             <div class="columns--icon-wrap">
-                              <img
-                                src="{{ block.settings.icon | image_url: width: 200 }}"
-                                alt="{{ block.settings.icon.alt | escape }}"
-                                width="{{ block.settings.icon_width }}"
-                                height="{{ block.settings.icon_width }}"
-                                loading="lazy"
-                                style="width: {{ block.settings.icon_width }}px; height: {{ block.settings.icon_width }}px;"
-                              >
+                              {%- if block.settings.icon != blank -%}
+                                <img
+                                  src="{{ block.settings.icon | image_url: width: 200 }}"
+                                  alt="{{ block.settings.icon.alt | escape }}"
+                                  width="{{ block.settings.icon_width }}"
+                                  height="{{ block.settings.icon_width }}"
+                                  loading="lazy"
+                                  style="width: {{ block.settings.icon_width }}px; height: {{ block.settings.icon_width }}px;"
+                                >
+                              {%- else -%}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="{{ block.settings.icon_width }}" height="{{ block.settings.icon_width }}" viewBox="0 0 48 48" fill="none" class="columns--icon-placeholder" aria-hidden="true">
+                                  <rect width="48" height="48" rx="12" fill="rgba(var(--color-button), 0.12)"/>
+                                  <path d="M24 10l4.5 9 10 1.5-7.25 7 1.75 10-9-4.75-9 4.75 1.75-10L9.5 20.5l10-1.5z" fill="rgb(var(--color-button))"/>
+                                </svg>
+                              {%- endif -%}
                             </div>
                           {%- endif -%}
                           <div class="columns--body">
@@ -365,7 +372,7 @@
           "label": "Bottom"
         }
       ],
-      "default": "image_top",
+      "default": "image_bottom",
       "label": "Image position"
     },
     {
@@ -412,7 +419,7 @@
       "type": "select",
       "id": "text_alignment",
       "label": "Text alignment",
-      "default": "left",
+      "default": "center",
       "options": [
         {
           "value": "left",
@@ -480,7 +487,7 @@
       "type": "checkbox",
       "id": "show_button",
       "label": "Show button",
-      "default": false
+      "default": true
     },
     {
       "type": "text",
@@ -522,7 +529,7 @@
       "type": "color_scheme",
       "id": "color_scheme_2",
       "label": "Color scheme",
-      "default": "background-2"
+      "default": "background-1"
     },
     {
       "type": "header",
@@ -588,7 +595,7 @@
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Color scheme",
-      "default": "background-1"
+      "default": "background-2"
     }
   ],
   "blocks": [
@@ -626,9 +633,16 @@
           "content": "Icon"
         },
         {
+          "type": "checkbox",
+          "id": "show_icon",
+          "label": "Show icon",
+          "default": true
+        },
+        {
           "type": "image_picker",
           "id": "icon",
-          "label": "Icon image"
+          "label": "Icon image",
+          "visible_if": "{{ block.settings.show_icon }}"
         },
         {
           "type": "select",
@@ -640,7 +654,8 @@
             { "value": "left",   "label": "Left" },
             { "value": "right",  "label": "Right" }
           ],
-          "default": "top"
+          "default": "top",
+          "visible_if": "{{ block.settings.show_icon }}"
         },
         {
           "type": "range",
@@ -650,7 +665,8 @@
           "step": 4,
           "unit": "px",
           "label": "Icon size",
-          "default": 48
+          "default": 48,
+          "visible_if": "{{ block.settings.show_icon }}"
         }
       ]
     }

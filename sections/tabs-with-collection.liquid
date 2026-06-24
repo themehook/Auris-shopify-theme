@@ -290,7 +290,9 @@
                             show_spec_tooltip: section.settings.show_spec_tooltip,
                             spec_tooltip_position: section.settings.spec_tooltip_position,
                             card_content_alignment: section.settings.card_content_alignment,
-                            swatches_position: section.settings.swatches_position
+                            swatches_position: section.settings.swatches_position,
+                            show_product_tags: section.settings.show_product_tags,
+                            product_tag_size: section.settings.product_tag_size
                           %}
                       </div>
                   {%- else -%}
@@ -562,10 +564,15 @@
         {
           "value": "style_3",
           "label": "Style 3"
+        },
+        {
+          "value": "style_4",
+          "label": "Style 4"
         }
       ],
       "default": "style_1"
     },
+    
     {
       "type": "select",
       "id": "image_ratio",
@@ -687,6 +694,23 @@
       "id": "show_product_rating",
       "default": false,
       "label": "Show product rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_tags",
+      "label": "Show product tags",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "product_tag_size",
+      "label": "Tag size",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "visible_if": "{{ section.settings.show_product_tags }}"
     },
     {
       "type": "checkbox",

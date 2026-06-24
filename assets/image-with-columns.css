@@ -262,7 +262,8 @@
   line-height: 0;
 }
 
-.columns--icon-wrap img {
+.columns--icon-wrap img,
+.columns--icon-placeholder {
   display: block;
   object-fit: contain;
 }

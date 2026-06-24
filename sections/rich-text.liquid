@@ -257,47 +257,100 @@
                       {%- render 'social-media', className: 'rich-text-social-wrapper' -%}
                   </div>
               {%- when 'text_feature' -%}
-                  <div class="rich__text--feature" {{ block.shopify_attributes }}>
+                  <div class="rich__text--feature rich__text--feature-icon-{{ block.settings.icon_position }}" {{ block.shopify_attributes }}>
                     <div class="rich__text--feature__list">
-                      <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
-                        {{ block.settings.feature_heading | replace: 'p>', 'span>' }}
-                      </h2>
-                      {% if block.settings.feature_subtitle != blank %}
-                        <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle }}</span>
-                      {% endif %}
+                      <div class="rich__text--feature__item">
+                        {%- if block.settings.show_icon -%}
+                          <div class="rich__text--feature__icon" style="width: {{ block.settings.icon_width }}px; min-width: {{ block.settings.icon_width }}px;">
+                            {%- if block.settings.feature_icon_1 != blank -%}
+                              <img src="{{ block.settings.feature_icon_1 | image_url: width: block.settings.icon_width }}" alt="{{ block.settings.feature_icon_1.alt | escape }}" width="{{ block.settings.icon_width }}" loading="lazy">
+                            {%- elsif block.settings.feature_svg_1 != blank -%}
+                              <span class="rich__text--feature__svg" data-svg='{{ block.settings.feature_svg_1 }}'></span>
+                            {%- endif -%}
+                          </div>
+                        {%- endif -%}
+                        <div class="rich__text--feature__content">
+                          <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
+                            {{ block.settings.feature_heading | replace: 'p>', 'span>' }}
+                          </h2>
+                          {% if block.settings.feature_subtitle != blank %}
+                            <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle }}</span>
+                          {% endif %}
+                        </div>
+                      </div>
                     </div>
                     {% if block.settings.desktop_columns == '2' or block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' %}
                       <div class="rich__text--feature__list">
-                        <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
-                          {{ block.settings.feature_heading_2 | replace: 'p>', 'span>' }}
-                        </h2>
-                        {% if block.settings.feature_subtitle_2 != blank %}
-                          <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle_2 }}</span>
-                        {% endif %}
+                        <div class="rich__text--feature__item">
+                          {%- if block.settings.show_icon -%}
+                            <div class="rich__text--feature__icon" style="width: {{ block.settings.icon_width }}px; min-width: {{ block.settings.icon_width }}px;">
+                              {%- if block.settings.feature_icon_2 != blank -%}
+                                <img src="{{ block.settings.feature_icon_2 | image_url: width: block.settings.icon_width }}" alt="{{ block.settings.feature_icon_2.alt | escape }}" width="{{ block.settings.icon_width }}" loading="lazy">
+                              {%- elsif block.settings.feature_svg_2 != blank -%}
+                                <span class="rich__text--feature__svg" data-svg='{{ block.settings.feature_svg_2 }}'></span>
+                              {%- endif -%}
+                            </div>
+                          {%- endif -%}
+                          <div class="rich__text--feature__content">
+                            <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
+                              {{ block.settings.feature_heading_2 | replace: 'p>', 'span>' }}
+                            </h2>
+                            {% if block.settings.feature_subtitle_2 != blank %}
+                              <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle_2 }}</span>
+                            {% endif %}
+                          </div>
+                        </div>
                       </div>
                     {% endif %}
                     {% if block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' %}
                       <div class="rich__text--feature__list">
-                        <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
-                          {{ block.settings.feature_heading_3 | replace: 'p>', 'span>' }}
-                        </h2>
-                        {% if block.settings.feature_subtitle_3 != blank %}
-                          <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle_3 }}</span>
-                        {% endif %}
+                        <div class="rich__text--feature__item">
+                          {%- if block.settings.show_icon -%}
+                            <div class="rich__text--feature__icon" style="width: {{ block.settings.icon_width }}px; min-width: {{ block.settings.icon_width }}px;">
+                              {%- if block.settings.feature_icon_3 != blank -%}
+                                <img src="{{ block.settings.feature_icon_3 | image_url: width: block.settings.icon_width }}" alt="{{ block.settings.feature_icon_3.alt | escape }}" width="{{ block.settings.icon_width }}" loading="lazy">
+                              {%- elsif block.settings.feature_svg_3 != blank -%}
+                                <span class="rich__text--feature__svg" data-svg='{{ block.settings.feature_svg_3 }}'></span>
+                              {%- endif -%}
+                            </div>
+                          {%- endif -%}
+                          <div class="rich__text--feature__content">
+                            <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
+                              {{ block.settings.feature_heading_3 | replace: 'p>', 'span>' }}
+                            </h2>
+                            {% if block.settings.feature_subtitle_3 != blank %}
+                              <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle_3 }}</span>
+                            {% endif %}
+                          </div>
+                        </div>
                       </div>
                     {% endif %}
                     {% if block.settings.desktop_columns == '4' %}
                       <div class="rich__text--feature__list">
-                        <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
-                          {{ block.settings.feature_heading_4 | replace: 'p>', 'span>' }}
-                        </h2>
-                        {% if block.settings.feature_subtitle_4 != blank %}
-                          <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle_4 }}</span>
-                        {% endif %}
+                        <div class="rich__text--feature__item">
+                          {%- if block.settings.show_icon -%}
+                            <div class="rich__text--feature__icon" style="width: {{ block.settings.icon_width }}px; min-width: {{ block.settings.icon_width }}px;">
+                              {%- if block.settings.feature_icon_4 != blank -%}
+                                <img src="{{ block.settings.feature_icon_4 | image_url: width: block.settings.icon_width }}" alt="{{ block.settings.feature_icon_4.alt | escape }}" width="{{ block.settings.icon_width }}" loading="lazy">
+                              {%- elsif block.settings.feature_svg_4 != blank -%}
+                                <span class="rich__text--feature__svg" data-svg='{{ block.settings.feature_svg_4 }}'></span>
+                              {%- endif -%}
+                            </div>
+                          {%- endif -%}
+                          <div class="rich__text--feature__content">
+                            <h2 class="rich__text--feature-title gradient--text" style="font-size: {{ block.settings.feature_heading_font_size }}px;">
+                              {{ block.settings.feature_heading_4 | replace: 'p>', 'span>' }}
+                            </h2>
+                            {% if block.settings.feature_subtitle_4 != blank %}
+                              <span class="rich__text--feature-subtitle">{{ block.settings.feature_subtitle_4 }}</span>
+                            {% endif %}
+                          </div>
+                        </div>
                       </div>
                     {% endif %}
-                    
+
                   </div>
+                  <script>document.querySelectorAll('.rich__text--feature__svg[data-svg]').forEach(function(el){if(!el.innerHTML.trim())el.innerHTML=el.dataset.svg;});</script>
             {%- endcase -%}
           {%- endfor -%}
         </div>
@@ -1070,6 +1123,40 @@
         },
         {
           "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_icon",
+          "label": "Show icon",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Icon position",
+          "options": [
+            { "value": "left",   "label": "Left"   },
+            { "value": "right",  "label": "Right"  },
+            { "value": "top",    "label": "Top"    },
+            { "value": "bottom", "label": "Bottom" }
+          ],
+          "default": "left",
+          "visible_if": "{{ block.settings.show_icon }}"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "label": "Icon width",
+          "min": 16,
+          "max": 120,
+          "step": 4,
+          "unit": "px",
+          "default": 34,
+          "visible_if": "{{ block.settings.show_icon }}"
+        },
+        {
+          "type": "header",
           "content": "Card 1"
         },
         {
@@ -1083,6 +1170,20 @@
           "id": "feature_subtitle",
           "label": "Subheading",
           "default": "Sub title"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_1",
+          "label": "Icon image",
+          "visible_if": "{{ block.settings.show_icon }}"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_svg_1",
+          "label": "SVG icon code",
+          "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\"/></svg>",
+          "info": "Used when no image is uploaded above. Paste any SVG code here.",
+          "visible_if": "{{ block.settings.show_icon }}"
         },
         {
           "type": "header",
@@ -1101,6 +1202,20 @@
           "id": "feature_subtitle_2",
           "label": "Subheading",
           "default": "Sub title",
+          "visible_if": "{{ block.settings.desktop_columns == '2' or block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_2",
+          "label": "Icon image",
+          "visible_if": "{{ block.settings.desktop_columns == '2' or block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' }}"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_svg_2",
+          "label": "SVG icon code",
+          "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\"/></svg>",
+          "info": "Used when no image is uploaded above. Paste any SVG code here.",
           "visible_if": "{{ block.settings.desktop_columns == '2' or block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' }}"
         },
         {
@@ -1123,6 +1238,20 @@
           "visible_if": "{{ block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' }}"
         },
         {
+          "type": "image_picker",
+          "id": "feature_icon_3",
+          "label": "Icon image",
+          "visible_if": "{{ block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' }}"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_svg_3",
+          "label": "SVG icon code",
+          "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\"/></svg>",
+          "info": "Used when no image is uploaded above. Paste any SVG code here.",
+          "visible_if": "{{ block.settings.desktop_columns == '3' or block.settings.desktop_columns == '4' }}"
+        },
+        {
           "type": "header",
           "content": "Card 4",
           "visible_if": "{{ block.settings.desktop_columns == '4' }}"
@@ -1139,6 +1268,20 @@
           "id": "feature_subtitle_4",
           "label": "Subheading",
           "default": "Sub title",
+          "visible_if": "{{ block.settings.desktop_columns == '4' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_4",
+          "label": "Icon image",
+          "visible_if": "{{ block.settings.show_icon or block.settings.desktop_columns == '4' }}"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_svg_4",
+          "label": "SVG icon code",
+          "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\"/></svg>",
+          "info": "Used when no image is uploaded above. Paste any SVG code here.",
           "visible_if": "{{ block.settings.desktop_columns == '4' }}"
         }
       ]

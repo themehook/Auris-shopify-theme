@@ -293,3 +293,20 @@
 .link.with--icon.button--with-icon:hover:before {
   background-color: rgba(var(--text-link-hover-color));
 }
+.cl-subtitle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.cl-subtitle-shape {
+  display: block;
+  width: 2.8rem;
+  height: 0.2rem;
+  flex-shrink: 0;
+}

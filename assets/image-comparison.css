@@ -55,6 +55,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 0.5rem 0.15rem rgba(var(--color-foreground), 0.1);
+  z-index: 9;
 }
 .image-comparison__button .icon {
   height: 1.6rem;
@@ -126,4 +127,35 @@
   &.rounded--image{
     border-radius: 50%;
   }
+}
+
+/* Labels (badge + caption) */
+.image-comparison__label {
+  position: absolute;
+  bottom: 2rem;
+  z-index: 9;
+}
+.image-comparison__label--before {
+  left: 2rem;
+}
+.image-comparison__label--after {
+  right: 2rem;
+  align-items: flex-end;
+}
+.image-comparison__badge {
+  display: inline-block;
+  padding: 0.5rem 1.4rem;
+  border-radius: 10rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.image-comparison__plain-text {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-weight: 500;
+  white-space: nowrap;
+  display: block;
+  margin-top: 1.5rem;
 }

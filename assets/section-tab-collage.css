@@ -36,6 +36,7 @@
   background-color: rgba(var(--color-button), var(--alpha-button-background));
   color: rgb(var(--color-button-text));
 }
+
 .collage-tab--highlight--badge {
   background: rgba(var(--color-foreground), 0.15);
   padding: 0.8rem 1.5rem 0.8rem 1rem;
@@ -86,6 +87,9 @@
   border-right: none;
   width: 100%;
   text-align: left;
+  &.is--open{
+    color: rgba(var(--text-link-hover-color));
+  }
 }
 .tab--collage-container.rounded--image {
   border-radius: 1rem;

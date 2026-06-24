@@ -20,8 +20,10 @@
       <div class="notice-board-header">
         <div class="notice-board-heading-wrap">
           {%- if section.settings.subtitle != blank -%}
-            <div class="notice-board-subtitle-wrap">
-              <span class="notice-board-subtitle-line"></span>
+            <div class="notice-board-subtitle-wrap" style="color: {{ section.settings.subtitle_color }};">
+              {%- if section.settings.show_subtitle_shape -%}
+                <span class="notice-board-subtitle-line" style="background-color: {{ section.settings.subtitle_color }};"></span>
+              {%- endif -%}
               <span class="notice-board-subtitle">{{- section.settings.subtitle -}}</span>
             </div>
           {%- endif -%}
@@ -95,6 +97,19 @@
       "id": "subtitle",
       "label": "Subtitle",
       "default": "What's new"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle_shape",
+      "label": "Show subtitle shape",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle & shape color",
+      "default": "#111111",
+      "visible_if": "{{ section.settings.show_subtitle_shape }}"
     },
     {
       "type": "richtext",

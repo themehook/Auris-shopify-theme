@@ -85,7 +85,14 @@
       <div class="pfe-content-col pfe-content--align-{{ section.settings.content_h_align }} pfe-content--valign-{{ section.settings.content_v_align }}">
 
         {%- if section.settings.subtitle != blank -%}
-          <span class="pfe-subtitle">{{- section.settings.subtitle -}}</span>
+          {%- if section.settings.show_subtitle_shape -%}
+            <div class="pfe-subtitle cl-subtitle-wrap" style="color: {{ section.settings.subtitle_shape_color }};">
+              <span class="cl-subtitle-shape" style="background-color: {{ section.settings.subtitle_shape_color }};"></span>
+              <span>{{- section.settings.subtitle -}}</span>
+            </div>
+          {%- else -%}
+            <span class="pfe-subtitle">{{- section.settings.subtitle -}}</span>
+          {%- endif -%}
         {%- endif -%}
 
         {%- if section.settings.heading != blank -%}
@@ -268,6 +275,19 @@
       "id": "subtitle",
       "label": "Subtitle",
       "default": "Explore our products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle_shape",
+      "label": "Show subtitle shape",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "subtitle_shape_color",
+      "label": "Subtitle & shape color",
+      "default": "#111111",
+      "visible_if": "{{ section.settings.show_subtitle_shape }}"
     },
     {
       "type": "richtext",

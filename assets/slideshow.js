@@ -1,6 +1,7 @@
 theme.SlideShow = (function () {
   function Slider(e) {
     let sliderWrapper = e.querySelector(".hero__slider--activation"),
+      navigationStyle = e.dataset.navigationStyle || "bullet",
       slideLoop = e.dataset.slideLoop,
       slideAutoplay = e.dataset.slideAutoplay,
       autoplayDuration = e.dataset.autoplayDuration,
@@ -25,8 +26,6 @@ theme.SlideShow = (function () {
         ? parseInt(e.dataset.showMobile)
         : 1;
 
-    //console.log(sliderPerView);
-
     if (slideLoop == "false") {
       slideLoopValue = false;
     }
@@ -35,7 +34,21 @@ theme.SlideShow = (function () {
       autoplay = { delay: autoplayDuration, disableOnInteraction: false };
     }
 
-    var swiper = new Swiper(sliderWrapper, {
+    // Initialize thumbs Swiper first (must exist before main Swiper when using thumbs)
+    let thumbsSwiperInstance = null;
+    if (navigationStyle === "thumbnail") {
+      const thumbsEl = e.querySelector(".slideshow__thumbs-swiper");
+      if (thumbsEl) {
+        thumbsSwiperInstance = new Swiper(thumbsEl, {
+          slidesPerView: "auto",
+          spaceBetween: 10,
+          watchSlidesProgress: true,
+          freeMode: true,
+        });
+      }
+    }
+
+    const swiperOptions = {
       slidesPerView: mobileShow,
       autoplay: autoplay,
       loop: slideLoopValue,
@@ -64,7 +77,14 @@ theme.SlideShow = (function () {
           slidesPerView: sliderPerView,
         },
       },
-    });
+    };
+
+    if (thumbsSwiperInstance) {
+      swiperOptions.thumbs = { swiper: thumbsSwiperInstance };
+    }
+
+    var swiper = new Swiper(sliderWrapper, swiperOptions);
+
     // Slide thumbnail height
     const slideThumbHeight = () => {
       const proudctThumbnails = e.querySelectorAll(".card--client-height");

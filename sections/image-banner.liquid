@@ -103,7 +103,7 @@
           {%- for block in section.blocks -%}
             {%- case block.type -%}
               {%- when 'heading' -%}
-                <div class="banner__heading {{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
+                <div class="banner__heading gradient--text {{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
 
                   {{
                       block.settings.heading
@@ -118,7 +118,14 @@
                 </div>
               {%- when 'subheading' -%}
                 <div class="banner__subheading {{ block.settings.subheading_size }}" {{ block.shopify_attributes }}>
-                  {{ block.settings.subheading | replace: 'p>', 'span>' }}
+                  {%- if block.settings.show_subtitle_shape -%}
+                    <div class="cl-subtitle-wrap" style="color: {{ block.settings.subtitle_shape_color }};">
+                      <span class="cl-subtitle-shape" style="background-color: {{ block.settings.subtitle_shape_color }};"></span>
+                      <span>{{ block.settings.subheading | replace: 'p>', 'span>' }}</span>
+                    </div>
+                  {%- else -%}
+                    {{ block.settings.subheading | replace: 'p>', 'span>' }}
+                  {%- endif -%}
                 </div>
               {%- when 'text' -%}
                 <div class="banner__text {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
@@ -567,10 +574,27 @@
             {
               "value": "h6",
               "label": "Heading 6"
+            },
+            {
+              "value": "body",
+              "label": "Extra small"
             }
           ],
           "default": "h5",
           "label": "Paragraph size"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_subtitle_shape",
+          "label": "Show shape",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "subtitle_shape_color",
+          "label": "Shape color",
+          "default": "#ffffff",
+          "visible_if": "{{ block.settings.show_subtitle_shape }}"
         }
       ]
     },

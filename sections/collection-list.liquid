@@ -136,17 +136,22 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
       <div class="top__navigation--with-section-header  mb-40">    
       {% endif %}
        
-      {% if section.settings.heading != blank or section.settings.subtitle != blank %}
+      {% if section.settings.heading != blank or section.settings.subtitle != blank or section.settings.description != blank %}
         <div class="section-heading text-{{ section.settings.text_center }} mobile--text-{{ section.settings.mobile_text_center }}  {% unless header_topbar %}mb-50{% endunless %}">
-          {% if section.settings.heading_position == "bottom" and section.settings.subtitle != blank %}
-           <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
-          {% endif %}
+          {%- if section.settings.subtitle != blank -%}
+            <div class="cl-subtitle-wrap" style="color: {{ section.settings.subtitle_shape_color }};">
+              {%- if section.settings.show_subtitle_shape -%}
+                <span class="cl-subtitle-shape" style="background-color: {{ section.settings.subtitle_shape_color }};"></span>
+              {%- endif -%}
+              <span>{{- section.settings.subtitle -}}</span>
+            </div>
+          {%- endif -%}
           <h2 class="section-heading__title ">
             {{- section.settings.heading -}}
           </h2>
-         {% if section.settings.heading_position == "top" and section.settings.subtitle != blank %}
-           <span class="section-heading__sub_title">{{- section.settings.subtitle -}}</span>
-          {% endif %}
+          {%- if section.settings.description != blank -%}
+            <span class="section-heading__sub_title">{{- section.settings.description -}}</span>
+          {%- endif -%}
         </div>
        {% endif %}
 
@@ -273,16 +278,34 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
       "content": "Section header"
     },
     {
-      "type": "inline_richtext",
+      "type": "text",
       "id": "subtitle",
-      "default": "Subtitle",
-      "label": "Subheading"
+      "label": "Subtitle",
+      "info": "Short label displayed above the heading with a decorative shape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle_shape",
+      "label": "Show subtitle shape",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "subtitle_shape_color",
+      "label": "Subtitle & shape color",
+      "default": "#111111",
+      "visible_if": "{{ section.settings.show_subtitle_shape }}"
     },
     {
       "type": "text",
       "id": "heading",
       "default": "Collection list",
       "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "description",
+      "label": "Description"
     },
     {
       "type": "select",

@@ -132,9 +132,12 @@ class HookthemeQuickView extends HTMLElement {
       .querySelector('.product__card.quick--view-opened')
       ?.classList.remove('quick--view-opened');
 
-    // Restore focus (using existing global function)
+    // Restore focus without triggering browser scroll-into-view on the off-screen button
     if (typeof removeTrapFocus === 'function') {
-      removeTrapFocus(this.openedBy);
+      removeTrapFocus();
+    }
+    if (this.openedBy) {
+      this.openedBy.focus({ preventScroll: true });
     }
 
     // Pause media

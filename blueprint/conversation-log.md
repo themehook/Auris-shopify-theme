@@ -404,3 +404,52 @@ Add two per-section product card settings globally across all product sections:
 - **Per-section param with global fallback** — `card_content_alignment | default: settings.product_content_alignment` means existing sections without the new setting continue to respect the global theme setting. No backward-compatibility breakage.
 - **Swatches position — conditional dual render** — The swatch snippet is rendered at the top of the content div when `swatches_position == 'above'`, and the existing position (after price) is gated by `unless swatches_position == 'above'`. This ensures swatches never render twice.
 - **Schema placement** — Both settings live under the "Product card" section header in schema, logically grouped with other card appearance settings.
+
+---
+
+## Session 12 — Slideshow: Feature List Title + Per-item Icon Toggle
+
+**Date:** 2026-06-18
+
+### Request
+In the Slideshow section, add a **Title field** for each Feature List item (empty by default, not rendered when blank). Add a per-item **Show icon** toggle so users can show or hide the SVG icon independently for each feature.
+
+### What was done
+
+**`sections/slideshow.liquid`:**
+- Added `feature_N_title` (text, no default) schema field for each of the 4 features, placed before the existing `feature_N_text` field. Gated on `show_feature_list` (same as text).
+- Added `feature_N_show_icon` (checkbox, default true) schema field for each feature. Placed between `feature_N_text` and `feature_N_icon_position`.
+- Updated `feature_N_icon_position` and `feature_N_svg` `visible_if` to add `and block.settings.feature_N_show_icon` so both fields collapse when icon is disabled.
+- Updated `has_features` detection loop to check `fti_key` (title) alongside `ft_key` (text): `if block.settings[ft_key] != blank or block.settings[fti_key] != blank`.
+- Updated item render loop: added `fti_key` and `fsi_key` assigns; added conditional title span `{%- if block.settings[fti_key] != blank -%}`; gated icon span on `block.settings[fsi_key] and block.settings[fs_key] != blank`.
+
+**`assets/slideshow.css`:**
+- Added `.slideshow__feature-title` rule: `font-weight: 700; line-height: 1.2; color: rgba(var(--color-foreground)); white-space: nowrap; font-size: 2.8rem` (fallback only — inline style overrides at runtime).
+
+### Key decisions
+- Title renders above the feature text (`<span class="slideshow__feature-title">` placed before `<span class="slideshow__feature-text">`).
+- `has_features` must check both fields; a title-only item should still trigger the list container.
+
+---
+
+## Session 13 — Slideshow: Feature Title Font Size + SVG Hidden When Icon Off
+
+**Date:** 2026-06-18
+
+### Request
+Add a **font size control** (range slider) per feature item's title. When **Show icon** is unchecked, the SVG icon code textarea should be completely hidden in the editor (no empty space), and no icon markup should render on the storefront.
+
+### What was done
+
+**`sections/slideshow.liquid`:**
+- Added `feature_N_title_size` (range, min 16, max 56, step 2, unit px, default 28) for each of the 4 features. Placed between `feature_N_title` and `feature_N_text`. Gated on same `visible_if` as title.
+- The title span now has `style="font-size: {{ block.settings[fts_key] }}px;"` applied inline.
+- `feature_N_icon_position` and `feature_N_svg` `visible_if` already updated in Session 12 to include `and feature_N_show_icon`; confirmed working.
+
+**`assets/slideshow.css`:**
+- No additional changes needed. The CSS `font-size: 2.8rem` fallback on `.slideshow__feature-title` is a safe default; the inline style always takes precedence.
+
+### Key decisions
+- **Inline style over CSS class** — Applying font-size as `style="..."` avoids the need for section-scoped `{%- style -%}` overrides or `!important`. The inline attribute wins unconditionally over class rules, so no responsive breakpoint overrides are needed.
+- **`visible_if` compound precedence (Feature 3)** — Feature 3 is visible for columns `'3'` or `'4'`. Adding `and show_icon` requires embedding it in each `or` branch: `A and B and show_icon or A and C and show_icon`. Placing it outside the `or` would not work as expected.
+- **Skill file created** — `blueprint/slideshow.md` added to capture the full Slideshow feature list spec for future sessions.

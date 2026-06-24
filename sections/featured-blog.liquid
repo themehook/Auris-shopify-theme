@@ -104,6 +104,11 @@
     assign view_all_button = true
   endif
 
+  assign nav_topbar = false
+  if carousel_enable and section.settings.show_navigation and section.settings.show_navigation_topbar
+    assign nav_topbar = true
+  endif
+
   assign product_desktop_column = section.settings.card_column_on_desktop | times: 1
   assign product_mobile_column = section.settings.card_column_on_mobile | times: 1
   assign desktop_loop = false
@@ -156,21 +161,26 @@
   <div class="{{ container }} {% unless section.settings.show_offset %}p-0{% endunless %}">
     {% if section.settings.button_position == 'top' and view_all_button %}
       <div class="section--header-wrapper mb-50">
+    {% elsif nav_topbar %}
+      <div class="top__navigation--with-section-header mb-40">
     {% endif %}
-    <div class="section-heading text-{{ section.settings.text_center }} mobile-text-{{ section.settings.mobile_text_center }} {% if section.settings.heading != blank or section.settings.description != blank %} {% if section.settings.button_position != 'top' %} mb-50 {% endif %} {% endif %} {% if section.settings.button_position == 'top' and view_all_button == false %}mb-50{% endif %}  {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-      {% if section.settings.heading_position == 'bottom' and section.settings.description != blank %}
-        <div class="section-heading__sub_title {{ section.settings.description_style }} rte">
-          {{ section.settings.description -}}
+    <div class="section-heading text-{{ section.settings.text_center }} mobile-text-{{ section.settings.mobile_text_center }} {% if section.settings.heading != blank or section.settings.subtitle != blank or section.settings.description != blank %} {% if section.settings.button_position != 'top' and nav_topbar == false %} mb-50 {% endif %} {% endif %} {% if section.settings.button_position == 'top' and view_all_button == false and nav_topbar == false %}mb-50{% endif %}  {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+      {%- if section.settings.subtitle != blank -%}
+        <div class="cl-subtitle-wrap" style="color: {{ section.settings.subtitle_shape_color }};">
+          {%- if section.settings.show_subtitle_shape -%}
+            <span class="cl-subtitle-shape" style="background-color: {{ section.settings.subtitle_shape_color }};"></span>
+          {%- endif -%}
+          <span>{{- section.settings.subtitle -}}</span>
         </div>
-      {% endif %}
+      {%- endif -%}
       <h2 class="section-heading__title {{ section.settings.heading_size }}">
         {{- section.settings.heading -}}
       </h2>
-      {% if section.settings.heading_position == 'top' and section.settings.description != blank %}
+      {%- if section.settings.description != blank -%}
         <div class="section-heading__sub_title {{ section.settings.description_style }} rte">
           {{ section.settings.description -}}
         </div>
-      {% endif %}
+      {%- endif -%}
     </div>
 
     {%- if section.settings.button_position == 'top' and view_all_button -%}
@@ -195,7 +205,19 @@
         </a>
       </div>
     {%- endif -%}
+    {%- if nav_topbar -%}
+      <div class="blog__nav-topbar">
+        <div class="swiper-button-prev blog__nav-topbar-btn component--slider--nav color-{{ section.settings.color_scheme_navigation }}">
+          {% render 'hooktheme-icon-chevron-left' %}
+        </div>
+        <div class="swiper-button-next blog__nav-topbar-btn component--slider--nav color-{{ section.settings.color_scheme_navigation }}">
+          {% render 'hooktheme-icon-chevron-right' %}
+        </div>
+      </div>
+    {%- endif -%}
     {% if section.settings.button_position == 'top' and view_all_button %}
+      </div>
+    {% elsif nav_topbar %}
       </div>
     {% endif %}
 
@@ -274,7 +296,7 @@
       {%- endif -%}
 
       {%- if carousel_enable -%}
-        {%- if section.settings.show_navigation -%}
+        {%- if section.settings.show_navigation and section.settings.show_navigation_topbar == false -%}
           <div class="swiper-button-prev  component--slider--nav color-{{ section.settings.color_scheme_navigation }}">
             {% render 'hooktheme-icon-chevron-left' %}
           </div>
@@ -350,6 +372,25 @@
     {
       "type": "header",
       "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "info": "Short label displayed above the heading with a decorative shape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle_shape",
+      "label": "Show subtitle shape",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "subtitle_shape_color",
+      "label": "Subtitle & shape color",
+      "default": "#111111",
+      "visible_if": "{{ section.settings.show_subtitle_shape }}"
     },
     {
       "type": "inline_richtext",
@@ -807,6 +848,14 @@
       "id": "show_navigation",
       "label": "Show navigation",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation_topbar",
+      "label": "Navigation top bar",
+      "default": false,
+      "info": "Shows navigation buttons in the top-right of the section header. Requires Show navigation and Carousel layout.",
+      "visible_if": "{{ section.settings.show_navigation }}"
     },
     {
       "type": "color_scheme",

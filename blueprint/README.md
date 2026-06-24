@@ -15,6 +15,7 @@ This folder stores skill files for every custom section and feature built or mod
 | [interactive-feature-showcase.md](interactive-feature-showcase.md) | Interactive Feature Showcase section — full spec |
 | [scroll-reveal-media.md](scroll-reveal-media.md) | Scroll Reveal Media section — updates made |
 | [tab-collage.md](tab-collage.md) | Tab Collage — original design + abandoned Style 2 history |
+| [slideshow.md](slideshow.md) | Slideshow section — Feature List spec (title, font size, icon toggle, schema, rendering) |
 
 ## Workflow
 

@@ -198,3 +198,6 @@
 .promotion__inner--rounded {
   border-radius: 1rem;
 }
+.section-heading__title  span{
+  display: block;
+}
