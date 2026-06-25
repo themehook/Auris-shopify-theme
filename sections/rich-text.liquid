@@ -1152,7 +1152,7 @@
           "max": 120,
           "step": 4,
           "unit": "px",
-          "default": 34,
+          "default": 32,
           "visible_if": "{{ block.settings.show_icon }}"
         },
         {
@@ -1175,7 +1175,6 @@
           "type": "image_picker",
           "id": "feature_icon_1",
           "label": "Icon image",
-          "visible_if": "{{ block.settings.show_icon }}"
         },
         {
           "type": "textarea",
@@ -1183,7 +1182,6 @@
           "label": "SVG icon code",
           "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\"/></svg>",
           "info": "Used when no image is uploaded above. Paste any SVG code here.",
-          "visible_if": "{{ block.settings.show_icon }}"
         },
         {
           "type": "header",
@@ -1274,7 +1272,7 @@
           "type": "image_picker",
           "id": "feature_icon_4",
           "label": "Icon image",
-          "visible_if": "{{ block.settings.show_icon or block.settings.desktop_columns == '4' }}"
+          "visible_if": "{{ block.settings.desktop_columns == '4' }}"
         },
         {
           "type": "textarea",

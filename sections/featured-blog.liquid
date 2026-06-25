@@ -156,6 +156,7 @@
       data-slider-loop-mobile="{{ mobile_loop }}"
       data-slider-space-betweeen="20"
       data-slideshow="20"
+      data-show-scrollbar="{{ section.settings.show_scrollbar }}"
     >
   {%- endif -%}
   <div class="{{ container }} {% unless section.settings.show_offset %}p-0{% endunless %}">
@@ -303,6 +304,9 @@
           <div class="swiper-button-next component--slider--nav  color-{{ section.settings.color_scheme_navigation }}">
             {% render 'hooktheme-icon-chevron-right' %}
           </div>
+        {%- endif -%}
+        {%- if section.settings.show_scrollbar -%}
+          <div class="swiper-scrollbar blog-slider--scrollbar"></div>
         {%- endif -%}
       {%- endif -%}
     </div>
@@ -739,13 +743,15 @@
       "type": "checkbox",
       "id": "view_button_icon",
       "label": "Use arrow icon",
-      "default": true
+      "default": true,
+      "visible_if": "{{ section.settings.show_view_all }}"
     },
     {
       "type": "select",
       "id": "icon_type",
       "label": "Icon type",
       "default": "chevron_double",
+      "visible_if": "{{ section.settings.show_view_all }}",
       "options": [
         {
           "value": "arrow",
@@ -766,6 +772,7 @@
       "id": "button_position",
       "label": "Button position",
       "default": "bottom",
+      "visible_if": "{{ section.settings.show_view_all }}",
       "options": [
         {
           "value": "top",
@@ -782,6 +789,7 @@
       "id": "button_type",
       "label": "Button type",
       "default": "primary",
+      "visible_if": "{{ section.settings.show_view_all }}",
       "options": [
         {
           "value": "primary",
@@ -802,6 +810,7 @@
       "id": "button_size",
       "label": "Button size",
       "default": "medium",
+      "visible_if": "{{ section.settings.show_view_all }}",
       "options": [
         {
           "value": "large",
@@ -856,6 +865,13 @@
       "default": false,
       "info": "Shows navigation buttons in the top-right of the section header. Requires Show navigation and Carousel layout.",
       "visible_if": "{{ section.settings.show_navigation }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scrollbar",
+      "label": "Show scrollbar",
+      "default": false,
+      "visible_if": "{{ section.settings.layout == 'slider' }}"
     },
     {
       "type": "color_scheme",

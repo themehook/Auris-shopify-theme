@@ -334,7 +334,7 @@ a.collection__card {
   margin-left: auto;
 }
 .product__items.collection-card-radius {
-  border-radius: 0.5rem;
+  border-radius: 0.8rem;
 }
 .collection__list--slider-nav
   .collection__list--slider-nav-btn.component--slider--nav {
@@ -426,3 +426,24 @@ a.collection__card {
 .collection-card-content-on-container .product__categories--subtitle--badge {
   margin-bottom: 0.8rem;
 }
+
+/* ============================================
+   Collection Card Description
+   ============================================ */
+.collection-card--description {
+  margin: 0.6rem 0 0;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* ============================================
+   Collection Card Border
+   ============================================ */
+.collection--card-border {
+  border: 0.1rem solid rgba(var(--color-foreground), 0.12);
+}
+.collection--card-border .product__categories--content {
+  padding: 1.2rem 1.5rem 1.5rem;
+}
+

@@ -411,17 +411,15 @@
                                 {%- if fi > feature_cols -%}{%- break -%}{%- endif -%}
                                 {%- assign ft_key  = 'feature_' | append: fi | append: '_text' -%}
                                 {%- assign fti_key = 'feature_' | append: fi | append: '_title' -%}
-                                {%- assign fts_key = 'feature_' | append: fi | append: '_title_size' -%}
                                 {%- assign fs_key  = 'feature_' | append: fi | append: '_svg' -%}
-                                {%- assign fp_key  = 'feature_' | append: fi | append: '_icon_position' -%}
                                 {%- assign fsi_key = 'feature_' | append: fi | append: '_show_icon' -%}
                                 {%- if block.settings[ft_key] != blank or block.settings[fti_key] != blank -%}
-                                  <div class="slideshow__feature-item slideshow__feature-item--icon-{{ block.settings[fp_key] }} {{ item_scheme_class }}">
+                                  <div class="slideshow__feature-item slideshow__feature-item--icon-{{ block.settings.feature_icon_position }} {{ item_scheme_class }}">
                                     {%- if block.settings[fsi_key] and block.settings[fs_key] != blank -%}
                                       <span class="slideshow__feature-icon">{{ block.settings[fs_key] }}</span>
                                     {%- endif -%}
                                     {%- if block.settings[fti_key] != blank -%}
-                                      <span class="slideshow__feature-title" style="font-size: {{ block.settings[fts_key] }}px;">{{ block.settings[fti_key] }}</span>
+                                      <span class="slideshow__feature-title" style="font-size: {{ block.settings.feature_title_size }}px;">{{ block.settings[fti_key] }}</span>
                                     {%- endif -%}
                                     {%- if block.settings[ft_key] != blank -%}
                                       <span class="slideshow__feature-text">{{ block.settings[ft_key] }}</span>
@@ -1135,6 +1133,30 @@
           "visible_if": "{{ block.settings.show_feature_list }}"
         },
         {
+          "type": "range",
+          "id": "feature_title_size",
+          "label": "Title font size",
+          "min": 16,
+          "max": 56,
+          "step": 2,
+          "unit": "px",
+          "default": 28,
+          "visible_if": "{{ block.settings.show_feature_list }}"
+        },
+        {
+          "type": "select",
+          "id": "feature_icon_position",
+          "label": "Icon position",
+          "options": [
+            { "value": "left",  "label": "Left"   },
+            { "value": "right", "label": "Right"  },
+            { "value": "above", "label": "Top"    },
+            { "value": "below", "label": "Bottom" }
+          ],
+          "default": "above",
+          "visible_if": "{{ block.settings.show_feature_list }}"
+        },
+        {
           "type": "paragraph",
           "content": "Feature 1",
           "visible_if": "{{ block.settings.show_feature_list }}"
@@ -1143,17 +1165,6 @@
           "type": "text",
           "id": "feature_1_title",
           "label": "Title",
-          "visible_if": "{{ block.settings.show_feature_list }}"
-        },
-        {
-          "type": "range",
-          "id": "feature_1_title_size",
-          "label": "Title font size",
-          "min": 16,
-          "max": 56,
-          "step": 2,
-          "unit": "px",
-          "default": 28,
           "visible_if": "{{ block.settings.show_feature_list }}"
         },
         {
@@ -1169,19 +1180,6 @@
           "label": "Show icon",
           "default": true,
           "visible_if": "{{ block.settings.show_feature_list }}"
-        },
-        {
-          "type": "select",
-          "id": "feature_1_icon_position",
-          "label": "Icon position",
-          "options": [
-            { "value": "above", "label": "Top" },
-            { "value": "below", "label": "Bottom" },
-            { "value": "left", "label": "Left" },
-            { "value": "right", "label": "Right" }
-          ],
-          "default": "above",
-          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_1_show_icon }}"
         },
         {
           "type": "textarea",
@@ -1202,17 +1200,6 @@
           "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns != '1' }}"
         },
         {
-          "type": "range",
-          "id": "feature_2_title_size",
-          "label": "Title font size",
-          "min": 16,
-          "max": 56,
-          "step": 2,
-          "unit": "px",
-          "default": 28,
-          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns != '1' }}"
-        },
-        {
           "type": "text",
           "id": "feature_2_text",
           "label": "Text",
@@ -1225,19 +1212,6 @@
           "label": "Show icon",
           "default": true,
           "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns != '1' }}"
-        },
-        {
-          "type": "select",
-          "id": "feature_2_icon_position",
-          "label": "Icon position",
-          "options": [
-            { "value": "above", "label": "Top" },
-            { "value": "below", "label": "Bottom" },
-            { "value": "left", "label": "Left" },
-            { "value": "right", "label": "Right" }
-          ],
-          "default": "above",
-          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns != '1' and block.settings.feature_2_show_icon }}"
         },
         {
           "type": "textarea",
@@ -1258,17 +1232,6 @@
           "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '3' or block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
         },
         {
-          "type": "range",
-          "id": "feature_3_title_size",
-          "label": "Title font size",
-          "min": 16,
-          "max": 56,
-          "step": 2,
-          "unit": "px",
-          "default": 28,
-          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '3' or block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
-        },
-        {
           "type": "text",
           "id": "feature_3_text",
           "label": "Text",
@@ -1281,19 +1244,6 @@
           "label": "Show icon",
           "default": true,
           "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '3' or block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
-        },
-        {
-          "type": "select",
-          "id": "feature_3_icon_position",
-          "label": "Icon position",
-          "options": [
-            { "value": "above", "label": "Top" },
-            { "value": "below", "label": "Bottom" },
-            { "value": "left", "label": "Left" },
-            { "value": "right", "label": "Right" }
-          ],
-          "default": "above",
-          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '3' and block.settings.feature_3_show_icon or block.settings.show_feature_list and block.settings.feature_columns == '4' and block.settings.feature_3_show_icon }}"
         },
         {
           "type": "textarea",
@@ -1314,17 +1264,6 @@
           "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
         },
         {
-          "type": "range",
-          "id": "feature_4_title_size",
-          "label": "Title font size",
-          "min": 16,
-          "max": 56,
-          "step": 2,
-          "unit": "px",
-          "default": 28,
-          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
-        },
-        {
           "type": "text",
           "id": "feature_4_text",
           "label": "Text",
@@ -1337,19 +1276,6 @@
           "label": "Show icon",
           "default": true,
           "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '4' }}"
-        },
-        {
-          "type": "select",
-          "id": "feature_4_icon_position",
-          "label": "Icon position",
-          "options": [
-            { "value": "above", "label": "Top" },
-            { "value": "below", "label": "Bottom" },
-            { "value": "left", "label": "Left" },
-            { "value": "right", "label": "Right" }
-          ],
-          "default": "above",
-          "visible_if": "{{ block.settings.show_feature_list and block.settings.feature_columns == '4' and block.settings.feature_4_show_icon }}"
         },
         {
           "type": "textarea",

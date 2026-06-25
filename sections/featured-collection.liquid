@@ -177,6 +177,7 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
     data-show-extra-large="{{ productShowXl }}"
     data-slider-rows="{{sliderRows}}"
     data-slide-loop="{{ slideLoop }}"
+    data-show-scrollbar="{{ section.settings.show_scrollbar }}"
   {% endif %}
 >
   <div class="{{ container }}">
@@ -424,6 +425,9 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
           {%- endif -%}
           {%- if showPagination -%}
             <div class="swiper-pagination product-slider--pagination"></div>
+          {%- endif -%}
+          {%- if section.settings.show_scrollbar -%}
+            <div class="swiper-scrollbar product-slider--scrollbar"></div>
           {%- endif -%}
         {%- endif -%}
       </div>
@@ -1780,6 +1784,13 @@ row row-cols-xl-{{ productShowXl }} row-cols-lg-{{ productShowLg }} row-cols-md-
       "type": "checkbox",
       "id": "show_navigation",
       "label": "Show navigation",
+      "default": false,
+      "visible_if": "{{ section.settings.slider_enable}}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scrollbar",
+      "label": "Show scrollbar",
       "default": false,
       "visible_if": "{{ section.settings.slider_enable}}"
     },

@@ -346,5 +346,29 @@
     display: inline-block;
   }
 }
+
+/* ============================================
+   Product Slider Scrollbar
+   ============================================ */
+.product-slider--scrollbar {
+  position: relative;
+  height: 0.3rem;
+  margin-top: 2rem;
+  background: rgba(var(--color-foreground), 0.12);
+  border-radius: 10rem;
+  width: 100%;
+  @media only screen and (min-width: 750px){
+    margin-top: 4rem;
+  }
+}
+.product-slider--scrollbar .swiper-scrollbar-drag {
+  background: rgba(var(--text-link-hover-color));
+  border-radius: 10rem;
+  cursor: grab;
+}
+.product-slider--scrollbar .swiper-scrollbar-drag:active {
+  cursor: grabbing;
+}
+
 /* Countdown timer box css start */
 

@@ -205,7 +205,7 @@
 
         <collection-tab-content class="collection-tab-content">
           {%- for block in section.blocks -%}
-            <collection-tab-item 
+            <collection-tab-item
               {% if forloop.first %}
                 aria-hidden="false"
               {% endif %}
@@ -218,6 +218,7 @@
               data-show-extra-large="{{ product_show_xl }}"
               data-autoplay="{{ slide_auto_play }}"
               data-autoplay-time="{{ autoplay_time }}000"
+              data-show-scrollbar="{{ section.settings.show_scrollbar }}"
               {{ block.shopify_attributes }}
             >
                <div class="product_slider_wrapper">
@@ -327,6 +328,9 @@
                   {%- endfor -%}
                   {% if slider_enable %}</div>{% endif %}
                   </div>
+                  {%- if slider_enable and section.settings.show_scrollbar -%}
+                    <div class="swiper-scrollbar product-slider--scrollbar"></div>
+                  {%- endif -%}
                </div>
             </collection-tab-item>
           {%- endfor -%}
@@ -711,6 +715,13 @@
       "unit": "px",
       "default": 11,
       "visible_if": "{{ section.settings.show_product_tags }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scrollbar",
+      "label": "Show scrollbar",
+      "default": false,
+      "visible_if": "{{ section.settings.layout == 'slider' }}"
     },
     {
       "type": "checkbox",

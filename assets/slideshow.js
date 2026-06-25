@@ -24,7 +24,8 @@ theme.SlideShow = (function () {
         : 1,
       mobileShow = parseInt(e.dataset.showMobile)
         ? parseInt(e.dataset.showMobile)
-        : 1;
+        : 1,
+      showScrollbar = e.dataset.showScrollbar === "true";
 
     if (slideLoop == "false") {
       slideLoopValue = false;
@@ -63,6 +64,11 @@ theme.SlideShow = (function () {
         nextEl: slideNavNext,
         prevEl: slideNavPrev,
       },
+      scrollbar: showScrollbar ? {
+        el: e.querySelector(".blog-slider--scrollbar"),
+        draggable: true,
+        hide: false,
+      } : false,
       breakpoints: {
         0: {
           slidesPerView: mobileShow,

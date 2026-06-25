@@ -190,7 +190,7 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
         {%- case block.type -%}
         {%- when 'featured_collection' -%}
         <div class="{{ productItem }} {% if section.settings.snow_fall %}snow--fall{% endif %}"  {{ block.shopify_attributes }}>
-          <div class="product__items collection--card-wrapper collection-card--alignment-{{ section.settings.card_alignment }} {% if image_as_icon %}card--client-height{% endif %}  {% if section.settings.round_corner %}collection-card-radius{% endif %} {% if section.settings.show_shadow %}collection--shadow-on-hover{% endif %} color-{{ section.settings.color_scheme }}">
+          <div class="product__items collection--card-wrapper collection-card--alignment-{{ section.settings.card_alignment }} {% if image_as_icon %}card--client-height{% endif %}  {% if section.settings.round_corner %}collection-card-radius{% endif %} {% if section.settings.show_shadow %}collection--shadow-on-hover{% endif %} {% if section.settings.show_border %}collection--card-border{% endif %} color-{{ section.settings.color_scheme }}">
             <div class="product__items--thumbnail">
               {%- render 'collection-card',
                 image: block.settings.image,
@@ -205,7 +205,8 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
                 title_size: section.settings.collection_title_size,
                 content_on_container: section.settings.content_on_container,
                 inner_padded: section.settings.card_padding_type,
-                image_as_icon: section.settings.image_as_icon
+                image_as_icon: section.settings.image_as_icon,
+                card_description: block.settings.description
               -%}
             </div>
           </div>
@@ -653,6 +654,12 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
       "label": "Use shadow on hover"
     },
     {
+      "type": "checkbox",
+      "id": "show_border",
+      "default": false,
+      "label": "Show border"
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
@@ -867,6 +874,11 @@ row row-cols-lg-{{ productShowLg }} row-cols-md-{{ productShowMd }} row-cols-{{ 
           "id": "image",
           "label": "t:sections.image-with-text.settings.image.label",
           "info": "Optional! Instead of the collection's image, the selected image will be displayed."
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
         }
       ]
     }

@@ -116,7 +116,7 @@
             {{ 'collection-2' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
           {%- endif -%}
           <span class="deferred-media__poster-button motion-reduce banner__bideo--play">
-            <span class="banner__bideo--title">{{ section.settings.video_title }}</span>
+            <span class="banner__bideo--title" {% if section.settings.video_title_color != blank %}style="color: {{ section.settings.video_title_color }};"{% endif %}>{{ section.settings.video_title }}</span>
             <span class="banner__bideo--play__icon">
               {%- render 'hooktheme-icon-play' -%}
             </span>
@@ -291,6 +291,12 @@
       "type": "text",
       "id": "video_title",
       "label": "Video titile"
+    },
+    {
+      "type": "color",
+      "id": "video_title_color",
+      "label": "Video title color",
+      "default": "#000000"
     },
     {
       "type": "text",

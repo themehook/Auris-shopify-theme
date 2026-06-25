@@ -301,3 +301,24 @@
   margin: 0;
   border: 0.1rem solid rgba(var(--color-foreground));
 }
+.blog__section--inner .blog-slider--scrollbar {
+  position: relative;
+  height: 0.3rem;
+  margin-top: 2rem;
+  background: rgba(var(--color-foreground), 0.12);
+  border-radius: 10rem;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  @media only screen and (min-width: 750px){
+    margin-top: 4rem;
+  }
+}
+.blog-slider--scrollbar .swiper-scrollbar-drag {
+  background: rgba(var(--text-link-hover-color));
+  border-radius: 10rem;
+  cursor: grab;
+}
+.blog-slider--scrollbar .swiper-scrollbar-drag:active {
+  cursor: grabbing;
+}

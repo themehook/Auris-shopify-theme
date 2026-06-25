@@ -95,7 +95,8 @@ if (!customElements.get("collection-tab-item")) {
             slideShowOnMobile = this.getAttribute("data-show-mobile"),
             slideAutoplay = this.getAttribute("data-autoplay"),
             slideAutoplayTime = this.getAttribute("data-autoplay-time"),
-            paginationType = this.getAttribute("data-pagination");
+            paginationType = this.getAttribute("data-pagination"),
+            showScrollbar = this.getAttribute("data-show-scrollbar") === "true";
 
       let autoPlayInit = false;
       if (slideAutoplay === "true") {
@@ -133,6 +134,11 @@ if (!customElements.get("collection-tab-item")) {
           nextEl,
           prevEl,
         },
+        scrollbar: showScrollbar ? {
+          el: this.querySelector('.swiper-scrollbar'),
+          draggable: true,
+          hide: false,
+        } : false,
         breakpoints: {
           320: { slidesPerView: parseInt(slideShowOnMobile || "1") },
           480: { slidesPerView: 2 },

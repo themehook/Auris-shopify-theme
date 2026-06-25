@@ -68,50 +68,49 @@
       </div>
     {%- endif -%}
   {%- endif -%}
-  <div
-    class="
-      product__categories--content  {% if show_icon %} d-flex justify-content-between align-items-center {% endif %}
-      {% unless section.settings.show_icon %} text-{{ section.settings.card_alignment }} {% endunless %}
-    "
-  >
-    <div class="product__categories--content__left">
-      {%- if show_product_items and product_items_position == 'above' -%}
-        {%- if product_items_style == 'badge' -%}
-          <span class="product__categories--content__subtitle product__categories--subtitle--badge">
-            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
-          </span>
-        {%- else -%}
-          <span class="product__categories--content__subtitle">
-            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
-          </span>
+  <div class="product__categories--content {% unless section.settings.show_icon %} text-{{ section.settings.card_alignment }} {% endunless %}">
+    <div class="collection-card--title-row {% if show_icon %} d-flex justify-content-between align-items-center {% endif %}">
+      <div class="product__categories--content__left">
+        {%- if show_product_items and product_items_position == 'above' -%}
+          {%- if product_items_style == 'badge' -%}
+            <span class="product__categories--content__subtitle product__categories--subtitle--badge">
+              {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+            </span>
+          {%- else -%}
+            <span class="product__categories--content__subtitle">
+              {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+            </span>
+          {%- endif -%}
         {%- endif -%}
-      {%- endif -%}
-      {%- if collection != blank -%}
-        <h3 class="collection-card--title {{ title_size | default: 'h5' }} mb-0">{{ collection.title }}</h3>
-      {%- else -%}
-        <h3 class="collection-card--title {{ title_size | default: 'h5' }} mb-0">
-          {{ 'sections.collection_list.default_title' | t }}
-        </h3>
-      {%- endif -%}
-      {%- if show_product_items and product_items_position != 'above' -%}
-        {%- if product_items_style == 'badge' -%}
-          <span class="product__categories--content__subtitle product__categories--subtitle--badge">
-            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
-          </span>
+        {%- if collection != blank -%}
+          <h3 class="collection-card--title {{ title_size | default: 'h5' }} mb-0">{{ collection.title }}</h3>
         {%- else -%}
-          <span class="product__categories--content__subtitle">
-            {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
-          </span>
+          <h3 class="collection-card--title {{ title_size | default: 'h5' }} mb-0">
+            {{ 'sections.collection_list.default_title' | t }}
+          </h3>
         {%- endif -%}
+        {%- if show_product_items and product_items_position != 'above' -%}
+          {%- if product_items_style == 'badge' -%}
+            <span class="product__categories--content__subtitle product__categories--subtitle--badge">
+              {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+            </span>
+          {%- else -%}
+            <span class="product__categories--content__subtitle">
+              {{- collection.products_count }} {{ 'sections.collection_list.items' | t -}}
+            </span>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+      {%- if show_icon -%}
+        <div class="product__categories--icon">
+          <span class="product__categories--icon__link">
+            {% render 'hooktheme-icon-arrow-right' %}
+          </span>
+        </div>
       {%- endif -%}
     </div>
-
-    {%- if show_icon -%}
-      <div class="product__categories--icon">
-        <span class="product__categories--icon__link">
-          {% render 'hooktheme-icon-arrow-right' %}
-        </span>
-      </div>
+    {%- if card_description != blank -%}
+      <p class="collection-card--description">{{ card_description }}</p>
     {%- endif -%}
   </div>
 </a>

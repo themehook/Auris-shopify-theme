@@ -162,12 +162,14 @@ theme.collectionSlider = (function () {
       sliderGrid = "row";
       sliderLoop = false;
     }
+    let showScrollbar = false;
     if (e.dataset.sliderEnable === "true") {
       sliderContainer = e.querySelector(".productSlider");
       extraLargeDesktopShow = parseInt(e.dataset.showExtraLarge);
       largeDesktopShow = parseInt(e.dataset.showLarge);
       tabletShow = parseInt(e.dataset.showTablet);
       mobileShow = parseInt(e.dataset.showMobile);
+      showScrollbar = e.dataset.showScrollbar === "true";
     }
 
     var swiper = new Swiper(sliderContainer, {
@@ -186,6 +188,11 @@ theme.collectionSlider = (function () {
         nextEl: e.querySelector(".product_slider_wrapper .swiper-button-next"),
         prevEl: e.querySelector(".product_slider_wrapper .swiper-button-prev"),
       },
+      scrollbar: showScrollbar ? {
+        el: e.querySelector(".product_slider_wrapper .swiper-scrollbar"),
+        draggable: true,
+        hide: false,
+      } : false,
       breakpoints: {
         640: {
           slidesPerView: mobileShow,
